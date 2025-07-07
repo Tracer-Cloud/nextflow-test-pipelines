@@ -110,6 +110,7 @@ jobs:
 
               echo '=== Verifying tracer packages ==='
               cd ../../../
+              ls -a
               chmod +x /.github/actions/action.sh
               IS_EBPF=true USE_SUDO=true BINARY=\$TRACER_BIO /.github/actions/verify-tracer/action.sh
 
