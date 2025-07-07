@@ -1,32 +1,12 @@
-name: rnaseq-minimal
+name: linux-arm-ubuntu-minimal
 channels:
   - conda-forge
   - bioconda
   - defaults
 
 dependencies:
-  - python=3.11
-  - openjdk=11
-  - nextflow
-  - gcc_linux-aarch64
-  - gxx_linux-aarch64
-  - make
-  - cmake
-  - pkg-config
-  - zlib
-  - bzip2
-  - xz
-  - curl
-  - openssl
-  - git
-  - wget
-  - pip
-
-  - pip:
-      - pysam
-      - biopython
-      - cutadapt
-      - multiqc
-      - numpy
-      - pandas
-      - matplotlib
+  - nextflow>=24.10.0
+  - openjdk=17
+  - fastqc=0.12.1
+  - star=2.7.11b
+  - samtools=1.21

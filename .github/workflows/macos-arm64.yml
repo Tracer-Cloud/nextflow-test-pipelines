@@ -39,8 +39,7 @@ jobs:
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer
         with:
-          required_processes: "STAR,multiqc,bedtools"
-          sleep_duration: 10
+          is_ebpf: false
           use_sudo: true
           binary: $TRACER_BIO
 
@@ -79,8 +78,7 @@ jobs:
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer
         with:
-          required_processes: "bedtools,multiqc"
-          sleep_duration: 10
+          is_ebpf: false
           use_sudo: true
           binary: $TRACER_BIO
 
