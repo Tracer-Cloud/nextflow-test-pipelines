@@ -18,7 +18,8 @@ jobs:
 
       - name: Run pipeline in Amazon Linux Docker container
         run: |
-          docker run -d --rm \
+          echo "=== Starting Docker container in detached mode ==="
+          docker run -d \
             --name tracer \
             --privileged \
             --pid=host \
@@ -51,6 +52,27 @@ jobs:
               ./run.sh
             "
 
+          echo "=== Container started, following logs in real-time ==="
+          # Follow logs in real-time while container is running
+          docker logs -f tracer &
+          LOG_PID=$!
+
+          echo "=== Waiting for container to complete ==="
+          # Wait for container to finish and capture exit code
+          docker wait tracer
+          CONTAINER_EXIT_CODE=$?
+
+          echo "=== Container finished with exit code: $CONTAINER_EXIT_CODE ==="
+          # Stop following logs
+          kill $LOG_PID 2>/dev/null || true
+
+          # Show final logs to ensure we got everything
+          echo "=== Final container logs ==="
+          docker logs tracer
+
+          # Exit with the same code as the container
+          exit $CONTAINER_EXIT_CODE
+
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer
         with:
@@ -58,7 +80,7 @@ jobs:
           is_docker: true
           use_sudo: true
           binary: $TRACER_BIO
-          
+
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
         if: always()
@@ -80,7 +102,8 @@ jobs:
 
       - name: Run pipeline in Amazon Linux Docker container
         run: |
-          docker run -d --rm \
+          echo "=== Starting Docker container in detached mode ==="
+          docker run -d \
             --name tracer \
             --privileged \
             --pid=host \
@@ -112,6 +135,27 @@ jobs:
               ./run.sh
             "
 
+          echo "=== Container started, following logs in real-time ==="
+          # Follow logs in real-time while container is running
+          docker logs -f tracer &
+          LOG_PID=$!
+
+          echo "=== Waiting for container to complete ==="
+          # Wait for container to finish and capture exit code
+          docker wait tracer
+          CONTAINER_EXIT_CODE=$?
+
+          echo "=== Container finished with exit code: $CONTAINER_EXIT_CODE ==="
+          # Stop following logs
+          kill $LOG_PID 2>/dev/null || true
+
+          # Show final logs to ensure we got everything
+          echo "=== Final container logs ==="
+          docker logs tracer
+
+          # Exit with the same code as the container
+          exit $CONTAINER_EXIT_CODE
+
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer
         with:
@@ -119,7 +163,6 @@ jobs:
           is_docker: true
           use_sudo: true
           binary: $TRACER_BIO
-
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4

@@ -82,6 +82,7 @@ runs:
         echo "Running tracer command: $TRACER_CMD"
 
         TRACER_OUTPUT=$($TRACER_CMD)
+        echo "$TRACER_OUTPUT"
         
         echo ""
         echo "=== Verifying required processes ==="
