@@ -1,9 +1,8 @@
 #!/bin/bash
 
 # Inline version of verify-tracer action for just amazon linux
-chmod +x "$0"
-
 BINARY="/root/.tracerbio/bin/tracer"
+# Must update this list in actions.yml as well
 REQUIRED_PROCESSES='STAR,FastQC,samtools sort'
 
 sudo yum install -y jq findutils

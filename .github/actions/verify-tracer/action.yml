@@ -19,6 +19,7 @@ runs:
     - name: Install jq
       shell: bash
       env:
+        # Must update this list in action.sh as well
         TRACER_REQUIRED_PROCESSES_EBPF: 'STAR,FastQC,samtools sort'
         TRACER_REQUIRED_PROCESSES_POLLING: 'STAR,FastQC,salmon'
       run: |
