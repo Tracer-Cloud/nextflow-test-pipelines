@@ -51,7 +51,7 @@ jobs:
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer
         with:
-          is_ebpf: false
+          is_ebpf: true
           use_sudo: true
           binary: $TRACER_BIO
 
@@ -89,7 +89,7 @@ jobs:
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer
         with:
-          is_ebpf: false
+          is_ebpf: true
           use_sudo: true
           binary: $TRACER_BIO
 

@@ -7,8 +7,8 @@ REQUIRED_PROCESSES='STAR,FastQC,samtools sort'
 
 sudo yum install -y jq findutils
 
-echo "=== Waiting 5 seconds for tracer to gather process information ==="
-sleep 5
+echo "=== Waiting 10 seconds for tracer to gather process information ==="
+sleep 10
 
 echo "=== Running tracer info --json ==="
 
