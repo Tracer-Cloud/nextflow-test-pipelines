@@ -54,8 +54,7 @@ jobs:
 
               echo '=== Verifying tracer packages ==='
               cd ../../../
-              chmod +x .github/actions/verify-tracer/action.sh
-              IS_EBPF=true USE_SUDO=true BINARY=\$TRACER_BIO .github/actions/verify-tracer/action.sh
+              .github/actions/verify-tracer/action.sh
             "
 
 
@@ -112,9 +111,7 @@ jobs:
 
               echo '=== Verifying tracer packages ==='
               cd ../../../
-              chmod +x .github/actions/verify-tracer/action.sh
-              IS_EBPF=true USE_SUDO=true BINARY=\$TRACER_BIO .github/actions/verify-tracer/action.sh
-
+              .github/actions/verify-tracer/action.sh
             "
 
       - name: Upload pipeline results

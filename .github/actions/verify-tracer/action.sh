@@ -1,19 +1,10 @@
 #!/bin/bash
 
-# Inline version of verify-tracer action
-# Usage: ./verify-tracer.sh [IS_EBPF] [USE_SUDO] [BINARY]
+# Inline version of verify-tracer action for just amazon linux
+chmod +x "$0"
 
-# Set input parameters (can be overridden by command line args or env vars)
-IS_EBPF="${1:-${IS_EBPF:-true}}"
-USE_SUDO="${3:-${USE_SUDO:-true}}"
-BINARY="${4:-${BINARY:-/root/.tracerbio/bin/tracer}}"
-
-# Set environment variables
-TRACER_REQUIRED_PROCESSES_EBPF='STAR,FastQC,samtools sort'
-TRACER_REQUIRED_PROCESSES_POLLING='STAR,FastQC,salmon'
-
-echo "=== Verify Tracer Packages ==="
-echo "Parameters: IS_EBPF=$IS_EBPF, USE_SUDO=$USE_SUDO, BINARY=$BINARY"
+BINARY="/root/.tracerbio/bin/tracer"
+REQUIRED_PROCESSES='STAR,FastQC,samtools sort'
 
 sudo yum install -y jq findutils
 
@@ -23,25 +14,21 @@ sleep 5
 echo "=== Running tracer info --json ==="
 
 # Build tracer command
-TRACER_CMD="$BINARY info --json"
+CMD="sudo $BINARY info --json"
 
-if [ "$USE_SUDO" = "true" ]; then
-  TRACER_CMD="sudo $TRACER_CMD"
-fi 
+echo "Running command: $CMD"
 
-echo "Running tracer command: $TRACER_CMD"
-
-TRACER_OUTPUT=$($TRACER_CMD)
-echo "$TRACER_OUTPUT"
+OUTPUT=$($CMD)
+echo "$OUTPUT"
 
 echo ""
 echo "=== Verifying required processes ==="
 
 # Parse the processes field from the JSON output
-PROCESSES=$(echo "$TRACER_OUTPUT" | jq -r '.run.processes // empty')
+PROCESSES=$(echo "$OUTPUT" | jq -r '.run.processes // empty')
 
 if [ -z "$PROCESSES" ]; then
-  echo "❌ ERROR: Could not find 'processes' in tracer output"
+  echo "❌ ERROR: Could not find 'processes' in output"
   echo "This might indicate the pipeline cannot find any processes at all"
   exit 1
 fi
@@ -61,17 +48,8 @@ done
 
 echo "Parsed processes: ${PROCESSES_SET[*]}"
 
-# Select required processes based on eBPF mode
-if [ "$IS_EBPF" = "true" ]; then
-  required_processes="$TRACER_REQUIRED_PROCESSES_EBPF"
-  echo "Using eBPF mode - Required processes: $required_processes"
-else
-  required_processes="$TRACER_REQUIRED_PROCESSES_POLLING"
-  echo "Using non-eBPF mode - Required processes: $required_processes"
-fi
-
 # Convert comma-separated required processes to array
-IFS=',' read -ra REQUIRED_ARRAY <<< "$required_processes"
+IFS=',' read -ra REQUIRED_ARRAY <<< "$REQUIRED_PROCESSES"
 
 # Check each required process (exact match, order-independent)
 MISSING_PROCESSES=()
