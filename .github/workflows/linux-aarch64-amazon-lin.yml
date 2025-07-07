@@ -18,11 +18,7 @@ jobs:
 
       - name: Run pipeline in Amazon Linux Docker container
         run: |
-          # Run Docker container with Amazon Linux
-          # --privileged: needed for eBPF + keeps capability for yum later
-          # --pid=host: share host PID namespace
-          # Volume mounts for kernel headers and sources
-          docker run --rm \
+          docker run -d --rm \
             --name tracer \
             --privileged \
             --pid=host \
@@ -53,27 +49,15 @@ jobs:
               export PATH=\"\$HOME/.pixi/bin:\$PATH\"
               echo '=== Running Nextflow Pipeline with Pixi ==='
               ./run.sh
-                # Verify tracer packages
-              sudo \$TRACER_BIO info
             "
 
-      - name: Cache Pixi environment
-        uses: actions/cache@v4
+      - name: Verify tracer packages
+        uses: ./.github/actions/verify-tracer
         with:
-          path: |
-            pipelines/linux-arm-amazon-linux/.pixi
-          key: pixi-linux-arm64-amazon-${{ runner.os }}-${{ hashFiles('pipelines/linux-arm-amazon-linux/pixi.toml') }}
-          restore-keys: |
-            pixi-linux-arm64-amazon-${{ runner.os }}-
-
-      # TODO: Fix Verification ENG-550
-      # - name: Verify tracer packages
-      #   uses: ./.github/actions/verify-tracer
-      #   with:
-      #     required_processes: "STAR,FastQC,samtools sort"
-      #     sleep_duration: 10
-      #     use_sudo: true
-      #     binary: $TRACER_BIO
+          is_ebpf: true
+          is_docker: true
+          use_sudo: true
+          binary: $TRACER_BIO
           
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
@@ -96,11 +80,7 @@ jobs:
 
       - name: Run pipeline in Amazon Linux Docker container
         run: |
-          # Run Docker container with Amazon Linux
-          # --privileged: needed for eBPF + keeps capability for yum later
-          # --pid=host: share host PID namespace
-          # Volume mounts for kernel headers and sources
-          docker run --rm \
+          docker run -d --rm \
             --name tracer \
             --privileged \
             --pid=host \
@@ -130,19 +110,15 @@ jobs:
               # Run pipeline with Conda
               cd pipelines/linux-arm-amazon-linux/nextflow-conda
               ./run.sh
-
-              # Verify tracer packages
-              sudo \$TRACER_BIO info
             "
 
-      # TODO: Fix Verification ENG-550
-      # - name: Verify tracer packages
-      #   uses: ./.github/actions/verify-tracer
-      #   with:
-      #     required_processes: "STAR,FastQC,samtools sort"
-      #     sleep_duration: 10
-      #     use_sudo: true
-      #     binary: $TRACER_BIO
+      - name: Verify tracer packages
+        uses: ./.github/actions/verify-tracer
+        with:
+          is_ebpf: true
+          is_docker: true
+          use_sudo: true
+          binary: $TRACER_BIO
 
 
       - name: Upload pipeline results
