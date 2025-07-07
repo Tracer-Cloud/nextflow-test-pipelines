@@ -47,19 +47,19 @@ jobs:
               sudo \$TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
 
               # Run pipeline with Pixi
-              cd pipelines/linux-x86-amazon-linux/nextflow-pixi
+              cd pipelines/linux-arm-amazon-linux/nextflow-pixi/
               export PATH=\"\$HOME/.pixi/bin:\$PATH\"
               echo '=== Running Nextflow Pipeline with Pixi ==='
               ./run.sh
+
+              cd ../../../
+
+              echo '=== Verifying tracer packages ==='
+              chmod +x /.github/actions/verify-tracer/action.sh
+              IS_EBPF=true USE_SUDO=true BINARY=\$TRACER_BIO /.github/actions/verify-tracer/action.sh
             "
 
-      - name: Verify tracer packages
-        uses: ./.github/actions/verify-tracer
-        with:
-          is_ebpf: true
-          use_sudo: true
-          binary: $TRACER_BIO
-          
+
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
         if: always()
@@ -110,16 +110,13 @@ jobs:
               # Run pipeline with Conda
               cd pipelines/linux-x86-amazon-linux/nextflow-conda
               ./run.sh
+
+              echo '=== Verifying tracer packages ==='
+              cd ../../../
+              chmod +x .github/actions/verify-tracer/action.sh
+              IS_EBPF=true USE_SUDO=true BINARY=\$TRACER_BIO .github/actions/verify-tracer/action.sh
+
             "
-
-      - name: Verify tracer packages
-        uses: ./.github/actions/verify-tracer
-        with:
-          is_ebpf: true
-          is_docker: true
-          use_sudo: true
-          binary: $TRACER_BIO
-
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4

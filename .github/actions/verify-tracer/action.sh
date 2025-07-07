@@ -15,11 +15,7 @@ TRACER_REQUIRED_PROCESSES_POLLING='STAR,FastQC,salmon'
 echo "=== Verify Tracer Packages ==="
 echo "Parameters: IS_EBPF=$IS_EBPF, USE_SUDO=$USE_SUDO, BINARY=$BINARY"
 
-# Install jq if needed
-if command -v apt-get &> /dev/null; then
-  echo "Using apt-get (Debian/Ubuntu)..."
-  sudo apt-get update && sudo apt-get install -y jq
-fi
+sudo yum install -y jq
 
 echo "=== Waiting 5 seconds for tracer to gather process information ==="
 sleep 5
