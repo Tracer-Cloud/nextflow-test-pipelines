@@ -45,13 +45,12 @@ jobs:
               sudo \$TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
 
               # Run pipeline with Pixi
-              cd pipelines/linux-arm-amazon-linux/nextflow-pixi
               export PATH=\"\$HOME/.pixi/bin:\$PATH\"
               echo '=== Running Nextflow Pipeline with Pixi ==='
-              ./run.sh
+              ./pipelines/linux-arm-amazon-linux/nextflow-pixi/run.sh
 
               echo '=== Verifying tracer packages ==='
-              chmod +x /workspace/scripts/verify-tracer.sh
+              chmod +x /.github/actions/verify-tracer/action.sh
               IS_EBPF=true USE_SUDO=true BINARY=\$TRACER_BIO /.github/actions/verify-tracer/action.sh
             "
 
@@ -104,12 +103,10 @@ jobs:
               sudo \$TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
 
               # Run pipeline with Conda
-              cd pipelines/linux-arm-amazon-linux/nextflow-conda
-              ./run.sh
+              ./pipelines/linux-arm-amazon-linux/nextflow-conda/run.sh
 
-              ls -a
               echo '=== Verifying tracer packages ==='
-              chmod +x /workspace/scripts/verify-tracer.sh
+              chmod +x /.github/actions/action.sh
               IS_EBPF=true USE_SUDO=true BINARY=\$TRACER_BIO /.github/actions/verify-tracer/action.sh
 
             "
