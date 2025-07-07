@@ -18,7 +18,6 @@ jobs:
 
       - name: Run pipeline in Amazon Linux Docker container
         run: |
-          echo "=== Starting Docker container in detached mode ==="
           docker run --rm \
             --name tracer \
             --privileged \
@@ -77,7 +76,6 @@ jobs:
 
       - name: Run pipeline in Amazon Linux Docker container
         run: |
-          echo "=== Starting Docker container in detached mode ==="
           docker run --rm \
             --name tracer \
             --privileged \
@@ -109,6 +107,7 @@ jobs:
               cd pipelines/linux-arm-amazon-linux/nextflow-conda
               ./run.sh
 
+              ls -a
               echo '=== Verifying tracer packages ==='
               chmod +x /workspace/scripts/verify-tracer.sh
               IS_EBPF=true USE_SUDO=true BINARY=\$TRACER_BIO /.github/actions/verify-tracer/action.sh
