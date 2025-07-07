@@ -18,15 +18,19 @@ jobs:
 
       - name: Run pipeline in Amazon Linux Docker container
         run: |
-          docker run -d --rm \
+          # Run Docker container with Amazon Linux
+          # --privileged: needed for eBPF + keeps capability for yum later
+          # --pid=host: share host PID namespace
+          # Volume mounts for kernel headers and sources
+          docker run --rm \
             --name tracer \
-            --privileged \                     # needed for eBPF + keeps capability for yum later
-            --pid=host \                       # share host PID namespace
-            -v /lib/modules:/lib/modules:ro \  # kernel headers for kmods
-            -v /usr/src:/usr/src:ro \          # extra kernel sources
+            --privileged \
+            --pid=host \
+            -v /lib/modules:/lib/modules:ro \
+            -v /usr/src:/usr/src:ro \
             -v /sys/kernel/debug:/sys/kernel/debug:rw \
             -v /sys/kernel/btf/vmlinux:/sys/kernel/btf/vmlinux:ro \
-            -v "${{ github.workspace }}":/workspace \  # CI checkout
+            -v "${{ github.workspace }}":/workspace \
             -w /workspace \
             -e TRACER_BIO=/root/.tracerbio/bin/tracer \
             -e GITHUB_WORKSPACE=/workspace \
@@ -92,15 +96,19 @@ jobs:
 
       - name: Run pipeline in Amazon Linux Docker container
         run: |
-          docker run -d --rm \
+          # Run Docker container with Amazon Linux
+          # --privileged: needed for eBPF + keeps capability for yum later
+          # --pid=host: share host PID namespace
+          # Volume mounts for kernel headers and sources
+          docker run --rm \
             --name tracer \
-            --privileged \                     # needed for eBPF + keeps capability for yum later
-            --pid=host \                       # share host PID namespace
-            -v /lib/modules:/lib/modules:ro \  # kernel headers for kmods
-            -v /usr/src:/usr/src:ro \          # extra kernel sources
+            --privileged \
+            --pid=host \
+            -v /lib/modules:/lib/modules:ro \
+            -v /usr/src:/usr/src:ro \
             -v /sys/kernel/debug:/sys/kernel/debug:rw \
             -v /sys/kernel/btf/vmlinux:/sys/kernel/btf/vmlinux:ro \
-            -v "${{ github.workspace }}":/workspace \  # CI checkout
+            -v "${{ github.workspace }}":/workspace \
             -w /workspace \
             -e TRACER_BIO=/root/.tracerbio/bin/tracer \
             -e GITHUB_WORKSPACE=/workspace \
