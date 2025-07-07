@@ -19,7 +19,7 @@ jobs:
       - name: Run pipeline in Amazon Linux Docker container
         run: |
           echo "=== Starting Docker container in detached mode ==="
-          docker run -rm \
+          docker run --rm \
             --name tracer \
             --privileged \
             --pid=host \
@@ -78,7 +78,7 @@ jobs:
       - name: Run pipeline in Amazon Linux Docker container
         run: |
           echo "=== Starting Docker container in detached mode ==="
-          docker run -rm \
+          docker run --rm \
             --name tracer \
             --privileged \
             --pid=host \
