@@ -1,16 +1,6 @@
 name: 'Verify Tracer Packages'
 description: 'Verifies that required processes are present in tracer info output'
 
-env:
-  # Sleep duration before checking tracer info
-  TRACER_SLEEP_DURATION: '10'
-
-  # Required processes for eBPF version
-  TRACER_REQUIRED_PROCESSES_EBPF: 'STAR,FastQC,samtools sort'
-
-  # Required processes for non-eBPF version
-  TRACER_REQUIRED_PROCESSES_NON_EBPF: 'STAR,FastQC,salmon'
-
 inputs:
   is_ebpf:
     description: 'Is ebpf being used to recognise the processes'
@@ -61,6 +51,8 @@ runs:
         fi
 
     - name: Wait for tracer to gather process information
+      env:
+        TRACER_SLEEP_DURATION: '10'
       shell: bash
       run: |
         echo "=== Waiting $TRACER_SLEEP_DURATION seconds for tracer to gather process information ==="
@@ -69,6 +61,9 @@ runs:
 
     - name: Verify tracer processes
       shell: bash
+      env:
+        TRACER_REQUIRED_PROCESSES_EBPF: 'STAR,FastQC,samtools sort'
+        TRACER_REQUIRED_PROCESSES_POLLING: 'STAR,FastQC,salmon'
       run: |
         echo "=== Running tracer info --json ==="
 
@@ -120,7 +115,7 @@ runs:
           required_processes="$TRACER_REQUIRED_PROCESSES_EBPF"
           echo "Using eBPF mode - Required processes: $required_processes"
         else
-          required_processes="$TRACER_REQUIRED_PROCESSES_NON_EBPF"
+          required_processes="$TRACER_REQUIRED_PROCESSES_POLLING"
           echo "Using non-eBPF mode - Required processes: $required_processes"
         fi
 
