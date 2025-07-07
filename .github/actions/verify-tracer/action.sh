@@ -15,7 +15,7 @@ TRACER_REQUIRED_PROCESSES_POLLING='STAR,FastQC,salmon'
 echo "=== Verify Tracer Packages ==="
 echo "Parameters: IS_EBPF=$IS_EBPF, USE_SUDO=$USE_SUDO, BINARY=$BINARY"
 
-sudo yum install -y jq
+sudo yum install -y jq findutils
 
 echo "=== Waiting 5 seconds for tracer to gather process information ==="
 sleep 5

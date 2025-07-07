@@ -50,11 +50,11 @@ jobs:
               echo '=== Running Nextflow Pipeline with Pixi ==='
               ./run.sh
 
-              cd ../../../
 
               echo '=== Verifying tracer packages ==='
-              chmod +x /.github/actions/verify-tracer/action.sh
-              IS_EBPF=true USE_SUDO=true BINARY=\$TRACER_BIO /.github/actions/verify-tracer/action.sh
+              cd ../../../
+              chmod +x .github/actions/verify-tracer/action.sh
+              IS_EBPF=true USE_SUDO=true BINARY=\$TRACER_BIO .github/actions/verify-tracer/action.sh
             "
 
       - name: Upload pipeline results
