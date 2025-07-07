@@ -5,10 +5,6 @@ inputs:
   is_ebpf:
     description: 'Is ebpf being used to recognise the processes'
     required: true
-  is_docker:
-    description: 'Is the pipeline running in a docker container'
-    required: false
-    default: 'false'
   use_sudo:
     description: 'Whether to use sudo when running tracer commands'
     required: false
@@ -22,6 +18,9 @@ runs:
   steps:
     - name: Install jq
       shell: bash
+      env:
+        TRACER_REQUIRED_PROCESSES_EBPF: 'STAR,FastQC,samtools sort'
+        TRACER_REQUIRED_PROCESSES_POLLING: 'STAR,FastQC,salmon'
       run: |
         if ! command -v jq &> /dev/null; then
           echo "Installing jq..."
@@ -50,34 +49,20 @@ runs:
           echo "jq is already installed"
         fi
 
-    - name: Wait for tracer to gather process information
-      env:
-        TRACER_SLEEP_DURATION: '10'
-      shell: bash
-      run: |
-        echo "=== Waiting $TRACER_SLEEP_DURATION seconds for tracer to gather process information ==="
-        sleep $TRACER_SLEEP_DURATION
 
 
-    - name: Verify tracer processes
-      shell: bash
-      env:
-        TRACER_REQUIRED_PROCESSES_EBPF: 'STAR,FastQC,samtools sort'
-        TRACER_REQUIRED_PROCESSES_POLLING: 'STAR,FastQC,salmon'
-      run: |
+        echo "=== Waiting 5 seconds for tracer to gather process information ==="
+        sleep 5
+
+
+
         echo "=== Running tracer info --json ==="
-
         # Use provided binary path or default tracer command
         TRACER_CMD="${{ inputs.binary }} info --json"
 
         if [ "${{ inputs.use_sudo }}" = "true" ]; then
           TRACER_CMD="sudo $TRACER_CMD"
         fi 
-
-        if [ "${{ inputs.is_docker }}" = "true" ]; then
-          echo "=== Running tracer info --json in Docker container ==="
-          TRACER_CMD="docker exec tracer $TRACER_CMD"
-        fi
 
         echo "Running tracer command: $TRACER_CMD"
 
@@ -88,7 +73,7 @@ runs:
         echo "=== Verifying required processes ==="
         
         # Parse the processes field from the JSON output
-        PROCESSES=$(echo "$TRACER_OUTPUT" | jq -r '.run.preview_processes // empty')
+        PROCESSES=$(echo "$TRACER_OUTPUT" | jq -r '.run.processes // empty')
         
         if [ -z "$PROCESSES" ]; then
           echo "❌ ERROR: Could not find 'processes' in tracer output"

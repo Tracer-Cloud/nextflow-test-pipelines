@@ -50,36 +50,11 @@ jobs:
               export PATH=\"\$HOME/.pixi/bin:\$PATH\"
               echo '=== Running Nextflow Pipeline with Pixi ==='
               ./run.sh
+
+              echo '=== Verifying tracer packages ==='
+              chmod +x /workspace/scripts/verify-tracer.sh
+              IS_EBPF=true USE_SUDO=true BINARY=\$TRACER_BIO /.github/actions/verify-tracer/action.sh
             "
-
-          echo "=== Container started, following logs in real-time ==="
-          # Follow logs in real-time while container is running
-          docker logs -f tracer &
-          LOG_PID=$!
-
-          echo "=== Waiting for container to complete ==="
-          # Wait for container to finish and capture exit code
-          docker wait tracer
-          CONTAINER_EXIT_CODE=$?
-
-          echo "=== Container finished with exit code: $CONTAINER_EXIT_CODE ==="
-          # Stop following logs
-          kill $LOG_PID 2>/dev/null || true
-
-          # Show final logs to ensure we got everything
-          echo "=== Final container logs ==="
-          docker logs tracer
-
-          # Exit with the same code as the container
-          exit $CONTAINER_EXIT_CODE
-
-      - name: Verify tracer packages
-        uses: ./.github/actions/verify-tracer
-        with:
-          is_ebpf: true
-          is_docker: true
-          use_sudo: true
-          binary: $TRACER_BIO
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
@@ -133,37 +108,12 @@ jobs:
               # Run pipeline with Conda
               cd pipelines/linux-arm-amazon-linux/nextflow-conda
               ./run.sh
+
+              echo '=== Verifying tracer packages ==='
+              chmod +x /workspace/scripts/verify-tracer.sh
+              IS_EBPF=true USE_SUDO=true BINARY=\$TRACER_BIO /.github/actions/verify-tracer/action.sh
+
             "
-
-          echo "=== Container started, following logs in real-time ==="
-          # Follow logs in real-time while container is running
-          docker logs -f tracer &
-          LOG_PID=$!
-
-          echo "=== Waiting for container to complete ==="
-          # Wait for container to finish and capture exit code
-          docker wait tracer
-          CONTAINER_EXIT_CODE=$?
-
-          echo "=== Container finished with exit code: $CONTAINER_EXIT_CODE ==="
-          # Stop following logs
-          kill $LOG_PID 2>/dev/null || true
-
-          # Show final logs to ensure we got everything
-          echo "=== Final container logs ==="
-          docker logs tracer
-
-          # Exit with the same code as the container
-          exit $CONTAINER_EXIT_CODE
-
-      - name: Verify tracer packages
-        uses: ./.github/actions/verify-tracer
-        with:
-          is_ebpf: true
-          is_docker: true
-          use_sudo: true
-          binary: $TRACER_BIO
-
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
         if: always()
