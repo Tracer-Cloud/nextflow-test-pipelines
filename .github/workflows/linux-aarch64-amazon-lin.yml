@@ -103,9 +103,13 @@ jobs:
               sudo \$TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
 
               # Run pipeline with Conda
-              ./pipelines/linux-arm-amazon-linux/nextflow-conda/run.sh
+              cd pipelines/linux-x86-amazon-linux/nextflow-pixi
+              export PATH=\"\$HOME/.pixi/bin:\$PATH\"
+              echo '=== Running Nextflow Pipeline with Pixi ==='
+              ./run.sh
 
               echo '=== Verifying tracer packages ==='
+              cd ../../../
               chmod +x /.github/actions/action.sh
               IS_EBPF=true USE_SUDO=true BINARY=\$TRACER_BIO /.github/actions/verify-tracer/action.sh
 
