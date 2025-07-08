@@ -22,14 +22,14 @@ runs:
         if [ -n "${{ inputs.tracer_user_id }}" ]; then
           export TRACER_USER_ID="${{ inputs.tracer_user_id }}"
         fi
-        curl -sSL https://install.tracer.cloud/ | bash
+        curl -sSL https://install.tracer.cloud/ | sudo bash
         # Add Tracer to PATH for all subsequent workflow steps
-        echo "$HOME/.tracerbio/bin" >> $GITHUB_PATH
-        export PATH="$HOME/.tracerbio/bin:$PATH"
+        echo "/root/.tracerbio/bin" >> $GITHUB_PATH
+        export PATH="/root/.tracerbio/bin:$PATH"
         # Print debug info
         echo "PATH after install: $PATH"
         which tracer || true
-        ls -l "$HOME/.tracerbio/bin/tracer" || true
+        sudo ls -l "/root/.tracerbio/bin/tracer" || true
         tracer --version || true
     - name: "Verify Tracer Client"
       shell: bash
