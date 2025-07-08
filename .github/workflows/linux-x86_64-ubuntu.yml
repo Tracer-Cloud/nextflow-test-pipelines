@@ -29,9 +29,9 @@ jobs:
             pixi-linux-x86-${{ runner.os }}-
 
       - name: Install tracer
-        run: |
-          curl -sSL https://install.tracer.cloud/ | sudo bash
-          echo "/root/.tracerbio/bin" | sudo tee -a $GITHUB_PATH
+        uses: Tracer-cloud/setup-cli@v1
+        with:
+          tracer_user_id: ${{ secrets.ACTIONS_TRACER_USER_ID }}
 
       - name: Add tracer to PATH
         run: |
@@ -101,4 +101,3 @@ jobs:
           path: |
             pipelines/linux-x86-ubuntu/nextflow-conda/results/
           retention-days: 7
-
