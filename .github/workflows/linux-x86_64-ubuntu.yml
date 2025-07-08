@@ -73,9 +73,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install tracer
-        run: |
-          curl -sSL https://install.tracer.cloud/ | sudo bash
-          echo "/root/.tracerbio/bin" | sudo tee -a $GITHUB_PATH
+        uses: ./.github/actions/tracer-client
+        with:
+          tracer_user_id: ${{ secrets.ACTIONS_TRACER_USER_ID }}
 
       - name: Run tracer init
         run: |
