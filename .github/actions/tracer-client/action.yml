@@ -19,27 +19,25 @@ runs:
       run: |
         set -e
 
-        # Always resolve HOME to the current user's home directory
-        USER_HOME=$(eval echo ~$USER)
-        TRACER_BIN="$USER_HOME/.tracerbio/bin/tracer"
-        TRACER_DIR="$USER_HOME/.tracerbio/bin"
-
         # Install Tracer Client with or without user ID
         if [ -n "${{ inputs.tracer_user_id }}" ]; then
           export TRACER_USER_ID="${{ inputs.tracer_user_id }}"
         fi
 
-        # Install Tracer as root (sudo), works for both Linux and macOS
         if [ "$(uname)" = "Darwin" ]; then
+          # macOS: install to $HOME
           bash -c "$(curl -fsSL https://install.tracer.cloud/)"
+          TRACER_BIN="$HOME/.tracerbio/bin/tracer"
+          TRACER_DIR="$HOME/.tracerbio/bin"
         else
+          # Linux: install to /root, copy to /home/runner
           sudo bash -c "$(curl -fsSL https://install.tracer.cloud/)"
-        fi
-
-        # Ensure $USER_HOME/.tracerbio/bin exists and contains the tracer binary
-        mkdir -p "$TRACER_DIR"
-        if [ -f "/root/.tracerbio/bin/tracer" ] && [ ! -f "$TRACER_BIN" ]; then
-          cp /root/.tracerbio/bin/tracer "$TRACER_BIN"
+          mkdir -p /home/runner/.tracerbio/bin
+          if [ -f /root/.tracerbio/bin/tracer ]; then
+            cp /root/.tracerbio/bin/tracer /home/runner/.tracerbio/bin/tracer
+          fi
+          TRACER_BIN="/home/runner/.tracerbio/bin/tracer"
+          TRACER_DIR="/home/runner/.tracerbio/bin"
         fi
 
         # Add Tracer to PATH for all subsequent workflow steps
