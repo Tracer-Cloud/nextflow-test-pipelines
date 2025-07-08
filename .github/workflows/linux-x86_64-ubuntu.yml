@@ -14,33 +14,17 @@ jobs:
   linux-x86-pixi:
     name: Pixi Pipeline
     runs-on: ubuntu-latest
-    env:
-      TRACER_BIO: /root/.tracerbio/bin/tracer
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache Pixi environment
-        uses: actions/cache@v4
-        with:
-          path: |
-            pipelines/linux-x86-ubuntu/nextflow-pixi/.pixi
-          key: pixi-linux-x86-${{ runner.os }}-${{ hashFiles('pipelines/linux-x86-ubuntu/nextflow-pixi/pixi.lock') }}
-          restore-keys: |
-            pixi-linux-x86-${{ runner.os }}-
-
       - name: Install tracer
-        uses: Tracer-cloud/setup-cli@v0.0.1
+        uses: ./.github/actions/tracer-client
         with:
           tracer_user_id: ${{ secrets.ACTIONS_TRACER_USER_ID }}
 
-      - name: Add tracer to PATH
-        run: |
-          export PATH="/root/.tracerbio/bin:$PATH"
-          echo "PATH updated for tracer"
-
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+          tracer init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
 
       - name: Run pipeline with Pixi
         working-directory: pipelines/linux-x86-ubuntu/nextflow-pixi
@@ -53,7 +37,7 @@ jobs:
         with:
           is_ebpf: true
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
@@ -68,8 +52,6 @@ jobs:
   linux-x86-conda:
     name: Conda Pipeline
     runs-on: ubuntu-latest
-    env:
-      TRACER_BIO: /root/.tracerbio/bin/tracer
     steps:
       - uses: actions/checkout@v4
       - name: Install tracer
@@ -79,7 +61,7 @@ jobs:
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+          tracer init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
 
       - name: Run pipeline with Conda
         working-directory: pipelines/linux-x86-ubuntu/nextflow-conda
@@ -91,7 +73,7 @@ jobs:
         with:
           is_ebpf: true
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4

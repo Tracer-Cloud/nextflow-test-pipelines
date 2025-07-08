@@ -16,38 +16,29 @@ runs:
   steps:
     - name: "Install Tracer Client"
       shell: bash
-      continue-on-error: true
       run: |
         set -e
-
-        # Pick shell config file based on OS and available files
-        if [ "$(uname)" = "Darwin" ]; then
-          SHELL_RC="$HOME/.zshrc"
-        elif [ -n "$ZSH_VERSION" ] || [ -f "$HOME/.zshrc" ]; then
-          SHELL_RC="$HOME/.zshrc"
-        else
-          SHELL_RC="$HOME/.bashrc"
-        fi
 
         # Install Tracer Client with or without user ID
         if [ -n "${{ inputs.tracer_user_id }}" ]; then
           export TRACER_USER_ID="${{ inputs.tracer_user_id }}"
         fi
-        curl -sSL https://install.tracer.cloud/ | bash
 
-        # Add Tracer to PATH in shell config for future logins
-        if ! grep -q 'export PATH="$PATH:$HOME/.tracerbio/bin"' "$SHELL_RC"; then
-          echo 'export PATH="$PATH:$HOME/.tracerbio/bin"' >> "$SHELL_RC"
+        # Install Tracer as root (sudo), works for both Linux and macOS
+        if [ "$(uname)" = "Darwin" ]; then
+          bash -c "$(curl -fsSL https://install.tracer.cloud/)"
+        else
+          sudo bash -c "$(curl -fsSL https://install.tracer.cloud/)"
         fi
 
         # Add Tracer to PATH for all subsequent workflow steps
-        echo "$HOME/.tracerbio/bin" >> $GITHUB_PATH
+        if [ -d "$HOME/.tracerbio/bin" ]; then
+          echo "$HOME/.tracerbio/bin" >> $GITHUB_PATH
+        elif [ -d "/root/.tracerbio/bin" ]; then
+          echo "/root/.tracerbio/bin" >> $GITHUB_PATH
+        fi
 
-        # Source the shell config to refresh PATH for current session
-        source "$SHELL_RC"
-
-        # Also refresh PATH for current session in case shell is non-interactive
-        export PATH="$HOME/.tracerbio/bin:$PATH"
+        export PATH="$HOME/.tracerbio/bin:/root/.tracerbio/bin:$PATH"
 
     - name: "Verify Tracer Client"
       shell: bash
