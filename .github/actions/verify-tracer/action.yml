@@ -1,32 +1,27 @@
 name: 'Verify Tracer Packages'
 description: 'Verifies that required processes are present in tracer info output'
+
 inputs:
-  required_processes:
-    description: 'Comma-separated list of required processes to check for'
+  is_ebpf:
+    description: 'Is ebpf being used to recognise the processes'
     required: true
-    default: 'STAR,FQ'
-  sleep_duration:
-    description: 'Number of seconds to wait before checking tracer info'
-    required: false
-    default: '10'
   use_sudo:
     description: 'Whether to use sudo when running tracer commands'
     required: false
     default: 'false'
   binary:
     description: 'Path to the tracer binary (if not provided, will search for it)'
-    required: false
-    default: ''
-  matches_name:
-    description: 'S3 bucket name to upload matches.txt to (optional - no upload if empty)'
-    required: false
-    default: ''
+    required: true
 
 runs:
   using: 'composite'
   steps:
     - name: Install jq
       shell: bash
+      env:
+        # Must update this list in action.sh as well
+        TRACER_REQUIRED_PROCESSES_EBPF: 'STAR,FastQC,samtools sort'
+        TRACER_REQUIRED_PROCESSES_POLLING: 'STAR,FastQC,salmon'
       run: |
         if ! command -v jq &> /dev/null; then
           echo "Installing jq..."
@@ -55,73 +50,66 @@ runs:
           echo "jq is already installed"
         fi
 
-    - name: Wait for tracer to gather process information
-      shell: bash
-      run: |
-        echo "=== Waiting ${{ inputs.sleep_duration }} seconds for tracer to gather process information ==="
-        sleep ${{ inputs.sleep_duration }}
 
-    - name: Configure AWS Credentials
-      if: inputs.matches_name != ''
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
 
-    - name: Upload to S3
-      if: inputs.matches_name != ''
-      shell: bash
-      run: |
-        aws s3 cp /tmp/tracer/matches.txt s3://tracer-matching-debug/${{ inputs.matches_name }}/
+        echo "=== Waiting 10 seconds for tracer to gather process information ==="
+        sleep 10
 
-    - name: Verify tracer processes
-      shell: bash
-      run: |
+
+
         echo "=== Running tracer info --json ==="
-
         # Use provided binary path or default tracer command
-        TRACER_CMD="${{ inputs.binary }}"
+        TRACER_CMD="${{ inputs.binary }} info --json"
 
-        # Run tracer info with or without sudo based on input
         if [ "${{ inputs.use_sudo }}" = "true" ]; then
-          TRACER_OUTPUT=$(sudo $TRACER_CMD info --json)
-        else
-          TRACER_OUTPUT=$("$TRACER_CMD" info --json)
-        fi
-        
-        echo "Tracer output:"
+          TRACER_CMD="sudo $TRACER_CMD"
+        fi 
+
+        echo "Running tracer command: $TRACER_CMD"
+
+        TRACER_OUTPUT=$($TRACER_CMD)
         echo "$TRACER_OUTPUT"
         
         echo ""
         echo "=== Verifying required processes ==="
         
-        # Parse the preview_processes field from the JSON output
-        PREVIEW_PROCESSES=$(echo "$TRACER_OUTPUT" | jq -r '.run.preview_processes // empty')
+        # Parse the processes field from the JSON output
+        PROCESSES=$(echo "$TRACER_OUTPUT" | jq -r '.run.processes // empty')
         
-        if [ -z "$PREVIEW_PROCESSES" ]; then
-          echo "❌ ERROR: Could not find 'preview_processes' in tracer output"
+        if [ -z "$PROCESSES" ]; then
+          echo "❌ ERROR: Could not find 'processes' in tracer output"
           echo "This might indicate the pipeline cannot find any processes at all"
           exit 1
         fi
         
-        echo "Found preview_processes: $PREVIEW_PROCESSES"
+        echo "Found processes: $PROCESSES"
         
-        # Convert preview_processes to array (split by comma and trim whitespace)
-        IFS=',' read -ra PREVIEW_ARRAY <<< "$PREVIEW_PROCESSES"
-        PREVIEW_SET=()
-        for proc in "${PREVIEW_ARRAY[@]}"; do
+        # Convert processes to array (split by comma and trim whitespace)
+        IFS=',' read -ra PROCESSES_ARRAY <<< "$PROCESSES"
+        PROCESSES_SET=()
+        for proc in "${PROCESSES_ARRAY[@]}"; do
           # Trim whitespace and add to set
           trimmed=$(echo "$proc" | xargs)
           if [ -n "$trimmed" ]; then
-            PREVIEW_SET+=("$trimmed")
+            PROCESSES_SET+=("$trimmed")
           fi
         done
         
-        echo "Parsed preview processes: ${PREVIEW_SET[*]}"
-        
-        # Convert comma-separated REQUIRED_PROCESSES to array
-        IFS=',' read -ra REQUIRED_ARRAY <<< "${{ inputs.required_processes }}"
+        echo "Parsed processes: ${PROCESSES_SET[*]}"
+
+        # Select required processes based on eBPF mode
+        if [ "${{ inputs.is_ebpf }}" = "true" ]; then
+          required_processes="$TRACER_REQUIRED_PROCESSES_EBPF"
+          echo "Using eBPF mode - Required processes: $required_processes"
+        else
+          required_processes="$TRACER_REQUIRED_PROCESSES_POLLING"
+          echo "Using non-eBPF mode - Required processes: $required_processes"
+        fi
+
+        # Convert comma-separated required processes to array
+        IFS=',' read -ra REQUIRED_ARRAY <<< "$required_processes"
+
+
         
         # Check each required process (exact match, order-independent)
         MISSING_PROCESSES=()
@@ -129,10 +117,10 @@ runs:
           # Trim whitespace
           required_process=$(echo "$required_process" | xargs)
           
-          # Check if this required process exists in the preview set
+          # Check if this required process exists in the set
           found=false
-          for preview_process in "${PREVIEW_SET[@]}"; do
-            if [ "$required_process" = "$preview_process" ]; then
+          for process in "${PROCESSES_SET[@]}"; do
+            if [ "$required_process" = "$process" ]; then
               found=true
               break
             fi
@@ -149,14 +137,14 @@ runs:
         # Report results
         if [ ${#MISSING_PROCESSES[@]} -eq 0 ]; then
           echo ""
-          echo "🎉 SUCCESS: All required processes found in preview_processes"
-          echo "Required: ${{ inputs.required_processes }}"
-          echo "Found: $PREVIEW_PROCESSES"
+          echo "🎉 SUCCESS: All required processes found in processes"
+          echo "Required: $required_processes"
+          echo "Found: $PROCESSES"
         else
           echo ""
           echo "❌ FAILURE: Missing required processes"
-          echo "Required: ${{ inputs.required_processes }}"
-          echo "Found: $PREVIEW_PROCESSES"
+          echo "Required: $required_processes"
+          echo "Found: $PROCESSES"
           echo "Missing: $(IFS=','; echo "${MISSING_PROCESSES[*]}")"
           exit 1
         fi

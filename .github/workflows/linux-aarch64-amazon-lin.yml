@@ -13,43 +13,49 @@ jobs:
   nextflow-pixi-minimal:
     name: Nextflow Pixi Minimal Test
     runs-on: ubuntu-24.04-arm
-    container:
-      image: public.ecr.aws/amazonlinux/amazonlinux:2023
-
     steps:
-      - name: Install system dependencies
-        run: |
-          yum update -y
-          yum install -y wget git bash which sudo tar gzip --allowerasing
-
       - uses: actions/checkout@v4
 
-      - name: Install Tracer Client
-        uses: ./.github/actions/tracer-client
-        with:
-          tracer_user_id: ${{ secrets.ACTIONS_TRACER_USER_ID }}
-
-      - name: Run tracer init
+      - name: Run pipeline in Amazon Linux Docker container
         run: |
-          tracer init \
-          --pipeline-name github-actions \
-          --environment github-actions \
-          --user-operator github-actions \
-          --pipeline-type nextflow \
-          --is-dev true
+          docker run --rm \
+            --name tracer \
+            --privileged \
+            --pid=host \
+            -v /lib/modules:/lib/modules:ro \
+            -v /usr/src:/usr/src:ro \
+            -v /sys/kernel/debug:/sys/kernel/debug:rw \
+            -v /sys/kernel/btf/vmlinux:/sys/kernel/btf/vmlinux:ro \
+            -v "${{ github.workspace }}":/workspace \
+            -w /workspace \
+            -e TRACER_BIO=/root/.tracerbio/bin/tracer \
+            -e GITHUB_WORKSPACE=/workspace \
+            -e GITHUB_SHA="${{ github.sha }}" \
+            -e GITHUB_REF_NAME="${{ github.ref_name }}" \
+            public.ecr.aws/amazonlinux/amazonlinux:2023 \
+            bash -c "
+              # Install system dependencies
+              yum update -y
+              yum install -y wget git bash which sudo tar gzip curl --allowerasing
 
-      - name: Run Nextflow Minimal Pipeline using Pixi
-        working-directory: pipelines/linux-arm-amazon-linux/nextflow-pixi
-        run: |
-          ./run.sh
+              # Install tracer
+              curl -sSL https://install.tracer.cloud/ | sudo bash
 
-      - name: Verify tracer packages
-        uses: ./.github/actions/verify-tracer
-        with:
-          required_processes: "STAR,FastQC,samtools sort"
-          sleep_duration: 10
-          use_sudo: true
-          binary: tracer
+              # Run tracer init
+              sudo \$TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+
+              # Run pipeline with Pixi
+              cd pipelines/linux-arm-amazon-linux/nextflow-pixi/
+              export PATH=\"\$HOME/.pixi/bin:\$PATH\"
+              echo '=== Running Nextflow Pipeline with Pixi ==='
+              ./run.sh
+
+
+              echo '=== Verifying tracer packages ==='
+              cd ../../../
+              chmod +x .github/actions/verify-tracer/action.sh
+              .github/actions/verify-tracer/action.sh
+            "
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
@@ -58,47 +64,58 @@ jobs:
           name: pixi-linux-arm64-amazon-pipeline-results
           path: |
             pipelines/linux-arm-amazon-linux/nextflow-pixi/results/
+            pipelines/linux-arm-amazon-linux/nextflow-pixi/logs/
           retention-days: 7
 
   nextflow-conda-minimal:
     name: Nextflow Conda Minimal Test
     runs-on: ubuntu-24.04-arm
-    container:
-      image: public.ecr.aws/amazonlinux/amazonlinux:2023
-    steps:
-      - name: Install system dependencies
-        run: |
-          yum update -y
-          yum install -y wget git bash which sudo bzip2 tar gzip --allowerasing
+    env:
+      TRACER_BIO: /root/.tracerbio/bin/tracer
 
+    steps:
       - uses: actions/checkout@v4
 
-      - name: Install Tracer Client
-        uses: ./.github/actions/tracer-client
-        with:
-          tracer_user_id: ${{ secrets.ACTIONS_TRACER_USER_ID }}
-
-      - name: Run tracer init
+      - name: Run pipeline in Amazon Linux Docker container
         run: |
-          tracer init \
-          --pipeline-name github-actions \
-          --environment github-actions \
-          --user-operator github-actions \
-          --pipeline-type nextflow \
-          --is-dev true
-      - name: Run pipeline with Conda
-        working-directory: pipelines/linux-arm-ubuntu/nextflow-conda
-        run: |
-          ./run.sh
+          docker run --rm \
+            --name tracer \
+            --privileged \
+            --pid=host \
+            -v /lib/modules:/lib/modules:ro \
+            -v /usr/src:/usr/src:ro \
+            -v /sys/kernel/debug:/sys/kernel/debug:rw \
+            -v /sys/kernel/btf/vmlinux:/sys/kernel/btf/vmlinux:ro \
+            -v "${{ github.workspace }}":/workspace \
+            -w /workspace \
+            -e TRACER_BIO=/root/.tracerbio/bin/tracer \
+            -e GITHUB_WORKSPACE=/workspace \
+            -e GITHUB_SHA="${{ github.sha }}" \
+            -e GITHUB_REF_NAME="${{ github.ref_name }}" \
+            public.ecr.aws/amazonlinux/amazonlinux:2023 \
+            bash -c "
+              # Install system dependencies
+              yum update -y
+              yum install -y wget git bash which sudo bzip2 tar gzip curl --allowerasing
 
-      - name: Verify tracer packages
-        uses: ./.github/actions/verify-tracer
-        with:
-          required_processes: "STAR,FastQC,samtools sort"
-          sleep_duration: 10
-          use_sudo: true
-          binary: tracer
+              # Install tracer
+              curl -sSL https://install.tracer.cloud/ | sudo bash
+              echo '/root/.tracerbio/bin' | sudo tee -a \$GITHUB_PATH
 
+              # Run tracer init
+              sudo \$TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+
+              # Run pipeline with Conda
+              cd pipelines/linux-arm-amazon-linux/nextflow-conda
+              ./run.sh
+
+
+              echo '=== Verifying tracer packages ==='
+              cd ../../../
+              chmod +x .github/actions/verify-tracer/action.sh
+              .github/actions/verify-tracer/action.sh
+
+            "
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
         if: always()
@@ -106,4 +123,5 @@ jobs:
           name: conda-linux-arm64-amazon-pipeline-results
           path: |
             pipelines/linux-arm-amazon-linux/nextflow-conda/results/
+            pipelines/linux-arm-amazon-linux/nextflow-conda/logs/
           retention-days: 7
