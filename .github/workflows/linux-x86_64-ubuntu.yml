@@ -24,8 +24,12 @@ jobs:
 
       - name: Run tracer init
         run: |
-          tracer init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
-
+          sudo tracer init \
+          --pipeline-name github-actions \
+          --environment github-actions \
+          --user-operator github-actions \
+          --pipeline-type nextflow \
+          --is-dev true
       - name: Run pipeline with Pixi
         working-directory: pipelines/linux-x86-ubuntu/nextflow-pixi
         run: |
@@ -59,8 +63,12 @@ jobs:
 
       - name: Run tracer init
         run: |
-          tracer init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
-
+          sudo tracer init \
+          --pipeline-name github-actions \
+          --environment github-actions \
+          --user-operator github-actions \
+          --pipeline-type nextflow \
+          --is-dev true
       - name: Run pipeline with Conda
         working-directory: pipelines/linux-x86-ubuntu/nextflow-conda
         run: |

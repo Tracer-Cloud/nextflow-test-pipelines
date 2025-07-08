@@ -42,9 +42,8 @@ runs:
 
         # Print debug info
         echo "PATH after install: $PATH"
-        which tracer || true
         ls -l "$TRACER_BIN" || true
-        tracer --version || true
+        sudo tracer --version || true
 
     - name: "Verify Tracer Client"
       shell: bash
