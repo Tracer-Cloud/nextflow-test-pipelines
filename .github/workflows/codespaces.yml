@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install tracer
-        uses: ./.github/actions/tracer-client
+        uses: Tracer-Cloud/setup-cli@v1
         with:
           tracer_user_id: ${{ secrets.ACTIONS_TRACER_USER_ID }}
 
@@ -59,7 +59,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install tracer
-        uses: ./.github/actions/tracer-client
+        uses: Tracer-Cloud/setup-cli@v1
         with:
           tracer_user_id: ${{ secrets.ACTIONS_TRACER_USER_ID }}
 
