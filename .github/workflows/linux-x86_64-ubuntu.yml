@@ -64,6 +64,7 @@ jobs:
       - name: Run pipeline with Conda
         working-directory: pipelines/linux-x86-ubuntu/nextflow-conda
         run: |
+          echo "=== Running Nextflow Pipeline with Conda ==="
           ./run.sh
 
       - name: Verify tracer packages

@@ -30,14 +30,10 @@ runs:
           TRACER_BIN="$HOME/.tracerbio/bin/tracer"
           TRACER_DIR="$HOME/.tracerbio/bin"
         else
-          # Linux: install to /root, copy to /home/runner
+          # Linux: install to /root
           sudo bash -c "$(curl -fsSL https://install.tracer.cloud/)"
-          mkdir -p /home/runner/.tracerbio/bin
-          if [ -f /root/.tracerbio/bin/tracer ]; then
-            cp /root/.tracerbio/bin/tracer /home/runner/.tracerbio/bin/tracer
-          fi
-          TRACER_BIN="/home/runner/.tracerbio/bin/tracer"
-          TRACER_DIR="/home/runner/.tracerbio/bin"
+          TRACER_BIN="/root/.tracerbio/bin/tracer"
+          TRACER_DIR="/root/.tracerbio/bin"
         fi
 
         # Add Tracer to PATH for all subsequent workflow steps
