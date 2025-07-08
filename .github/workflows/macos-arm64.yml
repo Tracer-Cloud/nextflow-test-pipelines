@@ -31,8 +31,6 @@ jobs:
       - name: Run pipeline with Pixi
         working-directory: pipelines/macos-arm64/nextflow-pixi
         run: |
-          export PATH="$HOME/.pixi/bin:$PATH"
-          echo "=== Running Nextflow Pipeline with Pixi ==="
           ./run.sh
 
       - name: Verify tracer packages
@@ -55,8 +53,6 @@ jobs:
   macos-arm64-conda:
     name: Conda Pipeline
     runs-on: macos-14
-    env:
-      TRACER_BIO: /Users/runner/.tracerbio/bin/tracer
     steps:
       - uses: actions/checkout@v4
 

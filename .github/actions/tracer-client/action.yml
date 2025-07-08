@@ -18,17 +18,24 @@ runs:
       shell: bash
       run: |
         set -e
-        # Install Tracer Client with or without user ID
         if [ -n "${{ inputs.tracer_user_id }}" ]; then
           export TRACER_USER_ID="${{ inputs.tracer_user_id }}"
         fi
 
+        # Detect OS and Distro
         if [ "$RUNNER_OS" = "Linux" ]; then
-          TRACER_PATH="/root/.tracerbio/bin"
-          curl -sSL https://install.tracer.cloud/ | sudo bash
-          sudo chmod a+rx /root/.tracerbio
-          sudo chmod a+rx /root/.tracerbio/bin
-          sudo chmod a+rx /root/.tracerbio/bin/tracer
+          if grep -qi 'ubuntu' /etc/os-release; then
+            # Ubuntu: install as runner user
+            TRACER_PATH="$HOME/.tracerbio/bin"
+            curl -sSL https://install.tracer.cloud/ | bash
+          else
+            # Amazon Linux or other: install as root
+            TRACER_PATH="/root/.tracerbio/bin"
+            curl -sSL https://install.tracer.cloud/ | sudo bash
+            sudo chmod a+rx /root/.tracerbio
+            sudo chmod a+rx /root/.tracerbio/bin
+            sudo chmod a+rx /root/.tracerbio/bin/tracer
+          fi
         elif [ "$RUNNER_OS" = "macOS" ]; then
           TRACER_PATH="$HOME/.tracerbio/bin"
           curl -sSL https://install.tracer.cloud/ | sudo bash
@@ -40,11 +47,8 @@ runs:
           exit 1
         fi
 
-        # Add Tracer to PATH for all subsequent workflow steps
         echo "$TRACER_PATH" >> $GITHUB_PATH
         export PATH="$TRACER_PATH:$PATH"
-
-        # Print debug info
         echo "PATH after install: $PATH"
         which tracer || true
         ls -l "$TRACER_PATH/tracer" || true
