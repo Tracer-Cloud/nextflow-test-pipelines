@@ -29,6 +29,7 @@ jobs:
       - name: Run pipeline with Pixi
         working-directory: pipelines/linux-x86-ubuntu/nextflow-pixi
         run: |
+          echo "=== Running Nextflow Pipeline with Pixi ==="
           ./run.sh
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer
