@@ -18,33 +18,19 @@ runs:
       shell: bash
       run: |
         set -e
-
         # Install Tracer Client with or without user ID
         if [ -n "${{ inputs.tracer_user_id }}" ]; then
           export TRACER_USER_ID="${{ inputs.tracer_user_id }}"
         fi
-
-        if [ "$(uname)" = "Darwin" ]; then
-          # macOS: install to $HOME
-          bash -c "$(curl -fsSL https://install.tracer.cloud/)"
-          TRACER_BIN="$HOME/.tracerbio/bin/tracer"
-          TRACER_DIR="$HOME/.tracerbio/bin"
-        else
-          # Linux: install to /root
-          sudo bash -c "$(curl -fsSL https://install.tracer.cloud/)"
-          TRACER_BIN="/root/.tracerbio/bin/tracer"
-          TRACER_DIR="/root/.tracerbio/bin"
-        fi
-
+        curl -sSL https://install.tracer.cloud/ | bash
         # Add Tracer to PATH for all subsequent workflow steps
-        echo "$TRACER_DIR" >> $GITHUB_PATH
-        export PATH="$TRACER_DIR:$PATH"
-
+        echo "$HOME/.tracerbio/bin" >> $GITHUB_PATH
+        export PATH="$HOME/.tracerbio/bin:$PATH"
         # Print debug info
         echo "PATH after install: $PATH"
-        ls -l "$TRACER_BIN" || true
-        sudo tracer --version || true
-
+        which tracer || true
+        ls -l "$HOME/.tracerbio/bin/tracer" || true
+        tracer --version || true
     - name: "Verify Tracer Client"
       shell: bash
       run: |
