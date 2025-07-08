@@ -31,14 +31,14 @@ runs:
           sudo bash -c "$(curl -fsSL https://install.tracer.cloud/)"
         fi
 
-        # Add Tracer to PATH for all subsequent workflow steps
-        if [ -d "$HOME/.tracerbio/bin" ]; then
-          echo "$HOME/.tracerbio/bin" >> $GITHUB_PATH
-        elif [ -d "/root/.tracerbio/bin" ]; then
-          echo "/root/.tracerbio/bin" >> $GITHUB_PATH
+        # Ensure $HOME/.tracerbio/bin exists and contains the tracer binary
+        mkdir -p "$HOME/.tracerbio/bin"
+        if [ -f "/root/.tracerbio/bin/tracer" ] && [ ! -f "$HOME/.tracerbio/bin/tracer" ]; then
+          cp /root/.tracerbio/bin/tracer "$HOME/.tracerbio/bin/tracer"
         fi
 
-        export PATH="$HOME/.tracerbio/bin:/root/.tracerbio/bin:$PATH"
+        # Add Tracer to PATH for all subsequent workflow steps
+        echo "$HOME/.tracerbio/bin" >> $GITHUB_PATH
 
     - name: "Verify Tracer Client"
       shell: bash
