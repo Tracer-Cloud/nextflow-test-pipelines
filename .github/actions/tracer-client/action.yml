@@ -41,8 +41,7 @@ runs:
         echo "$TRACER_PATH" >> $GITHUB_PATH
         export PATH="$TRACER_PATH:$PATH"
         echo "PATH after install: $PATH"
-        which tracer || true
     - name: "Verify Tracer Client"
       shell: bash
       run: |
-        tracer info
+        sudo tracer info

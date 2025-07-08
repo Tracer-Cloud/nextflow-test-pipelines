@@ -64,7 +64,7 @@ jobs:
 
       - name: Run tracer init
         run: |
-          sudo tracer init \
+          tracer init \
           --pipeline-name github-actions \
           --environment github-actions \
           --user-operator github-actions \
