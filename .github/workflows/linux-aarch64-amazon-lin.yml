@@ -1,4 +1,4 @@
-name: Nextflow Linux ARM64 Amazon Linux Pipelines
+name: Linux ARM64 Amazon Linux Pipelines
 
 on:
   workflow_dispatch:
@@ -10,8 +10,8 @@ on:
     - cron: "0 11 * * *" # Daily at 11:00 UTC
 
 jobs:
-  linux-arm64-amazon-pixi:
-    name: Pixi Pipeline
+  nextflow-pixi-minimal:
+    name: Nextflow Pixi Minimal Test
     runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v4
@@ -67,8 +67,8 @@ jobs:
             pipelines/linux-arm-amazon-linux/nextflow-pixi/logs/
           retention-days: 7
 
-  linux-arm64-amazon-conda:
-    name: Conda Pipeline
+  nextflow-conda-minimal:
+    name: Nextflow Conda Minimal Test
     runs-on: ubuntu-24.04-arm
     env:
       TRACER_BIO: /root/.tracerbio/bin/tracer
@@ -125,4 +125,3 @@ jobs:
             pipelines/linux-arm-amazon-linux/nextflow-conda/results/
             pipelines/linux-arm-amazon-linux/nextflow-conda/logs/
           retention-days: 7
-

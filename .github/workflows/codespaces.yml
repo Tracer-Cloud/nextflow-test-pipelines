@@ -1,4 +1,4 @@
-name: Codespaces Pipeline Test
+name: Codespaces Pipelines
 
 on:
   workflow_dispatch:
@@ -7,43 +7,42 @@ on:
       - "pipelines/codespaces/**"
       - ".github/workflows/codespaces.yml"
   schedule:
-    - cron: "0 13 * * *" # Daily at 13:00 UTC
+    - cron: "0 11 * * *"
 
 jobs:
-  codespaces-pixi-test:
-    name: Pixi Pipeline Test
+  nextflow-pixi-minimal:
+    name: Nextflow Pixi Minimal Test
     runs-on: ubuntu-latest
-    env:
-      TRACER_BIO: /root/.tracerbio/bin/tracer
     steps:
       - uses: actions/checkout@v4
-      - name: Cache Pixi environment
-        uses: actions/cache@v4
-        with:
-          path: |
-            pipelines/codespaces/.pixi
-          key: pixi-codespaces-${{ runner.os }}-${{ hashFiles('pipelines/codespaces/pixi.toml') }}
-          restore-keys: |
-            pixi-codespaces-${{ runner.os }}-
+
       - name: Install tracer
-        continue-on-error: true
-        run: |
-          curl -sSL https://install.tracer.cloud | sudo bash
+        uses: Tracer-Cloud/setup-cli@v1
+        with:
+          tracer_user_id: ${{ secrets.ACTIONS_TRACER_USER_ID }}
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+          tracer init \
+          --pipeline-name github-actions \
+          --environment github-actions \
+          --user-operator github-actions \
+          --pipeline-type nextflow \
+          --is-dev true
 
       - name: Run pipeline with Pixi
         working-directory: pipelines/codespaces/nextflow-pixi
         run: |
-          export PATH="$HOME/.pixi/bin:$PATH"
-          echo "=== Running Codespaces Pixi Pipeline ==="
           ./run.sh
 
       - name: Verify tracer packages
-        run: |
-          sudo $TRACER_BIO info
+        uses: ./.github/actions/verify-tracer
+        with:
+          required_processes: "STAR,FastQC,samtools sort"
+          sleep_duration: 10
+          use_sudo: true
+          binary: tracer
+
       - name: Upload pixi pipeline results
         uses: actions/upload-artifact@v4
         if: always()
@@ -54,49 +53,38 @@ jobs:
             pipelines/codespaces/nextflow-pixi/logs/
           retention-days: 7
 
-  codespaces-conda-test:
-    name: Conda Pipeline Test
+  nextflow-conda-minimal:
+    name: Nextflow Conda Minimal Test
     runs-on: ubuntu-latest
-    env:
-      TRACER_BIO: /root/.tracerbio/bin/tracer
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Miniconda
-        uses: conda-incubator/setup-miniconda@v3
-        with:
-          auto-update-conda: true
-          python-version: 3.12
-          miniforge-variant: Miniforge3
-          miniforge-version: latest
-
       - name: Install tracer
-        continue-on-error: true
-        run: |
-          curl -sSL https://install.tracer.cloud | sudo bash
-          # Verify tracer installation
-          if command -v tracer >/dev/null 2>&1; then
-            echo "✅ Tracer installed successfully"
-            tracer --version || echo "Tracer version check failed"
-          else
-            echo "❌ Tracer installation failed"
-            exit 1
-          fi
+        uses: ./.github/actions/tracer-client
+        with:
+          tracer_user_id: ${{ secrets.ACTIONS_TRACER_USER_ID }}
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+          tracer init \
+          --pipeline-name github-actions \
+          --environment github-actions \
+          --user-operator github-actions \
+          --pipeline-type nextflow \
+          --is-dev true
 
-      - name: Run pipeline with Conda
+      - name: Run Nextflow Conda Minimal Pipeline
         working-directory: pipelines/codespaces/nextflow-conda
         run: |
-          source ~/miniconda3/etc/profile.d/conda.sh
-          echo "=== Running Codespaces Conda Pipeline ==="
           ./run.sh
 
       - name: Verify tracer packages
-        run: |
-          sudo $TRACER_BIO info
+        uses: ./.github/actions/verify-tracer
+        with:
+          required_processes: "STAR,FastQC,samtools sort"
+          sleep_duration: 10
+          use_sudo: true
+          binary: tracer
+
       - name: Upload conda pipeline results
         uses: actions/upload-artifact@v4
         if: always()
@@ -110,22 +98,10 @@ jobs:
   cleanup:
     name: Cleanup
     runs-on: ubuntu-latest
-    needs: [codespaces-pixi-test, codespaces-conda-test]
+    needs: [nextflow-pixi-minimal, nextflow-conda-minimal]
     if: always()
     steps:
       - uses: actions/checkout@v4
-
-      - name: Clean up pixi environment
-        working-directory: pipelines/codespaces/nextflow-pixi
-        run: |
-          echo "=== Cleaning up Pixi environment ==="
-          if command -v pixi >/dev/null 2>&1; then
-            export PATH="$HOME/.pixi/bin:$PATH"
-            pixi run clean || true
-          fi
-          rm -rf results logs work .nextflow* 2>/dev/null || true
-          echo "✅ Pixi cleanup completed"
-
       - name: Clean up conda environment
         working-directory: pipelines/codespaces/nextflow-conda
         run: |

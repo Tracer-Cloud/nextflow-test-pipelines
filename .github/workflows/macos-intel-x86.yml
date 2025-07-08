@@ -14,34 +14,23 @@ jobs:
   macos-intel-x86-pixi:
     name: Pixi Pipeline
     runs-on: macos-13
-    env:
-      TRACER_BIO: /Users/runner/.tracerbio/bin/tracer
     steps:
       - uses: actions/checkout@v4
-
-      - name: Cache Pixi environment
-        uses: actions/cache@v4
-        with:
-          path: |
-            pipelines/macos-intel-x86/.pixi
-          key: pixi-macos-intel-x86-${{ runner.os }}-${{ hashFiles('pipelines/macos-intel-x86/pixi.toml') }}
-          restore-keys: |
-            pixi-macos-intel-x86-${{ runner.os }}-
 
       - name: Install tracer
         continue-on-error: true
         run: |
-          curl -sSL https://install.tracer.cloud | bash || echo "Tracer installation failed"
+          uses: ./.github/actions/tracer-client
+          with:
+            tracer_user_id: ${{ secrets.ACTIONS_TRACER_USER_ID }}
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+          sudo tracer init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
 
       - name: Run pipeline with Pixi
         working-directory: pipelines/macos-intel-x86/nextflow-pixi
         run: |
-          export PATH="$HOME/.pixi/bin:$PATH"
-          echo "=== Running Nextflow Pipeline with Pixi ==="
           ./run.sh
 
       - name: Verify tracer packages
@@ -49,7 +38,7 @@ jobs:
         with:
           is_ebpf: false
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
@@ -64,34 +53,23 @@ jobs:
   macos-intel-x86-conda:
     name: Conda Pipeline
     runs-on: macos-14
-    env:
-      TRACER_BIO: /Users/runner/.tracerbio/bin/tracer
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Miniconda
-        uses: conda-incubator/setup-miniconda@v3
-        with:
-          auto-update-conda: true
-          python-version: 3.12
-          miniforge-variant: Miniforge3
-          miniforge-version: latest
-
       - name: Install tracer
         continue-on-error: true
-        run: |
-          curl -sSL https://install.tracer.cloud/ | bash || echo "Tracer installation failed"
+        uses: ./.github/actions/tracer-client
+        with:
+          tracer_user_id: ${{ secrets.ACTIONS_TRACER_USER_ID }}
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+          sudo tracer init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
 
       - name: Run pipeline with Conda
         working-directory: pipelines/macos-intel-x86/nextflow-conda
         run: |
-          source ~/miniconda3/etc/profile.d/conda.sh
-          echo "=== Running Nextflow Pipeline with Conda ==="
           ./run.sh
 
       - name: Verify tracer packages
@@ -99,7 +77,7 @@ jobs:
         with:
           is_ebpf: false
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
@@ -110,4 +88,3 @@ jobs:
             pipelines/macos-intel-x86/nextflow-conda/results/
             pipelines/macos-intel-x86/nextflow-conda/logs/
           retention-days: 7
-

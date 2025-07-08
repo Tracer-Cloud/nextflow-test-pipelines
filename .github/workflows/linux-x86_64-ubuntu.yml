@@ -8,52 +8,40 @@ on:
       - "pipelines/linux-x86-ubuntu/nextflow-conda/**"
       - ".github/workflows/linux-x86_64-ubuntu.yml"
   schedule:
-    - cron: "0 11 * * *" # Daily at 11:00 UTC
+    - cron: "0 11 * * *"
+    # Daily at 11:00 UTC
 
 jobs:
   linux-x86-pixi:
     name: Pixi Pipeline
     runs-on: ubuntu-latest
-    env:
-      TRACER_BIO: /root/.tracerbio/bin/tracer
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache Pixi environment
-        uses: actions/cache@v4
-        with:
-          path: |
-            pipelines/linux-x86-ubuntu/nextflow-pixi/.pixi
-          key: pixi-linux-x86-${{ runner.os }}-${{ hashFiles('pipelines/linux-x86-ubuntu/nextflow-pixi/pixi.lock') }}
-          restore-keys: |
-            pixi-linux-x86-${{ runner.os }}-
-
       - name: Install tracer
-        run: |
-          curl -sSL https://install.tracer.cloud/ | sudo bash
-          echo "/root/.tracerbio/bin" | sudo tee -a $GITHUB_PATH
-
-      - name: Add tracer to PATH
-        run: |
-          export PATH="/root/.tracerbio/bin:$PATH"
-          echo "PATH updated for tracer"
+        continue-on-error: true
+        uses: ./.github/actions/tracer-client
+        with:
+          tracer_user_id: ${{ secrets.ACTIONS_TRACER_USER_ID }}
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
-
+          sudo tracer init \
+          --pipeline-name github-actions \
+          --environment github-actions \
+          --user-operator github-actions \
+          --pipeline-type nextflow \
+          --is-dev true
       - name: Run pipeline with Pixi
         working-directory: pipelines/linux-x86-ubuntu/nextflow-pixi
         run: |
-          export PATH="$HOME/.pixi/bin:$PATH"
-          echo "=== Running Nextflow Pipeline with Pixi ==="
           ./run.sh
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer
         with:
           is_ebpf: true
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
@@ -68,19 +56,22 @@ jobs:
   linux-x86-conda:
     name: Conda Pipeline
     runs-on: ubuntu-latest
-    env:
-      TRACER_BIO: /root/.tracerbio/bin/tracer
     steps:
       - uses: actions/checkout@v4
       - name: Install tracer
-        run: |
-          curl -sSL https://install.tracer.cloud/ | sudo bash
-          echo "/root/.tracerbio/bin" | sudo tee -a $GITHUB_PATH
+        continue-on-error: true
+        uses: ./.github/actions/tracer-client
+        with:
+          tracer_user_id: ${{ secrets.ACTIONS_TRACER_USER_ID }}
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
-
+          tracer init \
+          --pipeline-name github-actions \
+          --environment github-actions \
+          --user-operator github-actions \
+          --pipeline-type nextflow \
+          --is-dev true
       - name: Run pipeline with Conda
         working-directory: pipelines/linux-x86-ubuntu/nextflow-conda
         run: |
@@ -91,7 +82,7 @@ jobs:
         with:
           is_ebpf: true
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
@@ -101,4 +92,3 @@ jobs:
           path: |
             pipelines/linux-x86-ubuntu/nextflow-conda/results/
           retention-days: 7
-
