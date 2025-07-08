@@ -30,7 +30,7 @@ jobs:
           --environment github-actions \
           --user-operator github-actions \
           --pipeline-type nextflow \
-          --is-dev true
+          --is-dev false
       - name: Run pipeline with Pixi
         working-directory: pipelines/linux-x86-ubuntu/nextflow-pixi
         run: |

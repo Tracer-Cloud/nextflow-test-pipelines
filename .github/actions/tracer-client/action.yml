@@ -42,8 +42,6 @@ runs:
         export PATH="$TRACER_PATH:$PATH"
         echo "PATH after install: $PATH"
         which tracer || true
-        ls -l "$TRACER_PATH/tracer" || true
-        tracer --version || true
     - name: "Verify Tracer Client"
       shell: bash
       run: |
