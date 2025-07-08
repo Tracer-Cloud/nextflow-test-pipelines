@@ -19,6 +19,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install tracer
+        continue-on-error: true
         uses: ./.github/actions/tracer-client
         with:
           tracer_user_id: ${{ secrets.ACTIONS_TRACER_USER_ID }}
@@ -58,6 +59,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install tracer
+        continue-on-error: true
         uses: ./.github/actions/tracer-client
         with:
           tracer_user_id: ${{ secrets.ACTIONS_TRACER_USER_ID }}

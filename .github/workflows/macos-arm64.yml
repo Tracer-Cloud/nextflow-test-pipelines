@@ -14,20 +14,19 @@ jobs:
   macos-arm64-pixi:
     name: Pixi Pipeline
     runs-on: macos-latest
-    env:
-      TRACER_BIO: /Users/runner/.tracerbio/bin/tracer
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Install tracer
         continue-on-error: true
-        run: |
-          curl -sSL https://install.tracer.cloud | bash || echo "Tracer installation failed"
+        uses: ./.github/actions/tracer-client
+        with:
+          tracer_user_id: ${{ secrets.ACTIONS_TRACER_USER_ID }}
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+          sudo tracer init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
 
       - name: Run pipeline with Pixi
         working-directory: pipelines/macos-arm64/nextflow-pixi
@@ -41,7 +40,7 @@ jobs:
         with:
           is_ebpf: false
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
@@ -63,12 +62,11 @@ jobs:
 
       - name: Install tracer
         continue-on-error: true
-        run: |
-          curl -sSL https://install.tracer.cloud/ | bash || echo "Tracer installation failed"
+        uses: ./.github/actions/tracer-client
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+          sudo tracer init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
       - name: Run pipeline with Conda
         working-directory: pipelines/macos-arm64/nextflow-conda
         run: |
@@ -80,7 +78,7 @@ jobs:
         with:
           is_ebpf: false
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
