@@ -25,16 +25,6 @@ The `run.sh` script will:
 - Generate test data if not present
 - Run the FastQuorum pipeline
 
-## Pipeline Components
-
-### Processes
-
-1. **FASTQC_QC**: Performs quality control on FASTQ files
-2. **SAMTOOLS_INDEX**: Indexes reference genomes
-3. **BCFTOOLS_VARIANT_CALLING**: Performs variant calling
-4. **GATK_ANALYSIS**: Runs GATK genomic analysis
-5. **MULTIQC_REPORT**: Generates comprehensive reports
-
 ### Parameters
 
 - `--input`: Input FASTQ files (default: `*.fastq`)
