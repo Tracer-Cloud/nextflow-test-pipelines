@@ -1,0 +1,61 @@
+[project]
+name = "fastquorum-env"
+description = "FastQuorum pipeline using Pixi for dependency management"
+version = "1.0.0"
+authors = ["Tracer Bioinformatics Team"]
+channels = ["conda-forge", "bioconda"]
+platforms = ["osx-arm64"]
+
+[dependencies]
+nextflow = ">=24.10.0"
+conda = ">=24.0.0"
+fastqc = ">=0.12.1"
+multiqc = ">=1.17"
+samtools = ">=1.22"
+bcftools = ">=1.22"
+gatk4 = ">=4.4.0.0"
+bwa = ">=0.7.17"
+fgbio = ">=2.0.0"
+
+[tasks]
+pipeline = "nextflow run nf-core/fastquorum -profile singularity --input samplesheet.csv --outdir results --genome GRCh38"
+pipeline-custom = "nextflow run nf-core/fastquorum -profile singularity --input $1 --outdir $2 --genome $3"
+
+test = "nextflow run nf-core/fastquorum -profile singularity --input samplesheet.csv --outdir test_results --genome GRCh38"
+
+clean = { cmd = [
+    "/bin/sh",
+    "-c",
+    "rm -rf results logs work test_results custom_results .nextflow* && echo '✅ Cleaned up all results and logs'"
+]}
+
+check-env = { cmd = [
+    "/bin/sh",
+    "-c",
+    """
+    echo '=== FastQuorum Environment Check ===' && \
+    echo 'FastQC version:' && \
+    fastqc --version && \
+    echo 'MultiQC version:' && \
+    multiqc --version && \
+    echo 'Samtools version:' && \
+    samtools --version && \
+    echo 'BCFtools version:' && \
+    bcftools --version && \
+    echo 'GATK4 version:' && \
+    gatk --version && \
+    echo 'BWA version:' && \
+    bwa && \
+    echo 'FGBio version:' && \
+    fgbio --version && \
+    echo 'Nextflow version:' && \
+    nextflow -v && \
+    echo '=== Environment Ready ==='
+    """
+]}
+
+[feature.dev.dependencies]
+nextflow = ">=24.10.0"
+
+[environments]
+default = ["dev"]
