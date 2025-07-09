@@ -1,16 +1,56 @@
-name: Nextflow Linux x86_64 Ubuntu Pipelines
+name: Linux x86_64 Ubuntu pipelines
 
 on:
   workflow_dispatch:
   push:
     paths:
-      - "pipelines/linux-x86-ubuntu/nextflow-pixi/**"
-      - "pipelines/linux-x86-ubuntu/nextflow-conda/**"
+      - "pipelines/linux-x86-ubuntu/**"
       - ".github/workflows/linux-x86_64-ubuntu.yml"
   schedule:
-    - cron: "0 11 * * *" # Daily at 11:00 UTC
+    - cron: "0 11 * * *"
 
 jobs:
+  fastquorum:
+    name: Fastquorum Linux x86_64 Ubuntu
+    runs-on: ubuntu-latest
+    env:
+      TRACER_BIO: /root/.tracerbio/bin/tracer
+      NXF_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install tracer
+        run: |
+          curl -sSL https://install.tracer.cloud/ | sudo bash
+          echo "/root/.tracerbio/bin" | sudo tee -a $GITHUB_PATH
+
+      - name: Run tracer init
+        run: |
+          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+
+      - name: Run pipeline with Pixi
+        working-directory: pipelines/linux-x86-ubuntu/fastquorum
+        run: |
+          ./run.sh
+
+      - name: Verify tracer packages
+        uses: ./.github/actions/verify-tracer
+        with:
+          is_ebpf: true
+          use_sudo: true
+          binary: $TRACER_BIO
+          required_processes_ebpf: "bwa,samtools sort,multiqc,fgbio GroupReadsByUmi,fgbio ZipperBams,fgbio FastqToBam,samtools dict,samtools faidx,fgbio CollectDuplexSeqMetrics,fgbio CallDuplexConsensusReads"
+
+      - name: Upload pipeline results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fastquorum-linux-x86-ubuntu-pipeline-results
+          path: |
+            pipelines/linux-x86-ubuntu/fastquorum/results/
+            pipelines/linux-x86-ubuntu/fastquorum/logs/
+          retention-days: 7
+
   linux-x86-pixi:
     name: Pixi Pipeline
     runs-on: ubuntu-latest

@@ -1,4 +1,4 @@
-name: Nextflow Linux ARM64 Pipelines
+name: Linux aarch64 Ubuntu pipelines
 
 on:
   workflow_dispatch:
@@ -7,9 +7,51 @@ on:
       - "pipelines/linux-arm-ubuntu/**"
       - ".github/workflows/linux-aarch64.yml"
   schedule:
-    - cron: "0 11 * * *" # Daily at 11:00 UTC
+    - cron: "0 11 * * *"
 
 jobs:
+  fastquorum:
+    name: Fastquorum Linux aarch64 Ubuntu
+    runs-on: ubuntu-24.04-arm
+    env:
+      TRACER_BIO: /root/.tracerbio/bin/tracer
+      NXF_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tracer
+        run: |
+          curl -sSL https://install.tracer.cloud/ | sudo bash
+          echo "/root/.tracerbio/bin" | sudo tee -a $GITHUB_PATH
+
+      - name: Run tracer init
+        run: |
+          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+
+      - name: Run pipeline with Pixi
+        working-directory: pipelines/linux-arm-ubuntu/fastquorum
+        run: |
+          ./run.sh
+
+      - name: Verify tracer packages
+        uses: ./.github/actions/verify-tracer
+        with:
+          is_ebpf: true
+          use_sudo: true
+          binary: $TRACER_BIO
+          required_processes_ebpf: "bwa,samtools sort,multiqc,fgbio GroupReadsByUmi,fgbio ZipperBams,fgbio FastqToBam,samtools dict,samtools faidx,fgbio CollectDuplexSeqMetrics,fgbio CallDuplexConsensusReads"
+
+      - name: Upload pipeline results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fastquorum-linux-aarch64-ubuntu-pipeline-results
+          path: |
+            pipelines/linux-arm-ubuntu/fastquorum/results/
+            pipelines/linux-arm-ubuntu/fastquorum/logs/
+          retention-days: 7
+
   linux-arm64-pixi:
     name: Pixi Pipeline
     runs-on: ubuntu-24.04-arm
@@ -17,15 +59,6 @@ jobs:
       TRACER_BIO: /root/.tracerbio/bin/tracer
     steps:
       - uses: actions/checkout@v4
-
-      - name: Cache Pixi environment
-        uses: actions/cache@v4
-        with:
-          path: |
-            pipelines/linux-arm-ubuntu/.pixi
-          key: pixi-linux-arm64-${{ runner.os }}-${{ hashFiles('pipelines/linux-arm-ubuntu/pixi.toml') }}
-          restore-keys: |
-            pixi-linux-arm64-${{ runner.os }}-
 
       - name: Install tracer
         run: |
@@ -71,7 +104,7 @@ jobs:
         run: |
           curl -sSL https://install.tracer.cloud/ | sudo bash
           echo "/root/.tracerbio/bin" | sudo tee -a $GITHUB_PATH
-          
+
       - name: Run tracer init
         run: |
           sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
@@ -96,4 +129,3 @@ jobs:
           path: |
             pipelines/linux-arm-ubuntu/nextflow-conda/results/
           retention-days: 7
-
