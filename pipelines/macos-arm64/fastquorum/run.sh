@@ -75,4 +75,4 @@ pixi run pipeline
 
 echo "Pipeline completed successfully!"
 echo "Results are available in the 'results' directory"
-echo "Logs are available in the 'logs' directory" 
+echo "Logs are available in the 'logs' directory"
