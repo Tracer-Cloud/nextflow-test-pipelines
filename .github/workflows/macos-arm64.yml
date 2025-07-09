@@ -10,50 +10,8 @@ on:
     - cron: "0 11 * * *"
 
 jobs:
-  macos-arm64-pixi:
-    name: Pixi Pipeline
-    runs-on: macos-latest
-    env:
-      TRACER_BIO: /Users/runner/.tracerbio/bin/tracer
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install tracer
-        continue-on-error: true
-        run: |
-          curl -sSL https://install.tracer.cloud | bash || echo "Tracer installation failed"
-
-      - name: Run tracer init
-        run: |
-          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
-
-      - name: Run pipeline with Pixi
-        working-directory: pipelines/macos-arm64/nextflow-pixi
-        run: |
-          export PATH="$HOME/.pixi/bin:$PATH"
-          echo "=== Running Nextflow Pipeline with Pixi ==="
-          ./run.sh
-
-      - name: Verify tracer packages
-        uses: ./.github/actions/verify-tracer
-        with:
-          is_ebpf: false
-          use_sudo: true
-          binary: $TRACER_BIO
-
-      - name: Upload pipeline results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: pixi-arm64-pipeline-results
-          path: |
-            pipelines/macos-arm64/nextflow-pixi/results/
-            pipelines/macos-arm64/nextflow-pixi/logs/
-          retention-days: 7
-
-  macos-arm64-conda:
-    name: Conda Pipeline
+  fastquorum-pixi:
+    name: Fastquorum Pipeline
     runs-on: macos-14
     env:
       TRACER_BIO: /Users/runner/.tracerbio/bin/tracer
@@ -68,10 +26,12 @@ jobs:
       - name: Run tracer init
         run: |
           sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
-      - name: Run pipeline with Conda
-        working-directory: pipelines/macos-arm64/nextflow-conda
+
+      - name: Run pipeline with Pixi
+        working-directory: pipelines/macos-arm64/fastquorum
         run: |
-          echo "=== Running Nextflow Pipeline with Conda ==="
+          export PATH="$HOME/.pixi/bin:$PATH"
+          echo "=== Running Fastquorum Pipeline with Pixi ==="
           ./run.sh
 
       - name: Verify tracer packages
@@ -85,8 +45,8 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: conda-arm64-pipeline-results
+          name: fastquorum-arm64-pipeline-results
           path: |
-            pipelines/macos-arm64/nextflow-conda/results/
-            pipelines/macos-arm64/nextflow-conda/logs/
+            pipelines/macos-arm64/fastquorum/results/
+            pipelines/macos-arm64/fastquorum/logs/
           retention-days: 7
