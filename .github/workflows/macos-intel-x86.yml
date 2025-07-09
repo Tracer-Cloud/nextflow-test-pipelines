@@ -1,18 +1,18 @@
-name: Nextflow MacOS Intel x86 Pipelines
+name: macOS intel pipelines
 
 on:
   workflow_dispatch:
   push:
     paths:
-      - "pipelines/macos-intel-x86/nextflow-pixi/**"
-      - "pipelines/macos-intel-x86/nextflow-conda/**"
+      - "pipelines/macos-intel-x86/"
+      - "pipelines/macos-intel-x86/"
       - ".github/workflows/macos-intel-x86.yml"
   schedule:
-    - cron: "0 11 * * *" # Daily at 11:00 UTC (12:00 BST)
+    - cron: "0 11 * * *"
 
 jobs:
   fastquorum-pixi:
-    name: Fastquorum Pipeline
+    name: Fastquorum macOS Intel x86
     runs-on: macos-13
     env:
       TRACER_BIO: /Users/runner/.tracerbio/bin/tracer

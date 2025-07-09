@@ -1,4 +1,4 @@
-name: Nextflow MacOS ARM64 Pipelines
+name: macOS arm64 pipelines
 
 on:
   workflow_dispatch:
@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   fastquorum-pixi:
-    name: Fastquorum Pipeline
+    name: Fastquorum macOS arm64
     runs-on: macos-14
     env:
       TRACER_BIO: /Users/runner/.tracerbio/bin/tracer
@@ -27,8 +27,7 @@ jobs:
       - name: Install tracer
         continue-on-error: true
         run: |
-          curl -sSL https://install.tracer.cloud/ | bash || echo "Tracer installation failed"
-
+          curl -sSL https://install.tracer.cloud/ | bash
       - name: Run tracer init
         run: |
           sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
