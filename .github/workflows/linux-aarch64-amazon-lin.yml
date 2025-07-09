@@ -46,12 +46,8 @@ jobs:
 
               # Run pipeline with Pixi
               cd pipelines/linux-arm-amazon-linux/nextflow-pixi/
-              export PATH=\"\$HOME/.pixi/bin:\$PATH\"
-              echo '=== Running Nextflow Pipeline with Pixi ==='
               ./run.sh
 
-
-              echo '=== Verifying tracer packages ==='
               cd ../../../
               chmod +x .github/actions/verify-tracer/action.sh
               .github/actions/verify-tracer/action.sh
@@ -125,4 +121,3 @@ jobs:
             pipelines/linux-arm-amazon-linux/nextflow-conda/results/
             pipelines/linux-arm-amazon-linux/nextflow-conda/logs/
           retention-days: 7
-
