@@ -25,7 +25,6 @@ if [ -f "$SHELL_PROFILE" ]; then
     source "$SHELL_PROFILE"
 fi
 
-
 echo "Running nf-core/fastquorum pipeline..."
 pixi run --manifest-path ../../shared/fastquorum/pixi.toml pipeline
 
