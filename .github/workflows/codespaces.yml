@@ -1,4 +1,4 @@
-name: Codespaces Pipeline Test
+name: Codespaces pipelines
 
 on:
   workflow_dispatch:
@@ -7,9 +7,51 @@ on:
       - "pipelines/codespaces/**"
       - ".github/workflows/codespaces.yml"
   schedule:
-    - cron: "0 13 * * *" # Daily at 13:00 UTC
+    - cron: "0 11 * * *"
 
 jobs:
+  fastquorum:
+    name: Fastquorum Codespaces
+    runs-on: ubuntu-latest
+    env:
+      TRACER_BIO: /root/.tracerbio/bin/tracer
+      NXF_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tracer
+        continue-on-error: true
+        run: |
+          curl -sSL https://install.tracer.cloud | sudo bash
+
+      - name: Run tracer init
+        run: |
+          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+
+      - name: Run pipeline with Pixi
+        working-directory: pipelines/codespaces/fastquorum
+        run: |
+          ./run.sh
+
+      - name: Verify tracer packages
+        uses: ./.github/actions/verify-tracer
+        with:
+          is_ebpf: true
+          use_sudo: true
+          binary: $TRACER_BIO
+          required_processes_ebpf: "samtools sort,bwa,fgbio FastqToBam,fgbio CollectDuplexSeqMetrics,fgbio CallDuplexConsensusReads,fgbio ZipperBams,multiqc,fgbio GroupReadsByUmi,fgbio FilterConsensusReads,samtools dict,FastQC,samtools faidx,samtools fastq"
+
+      - name: Upload pipeline results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: fastquorum-codespaces-pipeline-results
+          path: |
+            pipelines/codespaces/fastquorum/results/
+            pipelines/codespaces/fastquorum/logs/
+          retention-days: 7
+
   codespaces-pixi-test:
     name: Pixi Pipeline Test
     runs-on: ubuntu-latest

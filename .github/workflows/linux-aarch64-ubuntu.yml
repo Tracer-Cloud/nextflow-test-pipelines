@@ -5,7 +5,7 @@ on:
   push:
     paths:
       - "pipelines/linux-arm-ubuntu/**"
-      - ".github/workflows/linux-aarch64.yml"
+      - ".github/workflows/linux-aarch64-ubuntu.yml"
   schedule:
     - cron: "0 11 * * *"
 
