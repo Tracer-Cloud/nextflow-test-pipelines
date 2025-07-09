@@ -18,10 +18,10 @@ bwa = ">=0.7.17"
 fgbio = ">=2.0.0"
 
 [tasks]
-pipeline = "nextflow run nf-core/fastquorum -profile singularity --input samplesheet.csv --outdir results --genome GRCh38"
-pipeline-custom = "nextflow run nf-core/fastquorum -profile singularity --input $1 --outdir $2 --genome $3"
+pipeline = "nextflow run nf-core/fastquorum -profile test --input samplesheet.csv --outdir results --genome GRCh38"
+pipeline-custom = "nextflow run nf-core/fastquorum -profile test --input $1 --outdir $2 --genome $3"
 
-test = "nextflow run nf-core/fastquorum -profile singularity --input samplesheet.csv --outdir test_results --genome GRCh38"
+test = "nextflow run nf-core/fastquorum -profile test --input samplesheet.csv --outdir test_results --genome GRCh38"
 
 clean = { cmd = [
     "/bin/sh",

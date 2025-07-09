@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-# Function to install pixi if not found
 install_pixi() {
     echo "Pixi not found. Installing Pixi..."
     curl -fsSL https://pixi.sh/install.sh | bash
@@ -9,12 +8,10 @@ install_pixi() {
     echo "Pixi installed successfully!"
 }
 
-# Check if pixi is available
 if ! command -v pixi &> /dev/null; then
     install_pixi
 fi
 
-# Determine shell profile based on current shell
 if [ -n "$ZSH_VERSION" ]; then
     SHELL_PROFILE="$HOME/.zshrc"
 elif [ -n "$BASH_VERSION" ]; then
@@ -23,13 +20,11 @@ else
     SHELL_PROFILE="$HOME/.profile"
 fi
 
-# Source shell profile if it exists to ensure pixi is in PATH
 if [ -f "$SHELL_PROFILE" ]; then
     echo "Sourcing $SHELL_PROFILE before running pixi..."
     source "$SHELL_PROFILE"
 fi
 
-# Create necessary directories
 mkdir -p logs results test_data
 
 # Generate test data if it doesn't exist
@@ -73,16 +68,10 @@ sample,fastq_1,fastq_2,read_structure
 CONTROL_REP1,test_data/AEG588A1_S1_L002_R1_001.fastq.gz,test_data/AEG588A1_S1_L002_R2_001.fastq.gz,5M2S+T 5M2S+T
 EOF
 
-echo "Installing dependencies with pixi..."
-pixi install
 
 echo "Running nf-core/fastquorum pipeline..."
 
-nextflow run nf-core/fastquorum \
-    -profile docker \
-    --input samplesheet.csv \
-    --outdir results \
-    --genome GRCh38
+pixi run pipeline
 
 echo "Pipeline completed successfully!"
 echo "Results are available in the 'results' directory"
