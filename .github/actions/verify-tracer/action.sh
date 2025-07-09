@@ -2,8 +2,20 @@
 
 # Inline version of verify-tracer action for just amazon linux
 BINARY="/root/.tracerbio/bin/tracer"
-# Must update this list in actions.yml as well
-REQUIRED_PROCESSES='STAR,FastQC,samtools sort'
+
+# Parse command line arguments
+REQUIRED_PROCESSES_EBPF="${1:-STAR,FastQC,samtools sort}"
+REQUIRED_PROCESSES_POLLING="${2:-STAR,FastQC,salmon}"
+IS_EBPF="${3:-true}"
+
+# Select required processes based on eBPF mode
+if [ "$IS_EBPF" = "true" ]; then
+  REQUIRED_PROCESSES="$REQUIRED_PROCESSES_EBPF"
+  echo "Using eBPF mode - Required processes: $REQUIRED_PROCESSES"
+else
+  REQUIRED_PROCESSES="$REQUIRED_PROCESSES_POLLING"
+  echo "Using non-eBPF mode - Required processes: $REQUIRED_PROCESSES"
+fi
 
 sudo yum install -y jq findutils
 
@@ -77,12 +89,12 @@ done
 if [ ${#MISSING_PROCESSES[@]} -eq 0 ]; then
   echo ""
   echo "🎉 SUCCESS: All required processes found in processes"
-  echo "Required: $required_processes"
+  echo "Required: $REQUIRED_PROCESSES"
   echo "Found: $PROCESSES"
 else
   echo ""
   echo "❌ FAILURE: Missing required processes"
-  echo "Required: $required_processes"
+  echo "Required: $REQUIRED_PROCESSES"
   echo "Found: $PROCESSES"
   echo "Missing: $(IFS=','; echo "${MISSING_PROCESSES[*]}")"
   exit 1

@@ -1,82 +1,25 @@
-name: Nextflow MacOS Intel x86 Pipelines
+name: macOS intel pipelines
 
 on:
   workflow_dispatch:
   push:
     paths:
-      - "pipelines/macos-intel-x86/nextflow-pixi/**"
-      - "pipelines/macos-intel-x86/nextflow-conda/**"
+      - "pipelines/macos-intel-x86/"
+      - "pipelines/macos-intel-x86/"
       - ".github/workflows/macos-intel-x86.yml"
   schedule:
-    - cron: "0 11 * * *" # Daily at 11:00 UTC (12:00 BST)
+    - cron: "0 11 * * *"
 
 jobs:
-  macos-intel-x86-pixi:
-    name: Pixi Pipeline
+  fastquorum-pixi:
+    name: Fastquorum macOS Intel x86
     runs-on: macos-13
     env:
       TRACER_BIO: /Users/runner/.tracerbio/bin/tracer
+      NXF_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
-
-      - name: Cache Pixi environment
-        uses: actions/cache@v4
-        with:
-          path: |
-            pipelines/macos-intel-x86/.pixi
-          key: pixi-macos-intel-x86-${{ runner.os }}-${{ hashFiles('pipelines/macos-intel-x86/pixi.toml') }}
-          restore-keys: |
-            pixi-macos-intel-x86-${{ runner.os }}-
-
-      - name: Install tracer
-        continue-on-error: true
-        run: |
-          curl -sSL https://install.tracer.cloud | bash || echo "Tracer installation failed"
-
-      - name: Run tracer init
-        run: |
-          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
-
-      - name: Run pipeline with Pixi
-        working-directory: pipelines/macos-intel-x86/nextflow-pixi
-        run: |
-          export PATH="$HOME/.pixi/bin:$PATH"
-          echo "=== Running Nextflow Pipeline with Pixi ==="
-          ./run.sh
-
-      - name: Verify tracer packages
-        uses: ./.github/actions/verify-tracer
-        with:
-          is_ebpf: false
-          use_sudo: true
-          binary: $TRACER_BIO
-
-      - name: Upload pipeline results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: pixi-macos-intel-x86-pipeline-results
-          path: |
-            pipelines/macos-intel-x86/nextflow-pixi/results/
-            pipelines/macos-intel-x86/nextflow-pixi/logs/
-          retention-days: 7
-
-  macos-intel-x86-conda:
-    name: Conda Pipeline
-    runs-on: macos-14
-    env:
-      TRACER_BIO: /Users/runner/.tracerbio/bin/tracer
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Miniconda
-        uses: conda-incubator/setup-miniconda@v3
-        with:
-          auto-update-conda: true
-          python-version: 3.12
-          miniforge-variant: Miniforge3
-          miniforge-version: latest
 
       - name: Install tracer
         continue-on-error: true
@@ -87,11 +30,10 @@ jobs:
         run: |
           sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
 
-      - name: Run pipeline with Conda
-        working-directory: pipelines/macos-intel-x86/nextflow-conda
+      - name: Run pipeline with Pixi
+        working-directory: pipelines/macos-arm64/fastquorum
         run: |
-          source ~/miniconda3/etc/profile.d/conda.sh
-          echo "=== Running Nextflow Pipeline with Conda ==="
+          export NXF_GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
           ./run.sh
 
       - name: Verify tracer packages
@@ -100,14 +42,14 @@ jobs:
           is_ebpf: false
           use_sudo: true
           binary: $TRACER_BIO
+          required_processes_polling: "bwa,samtools sort,multiqc,fgbio GroupReadsByUmi,fgbio ZipperBams,fgbio FastqToBam,samtools dict,samtools faidx,fgbio CollectDuplexSeqMetrics,fgbio CallDuplexConsensusReads"
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: conda-macos-intel-x86-pipeline-results
+          name: fastquorum-arm64-pipeline-results
           path: |
-            pipelines/macos-intel-x86/nextflow-conda/results/
-            pipelines/macos-intel-x86/nextflow-conda/logs/
+            pipelines/macos-arm64/fastquorum/results/
+            pipelines/macos-arm64/fastquorum/logs/
           retention-days: 7
-

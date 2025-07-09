@@ -1,39 +1,41 @@
-name: Nextflow MacOS ARM64 Pipelines
+name: macOS arm64 pipelines
 
 on:
   workflow_dispatch:
   push:
     paths:
-      - "pipelines/macos-arm64/nextflow-pixi/**"
-      - "pipelines/macos-arm64/nextflow-conda/**"
+      - "pipelines/macos-arm64/**"
       - ".github/workflows/macos-arm64.yml"
   schedule:
-    - cron: "0 11 * * *" # Daily at 11:00 UTC (12:00 BST)
+    - cron: "0 11 * * *"
+
+permissions:
+  contents: read
+  packages: read
 
 jobs:
-  macos-arm64-pixi:
-    name: Pixi Pipeline
-    runs-on: macos-latest
+  fastquorum-pixi:
+    name: Fastquorum macOS arm64
+    runs-on: macos-14
     env:
       TRACER_BIO: /Users/runner/.tracerbio/bin/tracer
-
+      NXF_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Install tracer
         continue-on-error: true
         run: |
-          curl -sSL https://install.tracer.cloud | bash || echo "Tracer installation failed"
-
+          curl -sSL https://install.tracer.cloud/ | bash
       - name: Run tracer init
         run: |
           sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
 
       - name: Run pipeline with Pixi
-        working-directory: pipelines/macos-arm64/nextflow-pixi
+        working-directory: pipelines/macos-arm64/fastquorum
         run: |
-          export PATH="$HOME/.pixi/bin:$PATH"
-          echo "=== Running Nextflow Pipeline with Pixi ==="
+          export NXF_GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
           ./run.sh
 
       - name: Verify tracer packages
@@ -42,52 +44,14 @@ jobs:
           is_ebpf: false
           use_sudo: true
           binary: $TRACER_BIO
+          required_processes_polling: "bwa,samtools sort,multiqc,fgbio GroupReadsByUmi,fgbio ZipperBams,fgbio FastqToBam,samtools dict,samtools faidx,fgbio CollectDuplexSeqMetrics,fgbio CallDuplexConsensusReads"
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: pixi-arm64-pipeline-results
+          name: fastquorum-arm64-pipeline-results
           path: |
-            pipelines/macos-arm64/nextflow-pixi/results/
-            pipelines/macos-arm64/nextflow-pixi/logs/
-          retention-days: 7
-
-  macos-arm64-conda:
-    name: Conda Pipeline
-    runs-on: macos-14
-    env:
-      TRACER_BIO: /Users/runner/.tracerbio/bin/tracer
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install tracer
-        continue-on-error: true
-        run: |
-          curl -sSL https://install.tracer.cloud/ | bash || echo "Tracer installation failed"
-
-      - name: Run tracer init
-        run: |
-          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
-      - name: Run pipeline with Conda
-        working-directory: pipelines/macos-arm64/nextflow-conda
-        run: |
-          echo "=== Running Nextflow Pipeline with Conda ==="
-          ./run.sh
-
-      - name: Verify tracer packages
-        uses: ./.github/actions/verify-tracer
-        with:
-          is_ebpf: false
-          use_sudo: true
-          binary: $TRACER_BIO
-
-      - name: Upload pipeline results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: conda-arm64-pipeline-results
-          path: |
-            pipelines/macos-arm64/nextflow-conda/results/
-            pipelines/macos-arm64/nextflow-conda/logs/
+            pipelines/macos-arm64/fastquorum/results/
+            pipelines/macos-arm64/fastquorum/logs/
           retention-days: 7

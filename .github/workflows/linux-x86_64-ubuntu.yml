@@ -92,6 +92,8 @@ jobs:
           is_ebpf: true
           use_sudo: true
           binary: $TRACER_BIO
+          required_processes_ebpf: "STAR,FastQC,samtools sort"
+          required_processes_polling: "STAR,FastQC,salmon"
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
@@ -101,4 +103,3 @@ jobs:
           path: |
             pipelines/linux-x86-ubuntu/nextflow-conda/results/
           retention-days: 7
-

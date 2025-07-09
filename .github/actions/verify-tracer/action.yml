@@ -1,27 +1,35 @@
-name: 'Verify Tracer Packages'
-description: 'Verifies that required processes are present in tracer info output'
+name: "Verify Tracer Packages"
+description: "Verifies that required processes are present in tracer info output"
 
 inputs:
   is_ebpf:
-    description: 'Is ebpf being used to recognise the processes'
+    description: "Is ebpf being used to recognise the processes"
     required: true
   use_sudo:
-    description: 'Whether to use sudo when running tracer commands'
+    description: "Whether to use sudo when running tracer commands"
     required: false
-    default: 'false'
+    default: "false"
   binary:
-    description: 'Path to the tracer binary (if not provided, will search for it)'
+    description: "Path to the tracer binary (if not provided, will search for it)"
     required: true
+  required_processes_ebpf:
+    description: "Comma-separated list of required processes for eBPF mode (defaults to STAR,FastQC,samtools sort)"
+    required: false
+    default: "STAR,FastQC,samtools sort"
+  required_processes_polling:
+    description: "Comma-separated list of required processes for polling mode (defaults to STAR,FastQC,salmon)"
+    required: false
+    default: "STAR,FastQC,salmon"
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Install jq
       shell: bash
       env:
-        # Must update this list in action.sh as well
-        TRACER_REQUIRED_PROCESSES_EBPF: 'STAR,FastQC,samtools sort'
-        TRACER_REQUIRED_PROCESSES_POLLING: 'STAR,FastQC,salmon'
+        # Use pipeline-specific environment variables or defaults
+        TRACER_REQUIRED_PROCESSES_EBPF: "${{ inputs.required_processes_ebpf }}"
+        TRACER_REQUIRED_PROCESSES_POLLING: "${{ inputs.required_processes_polling }}"
       run: |
         if ! command -v jq &> /dev/null; then
           echo "Installing jq..."
@@ -50,12 +58,8 @@ runs:
           echo "jq is already installed"
         fi
 
-
-
         echo "=== Waiting 10 seconds for tracer to gather process information ==="
         sleep 10
-
-
 
         echo "=== Running tracer info --json ==="
         # Use provided binary path or default tracer command
@@ -69,21 +73,21 @@ runs:
 
         TRACER_OUTPUT=$($TRACER_CMD)
         echo "$TRACER_OUTPUT"
-        
+
         echo ""
         echo "=== Verifying required processes ==="
-        
+
         # Parse the processes field from the JSON output
         PROCESSES=$(echo "$TRACER_OUTPUT" | jq -r '.run.processes // empty')
-        
+
         if [ -z "$PROCESSES" ]; then
           echo "❌ ERROR: Could not find 'processes' in tracer output"
           echo "This might indicate the pipeline cannot find any processes at all"
           exit 1
         fi
-        
+
         echo "Found processes: $PROCESSES"
-        
+
         # Convert processes to array (split by comma and trim whitespace)
         IFS=',' read -ra PROCESSES_ARRAY <<< "$PROCESSES"
         PROCESSES_SET=()
@@ -94,7 +98,7 @@ runs:
             PROCESSES_SET+=("$trimmed")
           fi
         done
-        
+
         echo "Parsed processes: ${PROCESSES_SET[*]}"
 
         # Select required processes based on eBPF mode
@@ -109,8 +113,6 @@ runs:
         # Convert comma-separated required processes to array
         IFS=',' read -ra REQUIRED_ARRAY <<< "$required_processes"
 
-
-        
         # Check each required process (exact match, order-independent)
         MISSING_PROCESSES=()
         for required_process in "${REQUIRED_ARRAY[@]}"; do
@@ -133,7 +135,7 @@ runs:
             MISSING_PROCESSES+=("$required_process")
           fi
         done
-        
+
         # Report results
         if [ ${#MISSING_PROCESSES[@]} -eq 0 ]; then
           echo ""
@@ -148,4 +150,3 @@ runs:
           echo "Missing: $(IFS=','; echo "${MISSING_PROCESSES[*]}")"
           exit 1
         fi
-        
