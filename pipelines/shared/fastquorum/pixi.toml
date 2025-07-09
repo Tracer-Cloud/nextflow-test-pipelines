@@ -4,7 +4,7 @@ description = "Fastquorum pipeline using Pixi"
 version = "1.0.0"
 authors = ["Vaibhav Upreti"]
 channels = ["conda-forge", "bioconda"]
-platforms = ["osx-arm64"]
+platforms = ["osx-arm64", "osx-64", "linux-64", "linux-aarch64"]
 
 [dependencies]
 nextflow = ">=24.10.0"
