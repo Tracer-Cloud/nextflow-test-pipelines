@@ -39,7 +39,7 @@ jobs:
           is_ebpf: true
           use_sudo: true
           binary: $TRACER_BIO
-          required_processes_ebpf: "bwa,samtools sort,multiqc,fgbio GroupReadsByUmi,fgbio ZipperBams,fgbio FastqToBam,samtools dict,samtools faidx,fgbio CollectDuplexSeqMetrics,fgbio CallDuplexConsensusReads"
+          required_processes_ebpf: "samtools sort,bwa,fgbio FastqToBam,fgbio CollectDuplexSeqMetrics,fgbio CallDuplexConsensusReads,fgbio ZipperBams,multiqc,fgbio GroupReadsByUmi,fgbio FilterConsensusReads,samtools dict,FastQC,samtools faidx,samtools fastq"
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
@@ -94,6 +94,8 @@ jobs:
           is_ebpf: true
           use_sudo: true
           binary: $TRACER_BIO
+          required_processes_ebpf: "STAR,FastQC,samtools sort"
+          required_processes_polling: "STAR,FastQC,salmon"
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
