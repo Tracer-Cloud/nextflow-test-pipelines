@@ -33,22 +33,10 @@ jobs:
         run: |
           sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
 
-      - name: Pre-download nf-core pipeline
-        run: |
-          export NXF_GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
-          # Install nextflow if not available
-          if ! command -v nextflow &> /dev/null; then
-            curl -s https://get.nextflow.io | bash
-            sudo mv nextflow /usr/local/bin/
-          fi
-          nextflow pull nf-core/fastquorum
-
       - name: Run pipeline with Pixi
         working-directory: pipelines/macos-arm64/fastquorum
         run: |
-          export PATH="$HOME/.pixi/bin:$PATH"
           export NXF_GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
-          echo "=== Running Fastquorum Pipeline with Pixi ==="
           ./run.sh
 
       - name: Verify tracer packages
@@ -57,6 +45,7 @@ jobs:
           is_ebpf: false
           use_sudo: true
           binary: $TRACER_BIO
+          required_processes_polling: "bwa,samtools sort,multiqc,fgbio GroupReadsByUmi,fgbio ZipperBams,fgbio FastqToBam,samtools dict,samtools faidx,fgbio CollectDuplexSeqMetrics,fgbio CallDuplexConsensusReads"
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
