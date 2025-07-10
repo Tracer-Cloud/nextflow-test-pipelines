@@ -28,7 +28,7 @@ jobs:
       - name: Install tracer
         continue-on-error: true
         run: |
-          curl -sSL https://install.tracer.cloud | sudo bash
+          curl -sSL https://install.tracer.cloud | sh
 
       - name: Run tracer init
         run: |
@@ -73,7 +73,7 @@ jobs:
       - name: Install tracer
         continue-on-error: true
         run: |
-          curl -sSL https://install.tracer.cloud | sudo bash
+          curl -sSL https://install.tracer.cloud | sh
           # Verify tracer installation
           if command -v tracer >/dev/null 2>&1; then
             echo "✅ Tracer installed successfully"

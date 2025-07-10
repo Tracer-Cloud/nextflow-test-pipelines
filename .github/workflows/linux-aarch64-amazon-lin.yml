@@ -39,8 +39,7 @@ jobs:
               yum install -y wget git bash which sudo tar gzip curl --allowerasing
 
               # Install tracer
-              curl -sSL https://install.tracer.cloud/ | sudo bash
-
+              curl -sSL https://install.tracer.cloud | sh
               # Run tracer init
               sudo \$TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
 
