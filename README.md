@@ -29,7 +29,7 @@ Get started instantly by visiting [sandbox.tracer.cloud](https://sandbox.tracer.
 Install Tracer on your operating system (one-time installation):
 
 ```bash
-curl -sSL https://install.tracer.cloud | sh -s user_2y6EAfxS4kv5mMtFKNrxRm2ZFf5 && source ~/.bashrc && source ~/.zshrc
+curl -sSL https://install.tracer.cloud | sh && source ~/.bashrc && source ~/.zshrc
 ```
 
 ### 2. Navigate to the correct git file
