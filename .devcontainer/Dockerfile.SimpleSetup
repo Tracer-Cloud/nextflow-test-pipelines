@@ -59,9 +59,9 @@ ENV PATH="/root/.pixi/bin:${PATH}"
 RUN echo '#!/bin/bash' > /usr/local/bin/entrypoint.sh && \
     echo 'set -e' >> /usr/local/bin/entrypoint.sh && \
     echo 'cd /root/nextflow-test-pipelines && git pull || true' >> /usr/local/bin/entrypoint.sh && \
-    echo 'curl -fsSL https://install.tracer.cloud/ -o /tmp/install.sh' >> /usr/local/bin/entrypoint.sh && \
+    echo 'curl -fsSL https://install.tracer.cloud -o /tmp/install.sh' >> /usr/local/bin/entrypoint.sh && \
     echo 'head -20 /tmp/install.sh' >> /usr/local/bin/entrypoint.sh && \
-    echo 'bash /tmp/install.sh' >> /usr/local/bin/entrypoint.sh && \
+    echo 'sh /tmp/install.sh' >> /usr/local/bin/entrypoint.sh && \
     echo 'rm /tmp/install.sh' >> /usr/local/bin/entrypoint.sh && \
     echo 'exec bash' >> /usr/local/bin/entrypoint.sh && \
     chmod +x /usr/local/bin/entrypoint.sh
