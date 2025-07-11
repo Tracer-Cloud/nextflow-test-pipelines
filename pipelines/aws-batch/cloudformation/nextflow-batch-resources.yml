@@ -336,9 +336,6 @@ Resources:
               TRACER_ENVIRONMENT="${TRACER_ENVIRONMENT:-aws_batch}" \
               TRACER_PIPELINE_TYPE="${TRACER_PIPELINE_TYPE:-rnaseq}" \
               TRACER_USER_OPERATOR="${TRACER_USER_OPERATOR:-aws_batch}" \
-              TRACER_DATABASE_HOST=tracer-cluster-v2.cluster-cdgizpzxtdp6.us-east-1.rds.amazonaws.com \
-              TRACER_DATABASE_NAME=tracer_db \
-              TRACER_DATABASE_SECRETS_ARN=arn:aws:secretsmanager:us-east-1:395261708130:secret:rds!cluster-cd690a09-953c-42e9-9d9f-1ed0b434d226-M0wZYA \
               /.tracerbio/bin/tracer init --non-interactive
           write_files:
             - path: /etc/vector/vector.yaml
