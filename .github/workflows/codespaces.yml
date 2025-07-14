@@ -54,7 +54,7 @@ jobs:
           retention-days: 7
 
   nextflow-conda-minimal:
-    name: Nextflow Conda Minimal
+    name: Nextflow Conda Minimal Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
