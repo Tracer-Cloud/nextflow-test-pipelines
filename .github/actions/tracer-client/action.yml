@@ -43,6 +43,13 @@ runs:
           source "$HOME/.profile"
         fi
 
+    - name: "Debug PATH and GITHUB_PATH"
+      shell: bash
+      run: |
+        echo "Current PATH: $PATH"
+        echo "Contents of GITHUB_PATH file:"
+        cat $GITHUB_PATH
+
     - name: "Verify Tracer Installation"
       shell: bash
       run: |
