@@ -11,7 +11,7 @@ on:
 
 jobs:
   fastquorum:
-    name: Fastquorum Codespaces
+    name: Fastquorum Pipeline
     runs-on: ubuntu-latest
     env:
       TRACER_BIO: /root/.tracerbio/bin/tracer
