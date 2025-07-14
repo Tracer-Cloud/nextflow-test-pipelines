@@ -23,7 +23,7 @@ jobs:
 
       - name: Run a tracer
         run: |
-          tracer init \
+          sudo tracer init \
           --pipeline-name github-actions \
           --environment github-actions \
           --user-operator github-actions \
@@ -65,8 +65,7 @@ jobs:
 
       - name: Run tracer init
         run: |
-          tracer init \
-          --pipeline-name github-actions \
+          sudo tracer --pipeline-name github-actions \
           --environment github-actions \
           --user-operator github-actions \
           --pipeline-type nextflow \
