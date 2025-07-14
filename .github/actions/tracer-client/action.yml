@@ -24,6 +24,17 @@ runs:
 
         curl -sSL https://install.tracer.cloud | sh
 
+    - name: "Set Tracer PATH"
+      shell: bash
+      run: |
+        if [ "$RUNNER_OS" = "Linux" ]; then
+           echo "/root/.tracerbio/bin" >> $GITHUB_PATH
+           export PATH="/root/.tracerbio/bin:$PATH"
+        elif [ "$RUNNER_OS" = "macOS" ]; then
+          echo "$HOME/.tracerbio/bin" >> $GITHUB_PATH
+          export PATH="$HOME/.tracerbio/bin:$PATH"
+        fi
+
         if [ -n "$BASH_VERSION" ] && [ -f "$HOME/.bashrc" ]; then
           source "$HOME/.bashrc"
         elif [ -n "$ZSH_VERSION" ] && [ -f "$HOME/.zshrc" ]; then
@@ -31,9 +42,6 @@ runs:
         elif [ -f "$HOME/.profile" ]; then
           source "$HOME/.profile"
         fi
-
-        echo "PATH after patch: $PATH"
-        tracer --version || true
 
     - name: "Verify Tracer Installation"
       shell: bash
