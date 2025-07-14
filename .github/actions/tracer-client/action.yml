@@ -27,18 +27,18 @@ runs:
           if grep -qi 'ubuntu' /etc/os-release; then
             # Ubuntu: install as runner user
             TRACER_PATH="$HOME/.tracerbio/bin"
-            curl -sSL https://install.tracer.cloud/ | bash
+            curl -sSL https://install.tracer.cloud | bash
           else
             # Amazon Linux or other: install as root
             TRACER_PATH="/root/.tracerbio/bin"
-            curl -sSL https://install.tracer.cloud/ | sudo bash
+            curl -sSL https://install.tracer.cloud |  bash
             sudo chmod a+rx /root/.tracerbio
             sudo chmod a+rx /root/.tracerbio/bin
             sudo chmod a+rx /root/.tracerbio/bin/tracer
           fi
         elif [ "$RUNNER_OS" = "macOS" ]; then
           TRACER_PATH="$HOME/.tracerbio/bin"
-          curl -sSL https://install.tracer.cloud/ | sudo bash
+          curl -sSL https://install.tracer.cloud |  bash
           sudo chmod a+rx "$HOME/.tracerbio"
           sudo chmod a+rx "$HOME/.tracerbio/bin"
           sudo chmod a+rx "$HOME/.tracerbio/bin/tracer"
@@ -56,4 +56,4 @@ runs:
     - name: "Verify Tracer Client"
       shell: bash
       run: |
-        sudo tracer info
+        tracer info
