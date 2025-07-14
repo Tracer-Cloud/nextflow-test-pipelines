@@ -104,6 +104,5 @@ jobs:
       - name: Clean up conda environment
         working-directory: pipelines/codespaces/nextflow-conda
         run: |
-          echo "=== Cleaning up Conda environment ==="
           rm -rf results logs work .nextflow* 2>/dev/null || true
           echo "✅ Conda cleanup completed"
