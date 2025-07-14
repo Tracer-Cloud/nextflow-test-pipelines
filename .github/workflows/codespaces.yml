@@ -11,7 +11,7 @@ on:
 
 jobs:
   nextflow-pixi-minimal:
-    name: Nextflow Pixi Minimal
+    name: Nextflow Pixi Minimal Pipeline
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
