@@ -1,6 +1,6 @@
 name: "Install Tracer Client"
 author: "Vaibhav Upreti"
-description: "Installs the Tracer Client"
+description: "Installs Tracer Client"
 
 branding:
   color: "blue"
@@ -52,7 +52,14 @@ runs:
         echo "PATH after install: $PATH"
         which tracer || true
         ls -l "$TRACER_PATH/tracer" || true
-        tracer --version || true
+
+    - name: "Set Tracer Path"
+      shell: bash
+      run: |
+        echo "$TRACER_PATH" >> $GITHUB_PATH
+        export PATH="$TRACER_PATH:$PATH"
+        echo "PATH after install: $PATH"
+
     - name: "Verify Tracer Client"
       shell: bash
       run: |
