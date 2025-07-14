@@ -26,12 +26,10 @@ runs:
           sudo curl -sSL https://install.tracer.cloud | sudo sh
           echo "/root/.tracerbio/bin" | sudo tee -a $GITHUB_PATH
           echo 'export PATH="/root/.tracerbio/bin:$PATH"' | sudo tee -a /root/.bashrc
-          sudo export PATH="/root/.tracerbio/bin:$PATH"
           sudo bash -c "source /root/.bashrc"
         elif [ "$RUNNER_OS" = "macOS" ]; then
           echo "$HOME/.tracerbio/bin" >> $GITHUB_PATH
           echo 'export PATH="$HOME/.tracerbio/bin:$PATH"' >> ~/.zshrc
-          export PATH="$HOME/.tracerbio/bin:$PATH"
           source ~/.zshrc
         fi
 

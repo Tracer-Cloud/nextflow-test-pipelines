@@ -30,7 +30,7 @@ jobs:
           --pipeline-type nextflow \
           --is-dev true
 
-      - name: Run pipeline with Pixi
+      - name: Run pipeline using Pixi
         working-directory: pipelines/codespaces/nextflow-pixi
         run: |
           ./run.sh
