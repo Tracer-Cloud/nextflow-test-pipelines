@@ -26,10 +26,18 @@ runs:
           TRACER_PATH="/root/.tracerbio/bin"
           curl -sSL https://install.tracer.cloud | bash
           sudo chmod -R a+rx "/root/.tracerbio"
+          # Move tracer binary to /usr/local/bin
+          sudo mv "$TRACER_PATH/tracer" /usr/local/bin/tracer
+          sudo chmod a+rx /usr/local/bin/tracer
+          TRACER_PATH="/usr/local/bin"
         elif [ "$RUNNER_OS" = "macOS" ]; then
           TRACER_PATH="$HOME/.tracerbio/bin"
           curl -sSL https://install.tracer.cloud | bash
           sudo chmod -R a+rx "$HOME/.tracerbio"
+          # Move tracer binary to /usr/local/bin
+          sudo mv "$TRACER_PATH/tracer" /usr/local/bin/tracer
+          sudo chmod a+rx /usr/local/bin/tracer
+          TRACER_PATH="/usr/local/bin"
         else
           echo "Unsupported OS: $RUNNER_OS"
           exit 1
