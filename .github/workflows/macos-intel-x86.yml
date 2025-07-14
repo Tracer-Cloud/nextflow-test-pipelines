@@ -24,7 +24,7 @@ jobs:
       - name: Install tracer
         continue-on-error: true
         run: |
-          curl -sSL https://install.tracer.cloud/ | bash || echo "Tracer installation failed"
+          curl -sSL https://install.tracer.cloud | sh
 
       - name: Run tracer init
         run: |

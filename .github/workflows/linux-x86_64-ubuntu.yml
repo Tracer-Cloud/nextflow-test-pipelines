@@ -70,7 +70,7 @@ jobs:
 
       - name: Install tracer
         run: |
-          curl -sSL https://install.tracer.cloud/ | sudo bash
+          curl -sSL https://install.tracer.cloud | sh
           echo "/root/.tracerbio/bin" | sudo tee -a $GITHUB_PATH
 
       - name: Add tracer to PATH
@@ -116,7 +116,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install tracer
         run: |
-          curl -sSL https://install.tracer.cloud/ | sudo bash
+          curl -sSL https://install.tracer.cloud | sh
           echo "/root/.tracerbio/bin" | sudo tee -a $GITHUB_PATH
 
       - name: Run tracer init
