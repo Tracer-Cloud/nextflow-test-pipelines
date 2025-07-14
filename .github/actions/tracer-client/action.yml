@@ -25,42 +25,34 @@ runs:
         # Detect OS and Distro
         if [ "$RUNNER_OS" = "Linux" ]; then
           if grep -qi 'ubuntu' /etc/os-release; then
-            # Ubuntu: install as runner user
             TRACER_PATH="/root/.tracerbio/bin"
             curl -sSL https://install.tracer.cloud | bash
           else
-            # Amazon Linux or other: install as root
             TRACER_PATH="/root/.tracerbio/bin"
             curl -sSL https://install.tracer.cloud |  bash
-            sudo chmod a+rx /root/.tracerbio
-            sudo chmod a+rx /root/.tracerbio/bin
-            sudo chmod a+rx /root/.tracerbio/bin/tracer
+            sudo chmod -R a+rx /root/.tracerbio
           fi
         elif [ "$RUNNER_OS" = "macOS" ]; then
           TRACER_PATH="$HOME/.tracerbio/bin"
           curl -sSL https://install.tracer.cloud |  bash
-          sudo chmod a+rx "$HOME/.tracerbio"
-          sudo chmod a+rx "$HOME/.tracerbio/bin"
-          sudo chmod a+rx "$HOME/.tracerbio/bin/tracer"
+          sudo chmod -R a+rx "$HOME/.tracerbio"
         else
           echo "Unsupported OS: $RUNNER_OS"
           exit 1
         fi
 
+        echo "TRACER_PATH=$TRACER_PATH" >> $GITHUB_ENV
         echo "$TRACER_PATH" >> $GITHUB_PATH
-        export PATH="$TRACER_PATH:$PATH"
-        echo "PATH after install: $PATH"
-        which tracer || true
+        echo "PATH after install: $TRACER_PATH:$PATH"
         ls -l "$TRACER_PATH/tracer" || true
-
-    - name: "Set Tracer Path"
-      shell: bash
-      run: |
-        echo "$TRACER_PATH" >> $GITHUB_PATH
-        export PATH="$TRACER_PATH:$PATH"
-        echo "PATH after install: $PATH"
+        which tracer || true
+        tracer --version || true
 
     - name: "Verify Tracer Client"
       shell: bash
       run: |
+        echo "PATH in verify step: $PATH"
+        echo "TRACER_PATH in verify step: $TRACER_PATH"
+        which tracer || true
+        ls -l "$TRACER_PATH/tracer" || true
         tracer info
