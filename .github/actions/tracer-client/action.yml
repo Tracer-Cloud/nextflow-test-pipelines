@@ -37,6 +37,7 @@ runs:
           echo 'export PATH="$HOME/.tracerbio/bin:$PATH"' >> ~/.zshrc
           export PATH="$HOME/.tracerbio/bin:$PATH"
           source ~/.zshrc
+        fi
 
     - name: "Debug PATH and GITHUB_PATH"
       shell: bash
