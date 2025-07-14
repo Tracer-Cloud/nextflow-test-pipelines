@@ -59,17 +59,17 @@ You can test your pipelines using tracer, or use our pipelines to test out trace
 
 - [Codespaces](./pipelines/codespaces/)
 
-- [Linux x86_64]
+- [Linux x86_64](./pipelines/)
 
   - [Ubuntu](./pipelines/linux-x86-ubuntu/)
   - [Amazon Linux](./pipelines/linux-arm-amazon-linux/)
 
-- [Linux aarch64]
+- [Linux aarch64](./pipelines/)
 
   - [Ubuntu](./pipelines/linux-arm-ubuntu/)
   - [Amazon Linux](./pipelines/linux-arm-amazon-linux/)
 
-- [macOS]
+- [macOS](./pipelines/)
 
   - [Apple Silicon / arm64](./pipelines/macos-arm64/)
   - [Apple Intel / x86](./pipelines/macos-intel-x86/)
