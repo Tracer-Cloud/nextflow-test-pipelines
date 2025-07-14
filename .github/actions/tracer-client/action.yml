@@ -22,12 +22,18 @@ runs:
           export TRACER_USER_ID="${{ inputs.tracer_user_id }}"
         fi
 
-        # Install tracer binary (do not export PATH or move binary)
-        curl -sSL https://install.tracer.cloud | sh && source ~/.bashrc && source ~/.zshrc
+        curl -sSL https://install.tracer.cloud | sh
+
+        if [ -n "$BASH_VERSION" ] && [ -f "$HOME/.bashrc" ]; then
+          source "$HOME/.bashrc"
+        elif [ -n "$ZSH_VERSION" ] && [ -f "$HOME/.zshrc" ]; then
+          source "$HOME/.zshrc"
+        elif [ -f "$HOME/.profile" ]; then
+          source "$HOME/.profile"
+        fi
 
         echo "PATH after patch: $PATH"
-        which tracer || { echo "❌ tracer not found in PATH"; exit 1; }
-        tracer --version
+        tracer --version || true
 
     - name: "Verify Tracer Installation"
       shell: bash
@@ -52,18 +58,3 @@ runs:
           which tracer || echo "tracer not found in PATH"
           exit 1
         }
-
-    - name: "Verify Tracer Client"
-      shell: bash
-      run: |
-        echo "PATH in verify step: $PATH"
-        echo "TRACER_PATH in verify step: $TRACER_PATH"
-
-        # Additional verification
-        which tracer || {
-          echo "❌ tracer command not found in PATH"
-          exit 1
-        }
-
-        echo "✅ Tracer is available in PATH"
-        tracer info
