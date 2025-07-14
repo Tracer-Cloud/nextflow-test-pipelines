@@ -23,9 +23,9 @@ runs:
         fi
 
         if [ "$RUNNER_OS" = "Linux" ]; then
-          TRACER_PATH="root/.tracerbio/bin"
+          TRACER_PATH="/root/.tracerbio/bin"
           curl -sSL https://install.tracer.cloud | bash
-          sudo chmod -R a+rx "root/.tracerbio"
+          sudo chmod -R a+rx "/root/.tracerbio"
         elif [ "$RUNNER_OS" = "macOS" ]; then
           TRACER_PATH="$HOME/.tracerbio/bin"
           curl -sSL https://install.tracer.cloud |  bash
@@ -35,11 +35,13 @@ runs:
           exit 1
         fi
 
+    - name: "Set Tracer Path"
+      shell: bash
+      run: |
         echo "TRACER_PATH=$TRACER_PATH" >> $GITHUB_ENV
         echo "$TRACER_PATH" >> $GITHUB_PATH
         echo "PATH after install: $TRACER_PATH:$PATH"
-        sudo ls -l "$TRACER_PATH/tracer" || true
-        which tracer || true
+        ls -l "$TRACER_PATH/tracer" || true
         tracer --version || true
 
     - name: "Verify Tracer Client"
