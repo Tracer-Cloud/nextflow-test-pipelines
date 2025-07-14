@@ -28,26 +28,52 @@ runs:
           sudo chmod -R a+rx "/root/.tracerbio"
         elif [ "$RUNNER_OS" = "macOS" ]; then
           TRACER_PATH="$HOME/.tracerbio/bin"
-          curl -sSL https://install.tracer.cloud |  bash
+          curl -sSL https://install.tracer.cloud | bash
           sudo chmod -R a+rx "$HOME/.tracerbio"
         else
           echo "Unsupported OS: $RUNNER_OS"
           exit 1
         fi
 
-    - name: "Set Tracer Path"
-      shell: bash
-      run: |
+        # Set the environment variables for subsequent steps
         echo "TRACER_PATH=$TRACER_PATH" >> $GITHUB_ENV
         echo "$TRACER_PATH" >> $GITHUB_PATH
-        echo "PATH after install: $TRACER_PATH:$PATH"
-        ls -l "$TRACER_PATH/tracer" || true
-        tracer --version || true
+
+    - name: "Verify Tracer Installation"
+      shell: bash
+      run: |
+        echo "PATH after install: $PATH"
+        echo "TRACER_PATH: $TRACER_PATH"
+
+        # Check if tracer binary exists
+        if [ -f "$TRACER_PATH/tracer" ]; then
+          echo "✅ Tracer binary found at $TRACER_PATH/tracer"
+          ls -l "$TRACER_PATH/tracer"
+        else
+          echo "❌ Tracer binary not found at $TRACER_PATH/tracer"
+          exit 1
+        fi
+
+        # Test tracer command
+        echo "Testing tracer --version:"
+        tracer --version || {
+          echo "❌ tracer --version failed"
+          echo "Current PATH: $PATH"
+          which tracer || echo "tracer not found in PATH"
+          exit 1
+        }
 
     - name: "Verify Tracer Client"
       shell: bash
       run: |
         echo "PATH in verify step: $PATH"
         echo "TRACER_PATH in verify step: $TRACER_PATH"
-        which tracer || true
+
+        # Additional verification
+        which tracer || {
+          echo "❌ tracer command not found in PATH"
+          exit 1
+        }
+
+        echo "✅ Tracer is available in PATH"
         tracer info
