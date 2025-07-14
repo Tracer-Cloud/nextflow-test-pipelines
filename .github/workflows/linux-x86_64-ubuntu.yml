@@ -35,8 +35,8 @@ jobs:
 
       - name: Test tracer
         run: |
-          sudo tracer info
-          sudo tracer info --json
+          sudo $TRACER_BIO info
+          sudo $TRACER_BIO info --json
 
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer
