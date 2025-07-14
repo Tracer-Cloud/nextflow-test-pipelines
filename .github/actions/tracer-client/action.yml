@@ -22,17 +22,10 @@ runs:
           export TRACER_USER_ID="${{ inputs.tracer_user_id }}"
         fi
 
-        # Detect OS and Distro
         if [ "$RUNNER_OS" = "Linux" ]; then
-          if grep -qi 'ubuntu' /etc/os-release; then
-            TRACER_PATH="/root/.tracerbio/bin"
-            curl -sSL https://install.tracer.cloud | bash
-          else
-            TRACER_PATH="/root/.tracerbio/bin"
-            curl -sSL https://install.tracer.cloud |  bash
-          fi
-          # Ensure permissions for all users
-          sudo chmod -R a+rx /root/.tracerbio
+          TRACER_PATH="root/.tracerbio/bin"
+          curl -sSL https://install.tracer.cloud | bash
+          sudo chmod -R a+rx "root/.tracerbio"
         elif [ "$RUNNER_OS" = "macOS" ]; then
           TRACER_PATH="$HOME/.tracerbio/bin"
           curl -sSL https://install.tracer.cloud |  bash
@@ -47,7 +40,7 @@ runs:
         echo "PATH after install: $TRACER_PATH:$PATH"
         sudo ls -l "$TRACER_PATH/tracer" || true
         which tracer || true
-        sudo "$TRACER_PATH/tracer" --version || true
+        tracer --version || true
 
     - name: "Verify Tracer Client"
       shell: bash
@@ -55,5 +48,4 @@ runs:
         echo "PATH in verify step: $PATH"
         echo "TRACER_PATH in verify step: $TRACER_PATH"
         which tracer || true
-        sudo ls -l "$TRACER_PATH/tracer" || true
-        sudo "$TRACER_PATH/tracer" info
+        tracer info

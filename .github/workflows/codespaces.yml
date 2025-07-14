@@ -21,7 +21,7 @@ jobs:
         with:
           tracer_user_id: ${{ secrets.ACTIONS_TRACER_USER_ID }}
 
-      - name: Run tracer init
+      - name: Run a tracer pipeline
         run: |
           tracer init \
           --pipeline-name github-actions \
