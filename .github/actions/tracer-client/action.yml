@@ -38,23 +38,4 @@ runs:
     - name: "Verify Tracer Installation"
       shell: bash
       run: |
-        echo "PATH after install: $PATH"
-        echo "TRACER_PATH: $TRACER_PATH"
-
-        # Check if tracer binary exists
-        if [ -f "$TRACER_PATH/tracer" ]; then
-          echo "✅ Tracer binary found at $TRACER_PATH/tracer"
-          ls -l "$TRACER_PATH/tracer"
-        else
-          echo "❌ Tracer binary not found at $TRACER_PATH/tracer"
-          exit 1
-        fi
-
-        # Test tracer command
-        echo "Testing tracer --version:"
-        tracer --version || {
-          echo "❌ tracer --version failed"
-          echo "Current PATH: $PATH"
-          which tracer || echo "tracer not found in PATH"
-          exit 1
-        }
+        tracer --version
