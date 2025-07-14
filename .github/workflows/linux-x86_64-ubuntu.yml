@@ -33,6 +33,11 @@ jobs:
         run: |
           ./run.sh
 
+      - name: Test tracer
+        run: |
+          sudo tracer info
+          sudo tracer info --json
+
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer
         with:
