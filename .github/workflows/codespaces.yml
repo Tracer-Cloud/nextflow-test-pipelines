@@ -97,6 +97,7 @@ jobs:
           is_ebpf: true
           use_sudo: true
           binary: $TRACER_BIO
+          required_processes_ebpf: "FastQC,samtools sort"
 
       - name: Upload pixi pipeline results
         uses: actions/upload-artifact@v4
@@ -144,6 +145,7 @@ jobs:
           is_ebpf: false
           use_sudo: true
           binary: $TRACER_BIO
+          required_processes_ebpf: "FastQC,samtools sort"
 
       - name: Upload conda pipeline results
         uses: actions/upload-artifact@v4
