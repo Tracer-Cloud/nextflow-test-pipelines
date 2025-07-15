@@ -26,7 +26,7 @@
 
 ---
 
-Tracer is a system-level observability platform purpose-built for scientific computing. With a one-line Linux agent install and instant dashboards, Tracer gives you deep insights into pipeline performance and cost optimization.
+Tracer is a system-level observability platform purpose-built for scientific computing. With a one-line Linux client install and instant dashboards, Tracer gives you deep insights into pipeline performance and cost optimization.
 
 ---
 
@@ -61,7 +61,7 @@ curl -sSL https://install.tracer.cloud | sh && source ~/.bashrc && source ~/.zsh
 
 ### 2. Initialize the Tracer Client
 
-Start the Tracer agent to enable monitoring:
+Start the Tracer client to initialize a pipeline and enable monitoring:
 
 > **Note:** Root privileges required
 
@@ -87,13 +87,7 @@ You can use your own pipelines or try our ready-to-run examples. For the smoothe
 
 We provide a variety of examples for different compute environments, written in Bash, Python, Nextflow, WDL, and CWL.
 
-**Recommended:** Start with a simple Nextflow RNA-seq pipeline:
-
-```bash
-./run.sh
-```
-
-Other pipelines can be found under the `pipelines/` directory. Explore, experiment, and have fun!
+**Recommended:** Start with a simple Nextflow fastquorum pipeline.
 
 ---
 
@@ -135,7 +129,7 @@ These insights help you optimize complex scientific toolchains that traditionall
 
 ## Mission
 
-> "_The goal of Tracer's Rust agent is to equip scientists and engineers with DevOps intelligence to efficiently harness massive computational power for humanity's most critical challenges._"
+> "_The goal of Tracer's Rust client is to equip scientists and engineers with DevOps intelligence to efficiently harness massive computational power for humanity's most critical challenges._"
 
 ---
 
