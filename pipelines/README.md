@@ -1,15 +1,20 @@
-# Tracer Bioinformatics Test Pipelines
-
-This repository contains validated test pipelines for various bioinformatics platforms and environments, organized by architecture and package management solutions.
+# Tracer Bioinformatics Pipelines
 
 ## Supported Platforms
 
 Choose your platform below to find validated examples with different package managers:
 
-- [macOS ARM64 (Apple Silicon M1/M2)](macos-arm64/)
-- [macOS Intel (x86_64)](macos-intel-x86/)
-- [Linux ARM (Ubuntu/CentOS)](linux-arm-ubuntu/)
-- [Linux x86 (Ubuntu/CentOS)](linux-x86-ubuntu/)
+- **[Codespaces](./pipelines/codespaces/)**
+- **[Linux x86_64](./pipelines/)**
+  - [Ubuntu](./pipelines/linux-x86-ubuntu/)
+  - [Amazon Linux](./pipelines/linux-arm-amazon-linux/)
+- **[Linux aarch64](./pipelines/)**
+  - [Ubuntu](./pipelines/linux-arm-ubuntu/)
+  - [Amazon Linux](./pipelines/linux-arm-amazon-linux/)
+- **[macOS](./pipelines/)**
+  - [Apple Silicon / arm64](./pipelines/macos-arm64/)
+  - [Apple Intel / x86](./pipelines/macos-intel-x86/)
+- **[AWS Batch](./pipelines/aws-batch/)**
 
 Navigate to your platform's directory to find working examples with supported package managers.
 
