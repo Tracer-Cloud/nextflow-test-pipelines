@@ -27,10 +27,16 @@ jobs:
       - name: Install tracer
         continue-on-error: true
         run: |
-          curl -sSL https://install.tracer.cloud | sh
+          curl -sSL https://install.tracer.cloud | sudo bash
+
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+          sudo $TRACER_BIO init \
+            --pipeline-name github-actions \
+            --environment github-actions \
+            --user-operator github-actions \
+            --pipeline-type nextflow \
+            --is-dev true
 
       - name: Run pipeline with Pixi
         working-directory: pipelines/macos-arm64/fastquorum

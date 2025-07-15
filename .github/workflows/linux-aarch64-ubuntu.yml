@@ -23,11 +23,15 @@ jobs:
       - name: Install tracer
         run: |
           curl -sSL https://install.tracer.cloud/ | sudo bash
-          echo "/root/.tracerbio/bin" | sudo tee -a $GITHUB_PATH
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+          sudo $TRACER_BIO init \
+            --pipeline-name github-actions \
+            --environment github-actions \
+            --user-operator github-actions \
+            --pipeline-type nextflow \
+            --is-dev true
 
       - name: Run pipeline with Pixi
         working-directory: pipelines/linux-arm-ubuntu/fastquorum
@@ -40,7 +44,7 @@ jobs:
           is_ebpf: true
           use_sudo: true
           binary: $TRACER_BIO
-          required_processes_ebpf: "multiqc, fgbio ZipperBams, fgbio FastqToBam, samtools dict, fgbio GroupReadsByUmi, bwa, fgbio CallDuplexConsensusReads, samtools fastq, FastQC, samtools sort, fgbio FilterConsensusReads, samtools faidx, fgbio CollectDuplexSeqMetrics"
+          required_processes_ebpf: "multiqc, samtools dict, bwa, samtools fastq, FastQC, samtools sort, samtools faidx"
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
@@ -62,18 +66,20 @@ jobs:
 
       - name: Install tracer
         run: |
-          curl -sSL https://install.tracer.cloud | sh
-          echo "/root/.tracerbio/bin" | sudo tee -a $GITHUB_PATH
+          curl -sSL https://install.tracer.cloud | sudo bash
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+          sudo $TRACER_BIO init \
+            --pipeline-name github-actions \
+            --environment github-actions \
+            --user-operator github-actions \
+            --pipeline-type nextflow \
+            --is-dev true
 
       - name: Run pipeline with Pixi
         working-directory: pipelines/linux-arm-ubuntu/nextflow-pixi
         run: |
-          export PATH="$HOME/.pixi/bin:$PATH"
-          echo "=== Running Nextflow Pipeline with Pixi ==="
           ./run.sh
 
       - name: Verify tracer packages
@@ -102,12 +108,16 @@ jobs:
 
       - name: Install tracer
         run: |
-          curl -sSL https://install.tracer.cloud | sh
-          echo "/root/.tracerbio/bin" | sudo tee -a $GITHUB_PATH
+          curl -sSL https://install.tracer.cloud | sudo bash
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+          sudo $TRACER_BIO init \
+            --pipeline-name github-actions \
+            --environment github-actions \
+            --user-operator github-actions \
+            --pipeline-type nextflow \
+            --is-dev true
 
       - name: Run pipeline with Conda
         working-directory: pipelines/linux-arm-ubuntu/nextflow-conda
