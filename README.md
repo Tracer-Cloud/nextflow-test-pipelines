@@ -133,4 +133,4 @@ These insights help you optimize complex scientific toolchains that traditionall
 
 ---
 
-For more details, see the [tracer client](https://github.com/Tracer-Cloud/tracer-client) and our [documentation](https://tracer.cloud).
+For more details, see the [tracer client](https://github.com/Tracer-Cloud/tracer-client) and our [website](https://tracer.cloud).
