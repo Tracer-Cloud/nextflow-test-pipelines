@@ -31,7 +31,7 @@ jobs:
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
-            --pipeline-type nextflow \
+            --pipeline-type fastquorums \
             --is-dev true \
 
       - name: Run pipeline with Pixi
@@ -64,18 +64,10 @@ jobs:
       TRACER_BIO: /root/.tracerbio/bin/tracer
     steps:
       - uses: actions/checkout@v4
-      - name: Cache Pixi environment
-        uses: actions/cache@v4
-        with:
-          path: |
-            pipelines/codespaces/.pixi
-          key: pixi-codespaces-${{ runner.os }}-${{ hashFiles('pipelines/codespaces/pixi.toml') }}
-          restore-keys: |
-            pixi-codespaces-${{ runner.os }}-
       - name: Install tracer
         continue-on-error: true
         run: |
-          curl -sSL https://install.tracer.cloud | sh
+          curl -sSL https://install.tracer.cloud | sudo bash
 
       - name: Run tracer init
         run: |
@@ -86,19 +78,10 @@ jobs:
             --pipeline-type nextflow \
             --is-dev true
 
-      - name: Check tracer
-        run: |
-          sudo $TRACER_BIO info
-
       - name: Run pipeline with Pixi
         working-directory: pipelines/codespaces/nextflow-pixi
         run: |
-          export PATH="$HOME/.pixi/bin:$PATH"
           ./run.sh
-
-      - name: Check tracer
-        run: |
-          sudo $TRACER_BIO info
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer
         with:
@@ -125,19 +108,10 @@ jobs:
       TRACER_BIO: /root/.tracerbio/bin/tracer
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Miniconda
-        uses: conda-incubator/setup-miniconda@v3
-        with:
-          auto-update-conda: true
-          python-version: 3.12
-          miniforge-variant: Miniforge3
-          miniforge-version: latest
-
       - name: Install tracer
         continue-on-error: true
         run: |
-          curl -sSL https://install.tracer.cloud | sh
+          curl -sSL https://install.tracer.cloud | sudo bash
 
       - name: Run tracer init
         run: |
@@ -151,7 +125,6 @@ jobs:
       - name: Run pipeline with Conda
         working-directory: pipelines/codespaces/nextflow-conda
         run: |
-          source ~/miniconda3/etc/profile.d/conda.sh
           ./run.sh
 
       - name: Verify tracer packages
