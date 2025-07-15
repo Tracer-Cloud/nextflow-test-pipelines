@@ -86,15 +86,28 @@ jobs:
             --pipeline-type nextflow \
             --is-dev true
 
+      - name: Check tracer
+        run: |
+          sudo $TRACER_BIO info
+
       - name: Run pipeline with Pixi
         working-directory: pipelines/codespaces/nextflow-pixi
         run: |
           export PATH="$HOME/.pixi/bin:$PATH"
           ./run.sh
 
-      - name: Verify tracer packages
+      - name: Check tracer
         run: |
           sudo $TRACER_BIO info
+      - name: Verify tracer packages
+        uses: ./.github/actions/verify-tracer
+        with:
+          is_ebpf: true
+          use_sudo: true
+          binary: $TRACER_BIO
+          required_processes_ebpf: "STAR,FastQC,samtools sort"
+          required_processes_polling: "STAR,FastQC,salmon"
+
       - name: Upload pixi pipeline results
         uses: actions/upload-artifact@v4
         if: always()
@@ -151,8 +164,14 @@ jobs:
           ./run.sh
 
       - name: Verify tracer packages
-        run: |
-          sudo $TRACER_BIO info
+        uses: ./.github/actions/verify-tracer
+        with:
+          is_ebpf: false
+          use_sudo: true
+          binary: $TRACER_BIO
+          required_processes_ebpf: "STAR,FastQC,samtools sort"
+          required_processes_polling: "STAR,FastQC,salmon"
+
       - name: Upload conda pipeline results
         uses: actions/upload-artifact@v4
         if: always()
