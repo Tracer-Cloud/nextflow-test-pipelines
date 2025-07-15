@@ -27,7 +27,12 @@ jobs:
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+          sudo $TRACER_BIO init \
+            --pipeline-name github-actions \
+            --environment github-actions \
+            --user-operator github-actions \
+            --pipeline-type nextflow \
+            --is-dev true \
 
       - name: Run pipeline with Pixi
         working-directory: pipelines/codespaces/fastquorum
@@ -74,13 +79,17 @@ jobs:
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+          sudo $TRACER_BIO init \
+            --pipeline-name github-actions \
+            --environment github-actions \
+            --user-operator github-actions \
+            --pipeline-type nextflow \
+            --is-dev true
 
       - name: Run pipeline with Pixi
         working-directory: pipelines/codespaces/nextflow-pixi
         run: |
           export PATH="$HOME/.pixi/bin:$PATH"
-          echo "=== Running Codespaces Pixi Pipeline ==="
           ./run.sh
 
       - name: Verify tracer packages
@@ -127,7 +136,12 @@ jobs:
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+          sudo $TRACER_BIO init \
+            --pipeline-name github-actions \
+            --environment github-actions \
+            --user-operator github-actions \
+            --pipeline-type nextflow \
+            --is-dev true
 
       - name: Run pipeline with Conda
         working-directory: pipelines/codespaces/nextflow-conda
