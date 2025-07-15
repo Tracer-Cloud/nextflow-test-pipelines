@@ -138,14 +138,6 @@ jobs:
         continue-on-error: true
         run: |
           curl -sSL https://install.tracer.cloud | sh
-          # Verify tracer installation
-          if command -v tracer >/dev/null 2>&1; then
-            echo "✅ Tracer installed successfully"
-            tracer --version || echo "Tracer version check failed"
-          else
-            echo "❌ Tracer installation failed"
-            exit 1
-          fi
 
       - name: Run tracer init
         run: |
@@ -160,7 +152,6 @@ jobs:
         working-directory: pipelines/codespaces/nextflow-conda
         run: |
           source ~/miniconda3/etc/profile.d/conda.sh
-          echo "=== Running Codespaces Conda Pipeline ==="
           ./run.sh
 
       - name: Verify tracer packages
@@ -181,29 +172,3 @@ jobs:
             pipelines/codespaces/nextflow-conda/results/
             pipelines/codespaces/nextflow-conda/logs/
           retention-days: 7
-
-  cleanup:
-    name: Cleanup
-    runs-on: ubuntu-latest
-    needs: [codespaces-pixi-test, codespaces-conda-test]
-    if: always()
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Clean up pixi environment
-        working-directory: pipelines/codespaces/nextflow-pixi
-        run: |
-          echo "=== Cleaning up Pixi environment ==="
-          if command -v pixi >/dev/null 2>&1; then
-            export PATH="$HOME/.pixi/bin:$PATH"
-            pixi run clean || true
-          fi
-          rm -rf results logs work .nextflow* 2>/dev/null || true
-          echo "✅ Pixi cleanup completed"
-
-      - name: Clean up conda environment
-        working-directory: pipelines/codespaces/nextflow-conda
-        run: |
-          echo "=== Cleaning up Conda environment ==="
-          rm -rf results logs work .nextflow* 2>/dev/null || true
-          echo "✅ Conda cleanup completed"
