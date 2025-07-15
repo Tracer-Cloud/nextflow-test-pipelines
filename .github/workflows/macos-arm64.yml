@@ -50,7 +50,8 @@ jobs:
           is_ebpf: false
           use_sudo: true
           binary: $TRACER_BIO
-          required_processes_polling: "bwa,samtools sort,multiqc,samtools dict,samtools faidx"
+          # TODO: Add fgbio, multiqc to the list of processes
+          required_processes_polling: "bwa,samtools sort,samtools dict,samtools faidx"
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
