@@ -21,7 +21,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Tracer-Cloud/nextflow-test-pipelines/tree/main/pipelines/codespaces"><img alt="Open in GitHub Codespaces" src="https://github.com/codespaces/badge.svg"></a>
+  <a href="https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=920248651&machine=largePremiumLinux"><img alt="Open in GitHub Codespaces" src="https://github.com/codespaces/badge.svg"></a>
 </p>
 
 ---
