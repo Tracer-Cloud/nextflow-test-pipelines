@@ -18,15 +18,15 @@ bwa = ">=0.7.17"
 fgbio = ">=2.0.0"
 
 [tasks]
-pipeline = "nextflow run nf-core/fastquorum -profile test --input ../../shared/fastquorum/samplesheet.csv --outdir results"
-pipeline-custom = "nextflow run nf-core/fastquorum -profile test --input $1 --outdir $2 --genome $3"
+pipeline = "nextflow run nf-core/fastquorum -c ../../shared/fastquorum/custom.config -profile test --input ../../shared/fastquorum/samplesheet.csv --outdir results"
+pipeline-custom = "nextflow run nf-core/fastquorum -c ../../shared/fastquorum/custom.config -profile test --input $1 --outdir $2 --genome $3"
 
-test = "nextflow run nf-core/fastquorum -profile test --input samplesheet.csv --outdir test_results"
+test = "nextflow run nf-core/fastquorum -c ../../shared/fastquorum/custom.config -profile test --input samplesheet.csv --outdir test_results"
 
 clean = { cmd = [
     "/bin/sh",
     "-c",
-    "rm -rf results logs work test_results custom_results .nextflow* && echo '✅ Cleaned up all results and logs'"
+    "rm -rf results logs work test_results custom_results .nextflow*"
 ]}
 
 check-env = { cmd = [
@@ -50,7 +50,6 @@ check-env = { cmd = [
     fgbio --version && \
     echo 'Nextflow version:' && \
     nextflow -v && \
-    echo '=== Environment Ready ==='
     """
 ]}
 
