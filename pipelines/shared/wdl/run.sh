@@ -50,4 +50,4 @@ fi
 
 
 echo "Running Tracer WDL Minimal pipeline"
-pixi run miniwdl run workflows/tracer_wdl_minimal.wdl -i inputs/tracer_wdl_minimal.inputs.json
+pixi run pipeline
