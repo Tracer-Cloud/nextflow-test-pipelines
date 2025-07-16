@@ -1,4 +1,4 @@
-workflow mini_star_fastqc_samtools_pipeline {
+workflow tracer_wdl_minimal {
   input {
     File fastq1 = "data/sample_R1.fastq"
     File fastq2 = "data/sample_R2.fastq"

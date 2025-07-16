@@ -1,7 +1,7 @@
 {
-  "bioinformatics_demo_pipeline.fastq1": "data/sample_R1.fastq",
-  "bioinformatics_demo_pipeline.fastq2": "data/sample_R2.fastq",
-  "bioinformatics_demo_pipeline.reference_fasta": "data/genome.fa",
-  "bioinformatics_demo_pipeline.gtf": "data/genes.gtf",
-  "bioinformatics_demo_pipeline.test_bam": "data/test.bam"
+  "tracer_wdl_minimal.fastq1": "data/reads_1.fastq.gz.gz",
+  "tracer_wdl_minimal.fastq2": "data/reads_2.fastq.gz.gz",
+  "tracer_wdl_minimal.reference_fasta": "data/genome.fa",
+  "tracer_wdl_minimal.gtf": "data/genes.gtf",
+  "tracer_wdl_minimal.test_bam": "data/test.bam"
 }
