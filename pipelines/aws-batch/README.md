@@ -100,6 +100,19 @@ aws cloudformation deploy \
   --stack-name nextflow-batch-resources \
   --capabilities CAPABILITY_NAMED_IAM
 ```
+#### Full command
+
+```bash
+aws cloudformation deploy \
+  --template-file ./cloudformation/nextflow-batch-resources.yml \
+  --stack-name nextflow-batch-resources \
+  --capabilities CAPABILITY_NAMED_IAM \
+  --region us-east-1 \
+  --parameter-overrides \
+    VPC=vpc-0f2ef3c2fffcda11c \
+    InstanceConnectEndpointSubnet=subnet-09f1849d671b6a064 \
+    Subnets="subnet-0eccd7f096a709d8c,subnet-0d0d475fbd710814c,subnet-0c28e20367794ab28,subnet-09f1849d671b6a064,subnet-067507b22f881d449,subnet-08e6c8f49086b7ccd"
+```
 
 This will provision IAM roles, job queues, and compute environments needed for Nextflow pipelines on AWS Batch.
 
