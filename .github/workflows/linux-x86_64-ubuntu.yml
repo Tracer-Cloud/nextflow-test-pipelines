@@ -15,9 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Tracer
+      - name: Install tracer
         run: |
-          curl -sSL https://install.tracer.cloud/ | sudo bash  && source ~/.bashrc && source ~/.profile
+          curl -sSL https://install.tracer.cloud/ | sudo bash
+          echo "/root/.tracerbio/bin" | sudo tee -a $GITHUB_PATH
 
       - name: Run tracer init
         run: |
@@ -25,8 +26,9 @@ jobs:
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
-            --pipeline-type nextflow \
+            --pipeline-type wdl \
             --is-dev true
+
       - name: Run pipeline
         working-directory: pipelines/linux-x86-ubuntu/wdl
         run: |
