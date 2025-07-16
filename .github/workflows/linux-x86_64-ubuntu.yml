@@ -32,7 +32,7 @@ jobs:
             --is-dev true
 
       - name: Run pipeline
-        working-directory: pipelines/linux-x86-ubuntu/wdl
+        working-directory: pipelines/shared/wdl
         run: |
           ./run.sh
 
