@@ -13,13 +13,15 @@ jobs:
   wdl:
     name: Tracer WDL Minimal
     runs-on: ubuntu-latest
+    env:
+      TRACER_BIO: /root/.tracerbio/bin/tracer
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - name: Install tracer
         run: |
           curl -sSL https://install.tracer.cloud/ | sudo bash
           echo "/root/.tracerbio/bin" | sudo tee -a $GITHUB_PATH
-
       - name: Run tracer init
         run: |
           sudo $TRACER_BIO init \
@@ -72,7 +74,7 @@ jobs:
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
-            --pipeline-type nextflow \
+            --pipeline-type fastquorum \
             --is-dev true
 
       - name: Run pipeline with Pixi
