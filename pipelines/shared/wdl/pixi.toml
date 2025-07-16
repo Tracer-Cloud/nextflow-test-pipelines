@@ -1,0 +1,17 @@
+[project]
+name = "miniwdl-bio"
+channels = ["conda-forge", "bioconda"]
+platforms = ["osx-arm64", "osx-64", "linux-64", "linux-aarch64"]
+
+[dependencies]
+python = "3.*"
+miniwdl = "*"
+samtools = "*"
+star = "*"
+fastqc = "*"
+gffread = "*"
+picard = "*"
+
+[tasks]
+pipeline = "pixi run miniwdl run workflows/tracer_wdl_minimal.wdl -i inputs/tracer_wdl_minimal.inputs.json"
+

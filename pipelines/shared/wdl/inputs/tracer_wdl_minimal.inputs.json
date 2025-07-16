@@ -1,0 +1,7 @@
+{
+  "bioinformatics_demo_pipeline.fastq1": "data/sample_R1.fastq",
+  "bioinformatics_demo_pipeline.fastq2": "data/sample_R2.fastq",
+  "bioinformatics_demo_pipeline.reference_fasta": "data/genome.fa",
+  "bioinformatics_demo_pipeline.gtf": "data/genes.gtf",
+  "bioinformatics_demo_pipeline.test_bam": "data/test.bam"
+}

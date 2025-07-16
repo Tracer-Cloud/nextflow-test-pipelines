@@ -1,6 +1,0 @@
-{
-  "star_fastqc_multiqc_workflow.fastqgz_file_read_1": "reads/sample_1.fastq.gz",
-  "star_fastqc_multiqc_workflow.fastqgz_file_read_2": "reads/sample_2.fastq.gz",
-  "star_fastqc_multiqc_workflow.sample_id": "sampleA",
-  "star_fastqc_multiqc_workflow.star_index_tarball": "reference/star_index.tar.gz"
-}

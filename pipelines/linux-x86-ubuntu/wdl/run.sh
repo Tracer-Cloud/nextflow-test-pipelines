@@ -26,5 +26,9 @@ if [ -f "$SHELL_PROFILE" ]; then
 fi
 
 
-echo "Running Tracer WDL Minimal pipeline"
-pixi run miniwdl run workflows/tracer_wdl_minimal.wdl -i inputs/tracer_wdl_minimal.inputs.json
+echo "Running WDL pipeline"
+pixi run --manifest-path ../../shared/wdl/pixi.toml pipeline
+
+echo "Pipeline completed successfully!"
+echo "Results are available in the 'results' directory"
+echo "Logs are available in the 'logs' directory"
