@@ -319,7 +319,7 @@ Resources:
             - systemctl start vector
             # Install Tracer tool
             - echo "Installing tracer"
-            - curl -sSL https://install.tracer.cloud/installation-script-development.sh | bash -s chore/aws-batch-testing
+            - curl -sSL https://install.tracer.cloud/installation-script-development.sh | bash
             # Get the tracer init parameters from the instance tags and pass them to tracer
             # init using environment variables - this only works if access to tags has been enabled
             # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/work-with-tags-in-IMDS.html
@@ -331,7 +331,7 @@ Resources:
               INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id -H "X-aws-ec2-metadata-token: $TOKEN")
               TRACER_RUN_NAME="${BASE_RUN_NAME}__${INSTANCE_ID}.batch"
             - |
-              TRACER_PIPELINE_NAME="${TRACER_PIPELINE_NAME:-TestBatchAWSEnvironmentTest4}" \
+              TRACER_PIPELINE_NAME="${TRACER_PIPELINE_NAME:-TestBatchAWSEnvironmentNew}" \
               TRACER_ENVIRONMENT="${TRACER_ENVIRONMENT:-aws_batch}" \
               TRACER_PIPELINE_TYPE="${TRACER_PIPELINE_TYPE:-rnaseq}" \
               TRACER_USER_OPERATOR="${TRACER_USER_OPERATOR:-aws_batch}" \
