@@ -83,5 +83,5 @@ if [ ! -f data/test.bam ]; then
 fi
 
 
-echo "Running Tracer WDL Minimal pipeline with Cromwell"
+echo "Running Tracer WDL Minimal pipeline with miniwdl"
 pixi run pipeline
