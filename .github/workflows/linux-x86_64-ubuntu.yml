@@ -25,9 +25,8 @@ jobs:
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
-            --pipeline-type wdl \
+            --pipeline-type nextflow \
             --is-dev true
-
       - name: Run pipeline
         working-directory: pipelines/linux-x86-ubuntu/wdl
         run: |
