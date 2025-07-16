@@ -27,8 +27,7 @@ fi
 
 
 echo "Running WDL pipeline"
-pixi run --manifest-path ../../shared/wdl/pixi.toml pipeline
-
+bash ../../shared/wdl/run.sh
 echo "Pipeline completed successfully!"
 echo "Results are available in the 'results' directory"
 echo "Logs are available in the 'logs' directory"
