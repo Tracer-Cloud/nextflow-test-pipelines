@@ -23,7 +23,7 @@ jobs:
       - name: Install tracer
         continue-on-error: true
         run: |
-          curl -sSL https://install.tracer.cloud | CLI_BRANCH="update_fgbio_rules" sh && source ~/.bashrc
+          curl -sSL https://install.tracer.cloud | sh && source ~/.bashrc
 
       - name: Run tracer init
         run: |
