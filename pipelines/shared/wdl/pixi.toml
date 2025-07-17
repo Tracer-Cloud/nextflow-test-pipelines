@@ -17,4 +17,5 @@ importlib_metadata = "<5"
 
 [tasks]
 
+script = "bash run.sh"
 pipeline = "miniwdl run tracer_wdl_minimal.wdl -i tracer_wdl_minimal.inputs.json"
