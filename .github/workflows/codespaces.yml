@@ -6,6 +6,8 @@ on:
     paths:
       - "pipelines/codespaces/**"
       - ".github/workflows/codespaces.yml"
+      - "pipelines/shared/wdl/**"
+
   schedule:
     - cron: "0 11 * * *"
 

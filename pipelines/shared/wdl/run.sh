@@ -27,6 +27,13 @@ fi
 
 mkdir -p data
 
+# Check if sudo is available
+if command -v sudo >/dev/null 2>&1; then
+  SUDO="sudo"
+else
+  SUDO=""
+fi
+
 if ! command -v docker >/dev/null 2>&1; then
   echo "Docker not found. Attempting to install..."
   if [ "$(uname)" = "Darwin" ]; then
@@ -37,20 +44,20 @@ if ! command -v docker >/dev/null 2>&1; then
       echo "Homebrew not found. Please install Docker Desktop manually from https://www.docker.com/products/docker-desktop/"
     fi
   elif [ -f /etc/debian_version ]; then
-    sudo apt-get update
-    sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
-    curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-    echo \ \
+    $SUDO apt-get update
+    $SUDO apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release
+    curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg | $SUDO gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    echo \
       "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
-      $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-    sudo apt-get update
-    sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+      $(lsb_release -cs) stable" | $SUDO tee /etc/apt/sources.list.d/docker.list > /dev/null
+    $SUDO apt-get update
+    $SUDO apt-get install -y docker-ce docker-ce-cli containerd.io
   elif [ -f /etc/redhat-release ]; then
-    sudo yum install -y yum-utils
-    sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-    sudo yum install -y docker-ce docker-ce-cli containerd.io
-    sudo systemctl start docker
-    sudo systemctl enable docker
+    $SUDO yum install -y yum-utils
+    $SUDO yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    $SUDO yum install -y docker-ce docker-ce-cli containerd.io
+    $SUDO systemctl start docker
+    $SUDO systemctl enable docker
   else
     echo "Unsupported OS for automatic Docker installation. Please install Docker manually."
   fi
@@ -59,8 +66,12 @@ fi
 
 if command -v docker >/dev/null 2>&1; then
   if ! groups $USER | grep -q '\bdocker\b'; then
-    echo "Adding $USER to docker group (you may need to log out and back in for this to take effect)"
-    sudo usermod -aG docker $USER
+    if getent group docker >/dev/null 2>&1; then
+      echo "Adding $USER to docker group (you may need to log out and back in for this to take effect)"
+      $SUDO usermod -aG docker $USER
+    else
+      echo "Warning: 'docker' group does not exist. Skipping usermod."
+    fi
   fi
 fi
 
