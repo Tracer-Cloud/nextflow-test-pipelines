@@ -20,5 +20,4 @@ if [ -f "$SHELL_PROFILE" ]; then
     source "$SHELL_PROFILE"
 fi
 
-pixi install
-pixi run pipeline
+pixi run --manifest-path ../../shared/nextflow/version_check/pixi.toml pipeline

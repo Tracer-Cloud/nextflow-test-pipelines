@@ -1,9 +1,7 @@
-# Tracer WDL Pipeline (Linux x86 Ubuntu)
+# Tracer WDL Pipeline (GitHub Codespaces)
 
 ## Requirements
 
-- Linux x86_64 system
-- At least 2GB RAM and 1 vCPU
 - [Pixi](https://pixi.sh/) (will be installed automatically if missing)
 
 ## Setup & Quick Start

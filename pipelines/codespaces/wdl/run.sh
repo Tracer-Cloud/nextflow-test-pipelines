@@ -1,10 +1,15 @@
-#!/usr/bin/env bash
+#!/bin/bash
 set -e
 
-if ! command -v pixi &> /dev/null; then
+install_pixi() {
     echo "Pixi not found. Installing Pixi..."
     curl -fsSL https://pixi.sh/install.sh | bash
     export PATH="$HOME/.pixi/bin:$PATH"
+    echo "Pixi installed successfully!"
+}
+
+if ! command -v pixi &> /dev/null; then
+    install_pixi
 fi
 
 if [ -n "$ZSH_VERSION" ]; then
@@ -20,4 +25,5 @@ if [ -f "$SHELL_PROFILE" ]; then
     source "$SHELL_PROFILE"
 fi
 
-pixi run --manifest-path ../../shared/nextflow/version_check/pixi.toml pipeline
+echo "Running Tracer WDL Minimal pipeline with miniwdl"
+pixi run --manifest-path ../../shared/wdl/pixi.toml script
