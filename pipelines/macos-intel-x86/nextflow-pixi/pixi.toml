@@ -8,11 +8,11 @@ platforms = ["osx-64"]
 
 [dependencies]
 # Core bioinformatics tools
-fastqc = "0.12.1"
+fastqc = "0.12.*"
 star = "2.7.11b"
 
 # System utilities
-coreutils = "9.1"
+coreutils = "9.1.*"
 bc = "*"
 
 # Development and debugging tools (optional)
