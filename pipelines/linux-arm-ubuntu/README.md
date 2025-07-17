@@ -1,8 +1,36 @@
-# Linux ARM Ubuntu Pipelines
+# Tracer Nextflow Pipelines for Ubuntu Linux Aarch64(arm64)
 
-This directory contains subfolders for running Nextflow pipelines on Linux ARM Ubuntu using different environment managers:
+This directory contains bioinformatics pipeline configurations optimized for Ubuntu Linux Aarch64 environments to test Tracer.
 
-- `nextflow-conda/` – Conda-based setup (see `nextflow-conda/README.md` for details)
-- `nextflow-pixi/` – Pixi-based setup (see `nextflow-pixi/README.md` for details)
+## Supported Pipelines
 
-Refer to the README in each subfolder for setup and usage instructions specific to that environment.
+### [fastquorum](./fastquorum/)
+
+- **Description:** FastQuorum pipeline for Codespaces.
+- **Quick Start:**
+  ```bash
+  cd fastquorum && ./run.sh
+  ```
+- **Specs:** Minimum 1 CPUs, 2GB RAM recommended.
+
+### [nextflow-conda](./nextflow-conda/)
+
+- **Description:** Nextflow pipeline using Conda for dependency management. (README not provided; see pipeline scripts for details.)
+- **Quick Start:**
+  ```bash
+  cd nextflow-conda && ./run.sh
+  ```
+- **Specs:** Minimum 1 CPUs, 1GB RAM.
+
+### [nextflow-pixi](./nextflow-pixi/)
+
+- **Description:** Nextflow pipeline using Pixi for dependency management. See [README](./nextflow-pixi/README.md) for details.
+- **Quick Start:**
+  ```bash
+  cd nextflow-pixi && ./run.sh
+  ```
+- **Specs:** Minimum 1 CPUs, 1GB RAM.
+
+---
+
+- For more details, see each pipeline's README or script.

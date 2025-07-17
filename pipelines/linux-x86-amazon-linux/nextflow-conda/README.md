@@ -1,16 +1,10 @@
-# Nextflow Pipeline on Linux x86 Amazon Linux - Conda Version
+# Amazon Linux x86_64 Nextflow Pipeline (conda)
 
-This directory contains a **Conda-based Nextflow pipeline** for x86 Amazon Linux. The setup and usage are similar to the x86 Ubuntu reference, but adapted for Amazon Linux.
+This directory contains a bash script that sets up and runs a Nextflow pipeline using conda.
 
-## Quick Start - Conda Pipeline
-
-### Prerequisites
-
-- x86 Amazon Linux system
-- sudo access for package installation
-
-## Running a Pipeline
+## Quick Start
 
 ```bash
+# Run the setup and pipeline script
 ./run.sh
 ```
