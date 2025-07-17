@@ -145,7 +145,7 @@ jobs:
           is_ebpf: false
           use_sudo: true
           binary: $TRACER_BIO
-          required_processes_ebpf: "FastQC,samtools sort"
+          required_processes_ebpf: "samtools merge, STAR, samtools sort, samtools flagstat, FastQC, samtools cat, samtools index, samtools idxstats, samtools faidx, samtools view, samtools stats"
 
       - name: Upload conda pipeline results
         uses: actions/upload-artifact@v4
