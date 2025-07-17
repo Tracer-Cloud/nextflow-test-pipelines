@@ -22,7 +22,7 @@ jobs:
         run: |
           curl -sSL https://install.tracer.cloud/ | sudo bash
           echo "/root/.tracerbio/bin" | sudo tee -a $GITHUB_PATH
-      - name: Run tracer init
+      - name: Run a pipeline with tracer
         run: |
           sudo $TRACER_BIO init \
             --pipeline-name github-actions \
