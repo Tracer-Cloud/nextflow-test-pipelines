@@ -26,4 +26,4 @@ if [ -f "$SHELL_PROFILE" ]; then
 fi
 
 echo "Running Tracer WDL Minimal pipeline with miniwdl"
-pixi run script --manifest-path ../../shared/wdl/pixi.toml
+pixi run --manifest-path ../../shared/wdl/pixi.toml script
