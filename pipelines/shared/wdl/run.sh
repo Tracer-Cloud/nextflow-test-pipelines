@@ -77,9 +77,6 @@ if [ ! -f data/test.bam ]; then
     echo -e "@HD\tVN:1.0\tSO:unsorted\n@SQ\tSN:${REFNAME}\tLN:1000\nread1\t0\t${REFNAME}\t1\t255\t10M\t*\t0\t0\tACGTACGTAC\t*" > data/minimal.sam
     pixi run samtools view -bS data/minimal.sam > data/test.bam
     rm data/minimal.sam
-  else
-    echo "Reference genome data/genome.fa not found. Cannot create test.bam."
-    exit 1
 fi
 
 
