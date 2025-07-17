@@ -1,17 +1,10 @@
-# Minimal Nextflow Pipeline with Conda
+# macOS intel Nextflow Pipeline (conda)
 
-A simple, reproducible Nextflow pipeline that runs on Mac using Conda instead of Docker containers.
+This directory contains a bash script that sets up and runs a Nextflow pipeline using conda.
+
+## Quick Start
 
 ```bash
-# how to run
-bash ./setup.sh
-bash ./run.sh
+# Run the setup and pipeline script
+./run.sh
 ```
-
-
-# Requirements
-### Download and Install Nextflow 
-- https://www.nextflow.io/docs/stable/install.html
-
-### Donwload and Install Conda 
-- https://docs.conda.io/en/latest/miniconda.html

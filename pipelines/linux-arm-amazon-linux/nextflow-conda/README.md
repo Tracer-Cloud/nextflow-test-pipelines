@@ -1,16 +1,10 @@
-# Nextflow Pipeline on Linux ARM Amazon Linux - Conda Version
+# Linux arm Nextflow Pipeline (conda)
 
-This directory contains a **Conda-based Nextflow pipeline** for ARM Amazon Linux. The setup and usage are similar to the x86 Ubuntu reference, but adapted for ARM and Amazon Linux.
+This directory contains a bash script that sets up and runs a Nextflow pipeline using conda.
 
-## Quick Start - Conda Pipeline
-
-### Prerequisites
-
-- ARM Amazon Linux system
-- sudo access for package installation
-
-### One-Command Workflow
+## Quick Start
 
 ```bash
+# Run the setup and pipeline script
 ./run.sh
 ```

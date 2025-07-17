@@ -1,16 +1,10 @@
-# Nextflow Pipeline on Linux x86 Amazon Linux - Pixi Version
+# Amazon Linux x86_64 Nextflow Pipeline (pixi)
 
-This directory contains a **Pixi-based Nextflow pipeline** for x86 Amazon Linux. The setup and usage are similar to the x86 Ubuntu reference, but adapted for Amazon Linux.
+This directory contains a bash script that sets up and runs a Nextflow pipeline using pixi.
 
-## Quick Start (Recommended: Pixi)
-
-### Prerequisites
-
-- [Pixi](https://pixi.sh) installed on your system
-- x86 Amazon Linux system
-
-### Run the Pipeline with Pixi
+## Quick Start
 
 ```bash
+# Run the setup and pipeline script
 ./run.sh
 ```

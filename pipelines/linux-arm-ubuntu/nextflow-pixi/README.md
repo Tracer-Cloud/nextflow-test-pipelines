@@ -1,22 +1,10 @@
-# Nextflow Minimal Version Check Pipeline on Linux ARM Ubuntu - Pixi Version
+# Ubuntu Linux arm64 Nextflow Pipeline (pixi)
 
-This directory contains a **Pixi-based minimal Nextflow pipeline** for ARM Ubuntu. The pipeline checks versions of key bioinformatics tools (FastQC, STAR, Samtools, BWA).
+This directory contains a bash script that sets up and runs a Nextflow pipeline using pixi.
 
-### Run the Pipeline with Pixi
+## Quick Start
 
 ```bash
+# Run the setup and pipeline script
 ./run.sh
-```
-
-## Quick Start (Recommended: Pixi)
-
-### Prerequisites
-
-- [Pixi](https://pixi.sh) installed on your system
-- ARM Ubuntu system
-
-### Install Pixi
-
-```bash
-curl -fsSL https://pixi.sh/install.sh | bash
 ```

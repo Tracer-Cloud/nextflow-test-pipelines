@@ -28,7 +28,7 @@ This directory contains bioinformatics pipeline configurations optimized for Git
 
 ### [nextflow-conda](./nextflow-conda/)
 
-- **Description:** Nextflow pipeline using Conda for dependency management. (README not provided; see pipeline scripts for details.)
+- **Description:** Nextflow pipeline using Conda for dependency management.
 - **Quick Start:**
   ```bash
   cd nextflow-conda && ./run.sh
