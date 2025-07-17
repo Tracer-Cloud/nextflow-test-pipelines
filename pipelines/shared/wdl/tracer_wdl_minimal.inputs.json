@@ -1,0 +1,7 @@
+{
+  "tracer_wdl_minimal.fastq1": "data/sample_R1.fastq",
+  "tracer_wdl_minimal.fastq2": "data/sample_R2.fastq",
+  "tracer_wdl_minimal.reference_fasta": "data/genome.fa",
+  "tracer_wdl_minimal.gtf": "data/genes.gtf",
+  "tracer_wdl_minimal.test_bam": "data/test.bam"
+}
