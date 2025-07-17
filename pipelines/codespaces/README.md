@@ -7,3 +7,4 @@ Pipelines:
 - fastquorum
 - rnaseq
 - wdl
+- nexflow-minimal
