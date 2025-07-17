@@ -1,0 +1,27 @@
+[project]
+name = "tracer-nextflow-minimal"
+description = "Tracer Nextflow minimal"
+version = "1.0.0"
+authors = ["Tracer Bioinformatics Team"]
+channels = ["conda-forge", "bioconda"]
+platforms = ["linux-64"]
+
+[dependencies]
+nextflow = "24.10.*"
+openjdk = "17.0.*"
+python = "3.12.*"
+grep = "*"
+tar = "*"
+coreutils = "*"
+findutils = "*"
+fastqc = "0.12.*"
+star = "*"
+samtools = "1.21.*"
+bwa = "*"
+
+
+[tasks]
+pipeline = "nextflow -log logs/nextflow.log run main.nf --outdir results"
+
+[environments]
+default = ["pipeline"] 
