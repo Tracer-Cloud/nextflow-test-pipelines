@@ -10,6 +10,50 @@ on:
     - cron: "0 11 * * *"
 
 jobs:
+  wdl:
+    name: Tracer WDL Minimal
+    runs-on: ubuntu-24.04-arm
+    env:
+      TRACER_BIO: /root/.tracerbio/bin/tracer
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tracer
+        run: |
+          curl -sSL https://install.tracer.cloud/ | sudo bash
+
+      - name: Run tracer init
+        run: |
+          sudo $TRACER_BIO init \
+            --pipeline-name github-actions \
+            --environment github-actions \
+            --user-operator github-actions \
+            --pipeline-type wdl \
+            --is-dev true
+
+      - name: Run pipeline
+        working-directory: pipelines/linux-arm-ubuntu/wdl
+        run: |
+          ./run.sh
+
+      - name: Verify tracer packages
+        uses: ./.github/actions/verify-tracer
+        with:
+          is_ebpf: true
+          use_sudo: true
+          binary: $TRACER_BIO
+          required_processes_ebpf: "samtools index, FastQC, samtools merge, samtools view, samtools idxstats, samtools faidx, STAR, samtools stats, samtools cat"
+
+      - name: Upload pipeline results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: wdl-linux-x86-ubuntu-pipeline-results
+          path: |
+            pipelines/linux-x86-ubuntu/wdl/results/
+            pipelines/linux-x86-ubuntu/wdl/logs/
+          retention-days: 7
   fastquorum:
     name: Fastquorum Linux aarch64 Ubuntu
     runs-on: ubuntu-24.04-arm
