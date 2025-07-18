@@ -33,6 +33,11 @@ fi
 export PATH="$CONDA_HOME/bin:$PATH"
 eval "$("$CONDA_HOME/bin/conda" shell.bash hook)"
 
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
+
+
+
 if conda info --envs | grep -q "^$ENV_NAME "; then
     echo "[INFO] Conda environment '$ENV_NAME' already exists. Skipping creation."
 else

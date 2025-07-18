@@ -34,10 +34,8 @@ export PATH="$CONDA_HOME/bin:$PATH"
 eval "$("$CONDA_HOME/bin/conda" shell.bash hook)"
 
 # --- Accept Conda Terms of Service ---
-conda config --set channel_priority strict
-conda config --remove channels defaults || true
-conda config --add channels conda-forge
-conda config --add channels bioconda
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
 
 # --- Check if environment exists ---
 if conda info --envs | grep -q "^$ENV_NAME "; then
