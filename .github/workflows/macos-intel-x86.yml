@@ -48,7 +48,7 @@ jobs:
           use_sudo: true
           binary: $TRACER_BIO
           # TODO: Add fgbio, multiqc to the list of processes
-          required_processes_polling: "bwa,samtools sort,samtools dict,samtools faidx"
+          required_processes_polling: "fgbio FastqToBam, fgbio FilterConsensusReads, fgbio CallDuplexConsensusReads, samtools dict, samtools sort, bwa, fgbio CollectDuplexSeqMetrics, FastQC, fgbio GroupReadsByUmi, fgbio ZipperBams"
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
