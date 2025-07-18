@@ -6,6 +6,8 @@ on:
     paths:
       - "pipelines/macos-arm64/**"
       - ".github/workflows/macos-arm64.yml"
+      - ".github/actions/verify-tracer/action.yml"
+
   schedule:
     - cron: "0 11 * * *"
 

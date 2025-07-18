@@ -7,12 +7,13 @@ on:
       - "pipelines/macos-intel-x86/"
       - "pipelines/macos-intel-x86/"
       - ".github/workflows/macos-intel-x86.yml"
+      - ".github/actions/verify-tracer/action.yml"
   schedule:
     - cron: "0 11 * * *"
 
 jobs:
   fastquorum-pixi:
-    name: Fastquorum macOS Intel x86
+    name: Fastquorum macOS Intel
     runs-on: macos-13
     env:
       TRACER_BIO: /Users/runner/.tracerbio/bin/tracer
