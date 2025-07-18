@@ -24,7 +24,6 @@ sleep 10
 
 echo "=== Running tracer info --json ==="
 
-# Build tracer command
 CMD="sudo $BINARY info --json"
 
 echo "Running command: $CMD"
