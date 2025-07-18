@@ -35,7 +35,7 @@ jobs:
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
-            --pipeline-type nextflow \
+            --pipeline-type fastquorum \
             --is-dev true
 
       - name: Run pipeline with Pixi
