@@ -93,7 +93,7 @@ runs:
 
         echo "Parsed processes: ${PROCESSES_SET[*]}"
 
-        # On macOS in process polling mode, only check the count of found processes (must be in [N-4, N], where N is the number of required processes in polling mode).
+        # On macOS in process polling mode, only check the count of found processes (must be in [N-3, N], where N is the number of required processes in polling mode).
         # Ignore which required processes are present or missing; pass CI if count matches.
         if [ "$RUNNER_OS" = "macOS" ] && [ "${{ inputs.is_ebpf }}" = "false" ]; then
           N=0
@@ -102,7 +102,7 @@ runs:
             N=$((N+1))
           done
           PROC_COUNT=${#PROCESSES_SET[@]}
-          MIN_COUNT=$((N-4))
+          MIN_COUNT=$((N-3))
           if [ "$MIN_COUNT" -lt 0 ]; then MIN_COUNT=0; fi
           echo "macOS process polling mode: found $PROC_COUNT processes, required count range: [$MIN_COUNT, $N] (N=$N)"
           if [ "$PROC_COUNT" -ge "$MIN_COUNT" ] && [ "$PROC_COUNT" -le "$N" ]; then
