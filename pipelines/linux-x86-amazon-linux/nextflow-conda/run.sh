@@ -25,12 +25,19 @@ if [ ! -d "$CONDA_HOME" ]; then
     rm miniconda.sh
     echo 'export PATH="$HOME/miniconda/bin:$PATH"' >> "$HOME/.bashrc"
     "$CONDA_HOME/bin/conda" init bash
+
     echo "[INFO] Miniconda installed. Please restart your shell or run 'source ~/.bashrc'"
 fi
 
 # --- Load Conda ---
 export PATH="$CONDA_HOME/bin:$PATH"
 eval "$("$CONDA_HOME/bin/conda" shell.bash hook)"
+
+# --- Accept Conda Terms of Service ---
+conda config --set channel_priority strict
+conda config --remove channels defaults || true
+conda config --add channels conda-forge
+conda config --add channels bioconda
 
 # --- Check if environment exists ---
 if conda info --envs | grep -q "^$ENV_NAME "; then
@@ -45,6 +52,7 @@ conda activate "$ENV_NAME"
 
 # --- Ensure log/output dirs exist ---
 mkdir -p logs results
+
 
 # --- Run Nextflow pipeline ---
 echo "[INFO] Running Nextflow pipeline..."
