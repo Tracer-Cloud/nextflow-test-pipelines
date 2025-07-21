@@ -318,8 +318,8 @@ Resources:
             - systemctl daemon-reload
             - systemctl start vector
             # Install Tracer tool
-            - echo "Installing tracer"
-            - curl -sSL https://install.tracer.cloud/installation-script-development.sh | bash
+            - echo "Installing tracer..." | tee -a /var/log/tracer.log
+            - INS_BRANCH="eng-505/rs-installer-sentry-panics" bash -c "$(curl -fsSL https://install.tracer.cloud)" >> /var/log/tracer.log 2>&1
             # Get the tracer init parameters from the instance tags and pass them to tracer
             # init using environment variables - this only works if access to tags has been enabled
             # https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/work-with-tags-in-IMDS.html
@@ -331,12 +331,13 @@ Resources:
               INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id -H "X-aws-ec2-metadata-token: $TOKEN")
               TRACER_RUN_NAME="${BASE_RUN_NAME}__${INSTANCE_ID}.batch"
             - |
+              echo "Running tracer init..." >> /var/log/tracer.log
               TRACER_PIPELINE_NAME="${TRACER_PIPELINE_NAME:-TestBatchAWSEnvironmentNew}" \
               TRACER_ENVIRONMENT="${TRACER_ENVIRONMENT:-aws_batch}" \
               TRACER_PIPELINE_TYPE="${TRACER_PIPELINE_TYPE:-rnaseq}" \
               TRACER_USER_OPERATOR="${TRACER_USER_OPERATOR:-aws_batch}" \
               TRACER_RUN_NAME="${TRACER_RUN_NAME}" \
-              /.tracerbio/bin/tracer init --non-interactive
+              /root/.tracerbio/bin/tracer init --non-interactive >> /var/log/tracer.log 2>&1
           write_files:
             - path: /etc/vector/vector.yaml
               content: |
@@ -358,6 +359,14 @@ Resources:
                   host_metrics:
                     type: host_metrics
                     scrape_interval_secs: 60
+                  tracer:
+                    type: file
+                    include:
+                      - /var/log/tracer.log
+                      - /tmp/tracer/tracerd.out
+                      - /tmp/tracer/tracerd.err
+                      - /tmp/tracer/daemon.log
+                      - /tmp/tracer/debug.log
                 transforms:
                   ecs_init_log_group:
                     type: remap
@@ -393,6 +402,7 @@ Resources:
                       - ecs_agent_log_group
                       - cloud_init_log_group
                       - journald_log_group
+                      - tracer_log_group
                     fields:
                       - instance-id
                       - instance-type
@@ -411,6 +421,11 @@ Resources:
                     tags:
                       - 'aws:autoscaling:groupName'
                     required: false
+                  tracer_log_group:
+                    type: remap
+                    inputs:
+                      - tracer
+                    source: ."group-name" = "/tracer-aws-batch"
                 sinks:
                   cloudwatch_logs:
                     type: aws_cloudwatch_logs
