@@ -16,7 +16,7 @@ jobs:
     name: Tracer WDL Minimal
     runs-on: ubuntu-latest
     env:
-      TRACER_BIO: /root/.tracerbio/bin/tracer
+      TRACER_BIO: tracer
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
@@ -116,7 +116,7 @@ jobs:
       - name: Install tracer
         continue-on-error: true
         run: |
-          curl -sSL https://install.tracer.cloud | CLI_BRANCH="update_fgbio_rules" sh && source ~/.bashrc
+          curl -sSL https://install.tracer.cloud | CLI_BRANCH="update_fgbio_rules" INS_BRANCH="eng-505/rs-installer-sentry-panics" sh && source ~/.bashrc
 
       - name: Run tracer init
         run: |
@@ -164,7 +164,7 @@ jobs:
       - name: Install tracer
         continue-on-error: true
         run: |
-          curl -sSL https://install.tracer.cloud | CLI_BRANCH="update_fgbio_rules" sh && source ~/.bashrc
+          curl -sSL https://install.tracer.cloud | CLI_BRANCH="update_fgbio_rules" INS_BRANCH="eng-505/rs-installer-sentry-panics" sh && source ~/.bashrc
 
       - name: Run tracer init
         run: |
