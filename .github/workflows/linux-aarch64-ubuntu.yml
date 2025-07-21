@@ -22,11 +22,11 @@ jobs:
 
       - name: Install tracer
         run: |
-          curl -sSL https://install.tracer.cloud/ | sudo bash
+          INS_BRANCH="eng-505/rs-installer-sentry-panics" bash -c "$(curl -fsSL https://install.tracer.cloud)"
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init \
+          sudo tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
@@ -43,7 +43,7 @@ jobs:
         with:
           is_ebpf: true
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
           required_processes_ebpf: "multiqc, samtools dict, bwa, samtools fastq, FastQC, samtools sort, samtools faidx"
 
       - name: Upload pipeline results
@@ -66,11 +66,11 @@ jobs:
 
       - name: Install tracer
         run: |
-          curl -sSL https://install.tracer.cloud | sudo bash
+          INS_BRANCH="eng-505/rs-installer-sentry-panics" bash -c "$(curl -fsSL https://install.tracer.cloud)"
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init \
+          sudo tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
@@ -87,7 +87,7 @@ jobs:
         with:
           is_ebpf: true
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
@@ -108,11 +108,11 @@ jobs:
 
       - name: Install tracer
         run: |
-          curl -sSL https://install.tracer.cloud | sudo bash
+          INS_BRANCH="eng-505/rs-installer-sentry-panics" bash -c "$(curl -fsSL https://install.tracer.cloud)"
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init \
+          sudo tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
@@ -129,7 +129,7 @@ jobs:
         with:
           is_ebpf: true
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4

@@ -39,9 +39,9 @@ jobs:
               yum install -y wget git bash which sudo tar gzip curl --allowerasing
 
               # Install tracer
-              curl -sSL https://install.tracer.cloud | sh
+              INS_BRANCH="eng-505/rs-installer-sentry-panics" bash -c "$(curl -fsSL https://install.tracer.cloud)"
               # Run tracer init
-              sudo \$TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+              sudo \tracer init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
 
               # Run pipeline with Pixi
               cd pipelines/linux-arm-amazon-linux/nextflow-pixi/
@@ -94,11 +94,11 @@ jobs:
               yum install -y wget git bash which sudo bzip2 tar gzip curl --allowerasing
 
               # Install tracer
-              curl -sSL https://install.tracer.cloud | sh
+              INS_BRANCH="eng-505/rs-installer-sentry-panics" bash -c "$(curl -fsSL https://install.tracer.cloud)"
               echo '/root/.tracerbio/bin' | sudo tee -a \$GITHUB_PATH
 
               # Run tracer init
-              sudo \$TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+              sudo \tracer init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
 
               # Run pipeline with Conda
               cd pipelines/linux-arm-amazon-linux/nextflow-conda
