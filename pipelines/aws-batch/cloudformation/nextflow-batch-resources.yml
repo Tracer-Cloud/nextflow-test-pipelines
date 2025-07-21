@@ -332,12 +332,12 @@ Resources:
               TRACER_RUN_NAME="${BASE_RUN_NAME}__${INSTANCE_ID}.batch"
             - |
               echo "Running tracer init..." >> /var/log/tracer.log
-              TRACER_PIPELINE_NAME="${TRACER_PIPELINE_NAME:-TestBatchAWSEnvironmentNew}" \
+              TRACER_PIPELINE_NAME="${TRACER_PIPELINE_NAME:-TestingNewBinaryLocation}" \
               TRACER_ENVIRONMENT="${TRACER_ENVIRONMENT:-aws_batch}" \
               TRACER_PIPELINE_TYPE="${TRACER_PIPELINE_TYPE:-rnaseq}" \
               TRACER_USER_OPERATOR="${TRACER_USER_OPERATOR:-aws_batch}" \
               TRACER_RUN_NAME="${TRACER_RUN_NAME}" \
-              /root/.tracerbio/bin/tracer init --non-interactive >> /var/log/tracer.log 2>&1
+              tracer init --non-interactive >> /var/log/tracer.log 2>&1
           write_files:
             - path: /etc/vector/vector.yaml
               content: |
