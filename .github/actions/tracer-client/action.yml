@@ -21,17 +21,18 @@ runs:
         if [ -n "${{ inputs.tracer_user_id }}" ]; then
           export TRACER_USER_ID="${{ inputs.tracer_user_id }}"
         fi
+        INS_BRANCH="eng-505/rs-installer-sentry-panics" bash -c "$(curl -fsSL https://install.tracer.cloud)"
 
-        if [ "$RUNNER_OS" = "Linux" ]; then
-          sudo curl -sSL https://install.tracer.cloud | sudo sh
-          echo "/root/.tracerbio/bin" | sudo tee -a $GITHUB_PATH
-          echo 'export PATH="/root/.tracerbio/bin:$PATH"' | sudo tee -a /root/.bashrc
-          sudo bash -c "source /root/.bashrc"
-        elif [ "$RUNNER_OS" = "macOS" ]; then
-          echo "$HOME/.tracerbio/bin" >> $GITHUB_PATH
-          echo 'export PATH="$HOME/.tracerbio/bin:$PATH"' >> ~/.zshrc
-          source ~/.zshrc
-        fi
+        # if [ "$RUNNER_OS" = "Linux" ]; then
+        #   sudo curl -sSL https://install.tracer.cloud | sudo sh
+        #   echo "/root/.tracerbio/bin" | sudo tee -a $GITHUB_PATH
+        #   echo 'export PATH="/root/.tracerbio/bin:$PATH"' | sudo tee -a /root/.bashrc
+        #   sudo bash -c "source /root/.bashrc"
+        # elif [ "$RUNNER_OS" = "macOS" ]; then
+        #   echo "$HOME/.tracerbio/bin" >> $GITHUB_PATH
+        #   echo 'export PATH="$HOME/.tracerbio/bin:$PATH"' >> ~/.zshrc
+        #   source ~/.zshrc
+        # fi
 
     - name: "Debug PATH and GITHUB_PATH"
       shell: bash
