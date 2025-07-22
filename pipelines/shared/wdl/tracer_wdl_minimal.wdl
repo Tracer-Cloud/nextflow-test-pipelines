@@ -1,20 +1,21 @@
 workflow tracer_wdl_minimal {
   input {
-    File fastq1
-    File fastq2
-    File reference_fasta
-    File gtf
-    File test_bam
+    String fastq1_path = "data/NA24385_RNAseq_1.fastq.gz"
+    String fastq2_path = "data/NA24385_RNAseq_2.fastq.gz"
+    File reference_fasta = "data/chr22.fa"
+    File gtf = "data/chr22.gtf"
+    File test_bam = "data/test.bam"
   }
 
   call FastQC {
-    input: fastq=fastq1
+    input:
+      fastq_path = fastq1_path
   }
 
   call STARAlign {
     input:
-      fastq1=fastq1,
-      fastq2=fastq2,
+      fastq1=fastq1_path,
+      fastq2=fastq2_path,
       star_index_dir="data/star_index"
   }
 
@@ -64,20 +65,26 @@ workflow tracer_wdl_minimal {
 
 task FastQC {
   input {
-    File fastq
+    String fastq_path
   }
-  command <<<'
-    set -e
-    echo "[FastQC] Input file: ~{fastq}"
-    if file ~{fastq} | grep -q gzip; then
+  command <<<
+    echo "[FastQC DEBUG] PWD: $(pwd)"
+    echo "[FastQC DEBUG] Listing all files in working directory:"
+    find . -type f -exec ls -lh {} \;
+    echo "[FastQC DEBUG] fastq_path variable: ~{fastq_path}"
+    if [ ! -s "~{fastq_path}" ]; then
+      echo "Input FASTQ file '~{fastq_path}' does not exist or is empty!" >&2
+      exit 1
+    fi
+    echo "[FastQC] Input file: ~{fastq_path}"
+    if file ~{fastq_path} | grep -q gzip; then
       echo "[FastQC] File is gzipped. Showing first 8 lines (decompressed):"
-      gunzip -c ~{fastq} | head -8
+      gunzip -c ~{fastq_path} | head -8
     else
       echo "[FastQC] File is plain text. Showing first 8 lines:"
-      head -8 ~{fastq}
+      head -8 ~{fastq_path}
     fi
-    # Run FastQC
-    fastqc ~{fastq} > stdout.txt 2> stderr.txt
+    fastqc ~{fastq_path} > stdout.txt 2> stderr.txt
   >>>
   output {
     File stdout = "stdout.txt"
@@ -96,8 +103,8 @@ task STARAlign {
     File fastq2
     String star_index_dir
   }
-  command <<<'
-    STAR --genomeDir ~{star_index_dir} --readFilesIn ~{fastq1} ~{fastq2} --runThreadN 1 --outSAMtype BAM Unsorted --outFileNamePrefix star_
+  command <<<
+    STAR --genomeDir ${star_index_dir} --readFilesIn ${fastq1} ${fastq2} --runThreadN 1 --outSAMtype BAM Unsorted --outFileNamePrefix star_
     mv star_Aligned.out.bam aligned.bam
   >>>
   output {
@@ -114,11 +121,11 @@ task SamtoolsIndex {
   input {
     File bam
   }
-  command <<<'
-    samtools index ~{bam}
+  command <<<
+    samtools index ${bam}
   >>>
   output {
-    File bai = "~{bam}.bai"
+    File bai = "${bam}.bai"
   }
   runtime {
     docker: "quay.io/biocontainers/samtools:1.20--h50ea8bc_0"
@@ -131,8 +138,8 @@ task SamtoolsStats {
   input {
     File bam
   }
-  command <<<'
-    samtools stats ~{bam} > stats.txt
+  command <<<
+    samtools stats ${bam} > stats.txt
   >>>
   output {
     File stats_txt = "stats.txt"
@@ -148,8 +155,8 @@ task SamtoolsIdxstats {
   input {
     File bam
   }
-  command <<<'
-    samtools idxstats ~{bam} > idxstats.txt
+  command <<<
+    samtools idxstats ${bam} > idxstats.txt
   >>>
   output {
     File idxstats_txt = "idxstats.txt"
@@ -165,11 +172,11 @@ task SamtoolsFaidx {
   input {
     File reference_fasta
   }
-  command <<<'
-    samtools faidx ~{reference_fasta}
+  command <<<
+    samtools faidx ${reference_fasta}
   >>>
   output {
-    File fai = "~{reference_fasta}.fai"
+    File fai = "${reference_fasta}.fai"
   }
   runtime {
     docker: "quay.io/biocontainers/samtools:1.20--h50ea8bc_0"
@@ -182,8 +189,8 @@ task SamtoolsCat {
   input {
     File bam
   }
-  command <<<'
-    samtools cat ~{bam} > cat.bam
+  command <<<
+    samtools cat ${bam} > cat.bam
   >>>
   output {
     File cat_bam = "cat.bam"
@@ -200,8 +207,8 @@ task SamtoolsMerge {
     File bam1
     File bam2
   }
-  command <<<'
-    samtools merge merged.bam ~{bam1} ~{bam2}
+  command <<<
+    samtools merge merged.bam ${bam1} ${bam2}
   >>>
   output {
     File merged_bam = "merged.bam"
