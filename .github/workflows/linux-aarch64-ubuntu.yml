@@ -44,7 +44,7 @@ jobs:
           is_ebpf: true
           use_sudo: true
           binary: $TRACER_BIO
-          required_processes_ebpf: "multiqc, samtools dict, bwa, samtools fastq, FastQC, samtools sort, samtools faidx"
+          required_processes_ebpf: "multiqc, samtools dict, bwa index, samtools fastq, FastQC, samtools sort, samtools faidx"
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
