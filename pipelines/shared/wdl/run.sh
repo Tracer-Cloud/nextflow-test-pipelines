@@ -1,22 +1,6 @@
 #!/bin/bash
 set -e
 
-# ---
-# Tracer WDL Minimal Pipeline Runner
-#
-# This script downloads a real RNA-seq dataset (paired-end FASTQ), a reference genome, and a GTF annotation file.
-# It then runs the tracer_wdl_minimal.wdl pipeline using miniwdl via pixi.
-# The pipeline performs:
-#   - Quality control (FastQC)
-#   - Alignment (STAR)
-#   - BAM file indexing and stats (samtools)
-#
-# Data sources:
-#   - RNA-seq: GIAB AshkenazimTrio (HG002_NA24385_son)
-#   - Reference: GRCh38 chr22 (Ensembl)
-#   - GTF: Ensembl chr22
-# ---
-
 # Set data directory
 DATA_DIR="data"
 mkdir -p "$DATA_DIR"
@@ -77,17 +61,13 @@ if [ ! -f "$TEST_BAM" ]; then
   rm "$DATA_DIR/minimal.sam"
 fi
 
-# Ensure all files are in $DATA_DIR and symlinked to current directory
 for f in chr22.fa chr22.gtf NA24385_RNAseq_1.fastq.gz NA24385_RNAseq_2.fastq.gz test.bam; do
   if [ -f "$f" ] && [ ! -f "$DATA_DIR/$f" ]; then
     mv "$f" "$DATA_DIR/"
   fi
   ln -sf "$DATA_DIR/$f" .
-  # Optionally, remove from current dir after run to keep clean
-  # rm -f "$f"
 done
 
-# Update tracer_wdl_minimal.inputs.json
 cat > tracer_wdl_minimal.inputs.json <<EOF
 {
   "tracer_wdl_minimal.fastq1": "NA24385_RNAseq_1.fastq.gz",
@@ -98,8 +78,7 @@ cat > tracer_wdl_minimal.inputs.json <<EOF
 }
 EOF
 
-echo "\n---"
-echo "Running Tracer WDL Minimal pipeline with miniwdl (real data)"
+echo "Running Tracer WDL Minimal pipeline with miniwdl"
 echo "  - FASTQ1: $FASTQ1"
 echo "  - FASTQ2: $FASTQ2"
 echo "  - Reference: $REF_FASTA"
@@ -109,7 +88,6 @@ echo "---\n"
 
 pixi run pipeline
 
-# Check that all required files exist and are non-empty
 REQUIRED=("NA24385_RNAseq_1.fastq.gz" "NA24385_RNAseq_2.fastq.gz" "chr22.fa" "chr22.gtf" "test.bam")
 for f in "${REQUIRED[@]}"; do
   if [ ! -s "$DATA_DIR/$f" ]; then
