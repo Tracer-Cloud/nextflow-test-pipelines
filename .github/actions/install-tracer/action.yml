@@ -1,0 +1,43 @@
+name: "Install Tracer Client"
+author: "Vaibhav Upreti"
+description: "Installs Tracer Client"
+
+branding:
+  color: "blue"
+  icon: "activity"
+
+inputs:
+  tracer_user_id:
+    description: "Tracer User ID"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Install Tracer Client"
+      shell: bash
+      run: |
+        set -e
+        if [ -n "${{ inputs.tracer_user_id }}" ]; then
+          export TRACER_USER_ID="${{ inputs.tracer_user_id }}"
+        fi
+
+        # Install Tracer
+        curl -sSL https://install.tracer.cloud | sh
+
+        # Source all relevant shell profiles
+        [ -f ~/.bashrc ] && source ~/.bashrc
+        [ -f ~/.zshrc ] && source ~/.zshrc
+        [ -f ~/.profile ] && source ~/.profile
+        [ -f ~/.bash_profile ] && source ~/.bash_profile
+
+        # Add likely install locations to PATH
+        export PATH="$HOME/.tracer/bin:$HOME/.local/bin:$PATH"
+
+        # Check installation
+        if command -v tracer >/dev/null 2>&1; then
+          echo "Tracer installed successfully: $(tracer --version)"
+        else
+          echo "Tracer installation failed or not in PATH"
+          exit 1
+        fi
