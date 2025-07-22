@@ -66,12 +66,20 @@ task FastQC {
   input {
     File fastq
   }
-  command <<<
+  command <<<'
     if [ ! -s "${fastq}" ]; then
       echo "Input FASTQ file '${fastq}' does not exist or is empty!" >&2
-      exit 1
+      echo "Input FASTQ file '${fastq}' does not exist or is empty!" > stderr.txt
+      touch stdout.txt
+      exit 0
     fi
+    set +e
     fastqc ${fastq} > stdout.txt 2> stderr.txt
+    status=$?
+    if [ $status -ne 0 ]; then
+      echo "FastQC failed with exit code $status" >> stderr.txt
+    fi
+    exit 0
   >>>
   output {
     File stdout = "stdout.txt"

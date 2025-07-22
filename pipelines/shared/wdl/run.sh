@@ -108,3 +108,14 @@ echo "  - Test BAM: $TEST_BAM"
 echo "---\n"
 
 pixi run pipeline
+
+# Check that all required files exist and are non-empty
+REQUIRED=("NA24385_RNAseq_1.fastq.gz" "NA24385_RNAseq_2.fastq.gz" "chr22.fa" "chr22.gtf" "test.bam")
+for f in "${REQUIRED[@]}"; do
+  if [ ! -s "$DATA_DIR/$f" ]; then
+    echo "ERROR: Required file $DATA_DIR/$f is missing or empty!" >&2
+    ls -lh "$DATA_DIR" >&2
+    exit 1
+  fi
+  echo "Found $DATA_DIR/$f ($(ls -lh $DATA_DIR/$f | awk '{print $5}'))"
+done
