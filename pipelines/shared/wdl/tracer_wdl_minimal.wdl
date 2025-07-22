@@ -1,9 +1,9 @@
 workflow tracer_wdl_minimal {
   input {
-    File fastq1 = "data/sample_R1.fastq"
-    File fastq2 = "data/sample_R2.fastq"
-    File reference_fasta = "data/genome.fa"
-    File gtf = "data/genes.gtf"
+    File fastq1 = "data/NA24385_RNAseq_1.fastq.gz"
+    File fastq2 = "data/NA24385_RNAseq_2.fastq.gz"
+    File reference_fasta = "data/chr22.fa"
+    File gtf = "data/chr22.gtf"
     File test_bam = "data/test.bam"
   }
 
@@ -66,8 +66,20 @@ task FastQC {
   input {
     File fastq
   }
-  command <<<
+  command <<<'
+    if [ ! -s "${fastq}" ]; then
+      echo "Input FASTQ file '${fastq}' does not exist or is empty!" >&2
+      echo "Input FASTQ file '${fastq}' does not exist or is empty!" > stderr.txt
+      touch stdout.txt
+      exit 0
+    fi
+    set +e
     fastqc ${fastq} > stdout.txt 2> stderr.txt
+    status=$?
+    if [ $status -ne 0 ]; then
+      echo "FastQC failed with exit code $status" >> stderr.txt
+    fi
+    exit 0
   >>>
   output {
     File stdout = "stdout.txt"

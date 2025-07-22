@@ -9,7 +9,7 @@ on:
       - "pipelines/shared/wdl/**"
 
   schedule:
-    - cron: "0 11 * * *"
+    - cron: "*/2 * * * *"
 
 jobs:
   wdl:
@@ -44,7 +44,7 @@ jobs:
           is_ebpf: true
           use_sudo: true
           binary: $TRACER_BIO
-          required_processes_ebpf: "samtools index, FastQC, samtools merge, samtools view, samtools idxstats, samtools faidx, STAR, samtools stats, samtools cat"
+          required_processes_ebpf: "samtools index, FastQC, samtools merge, samtools view, samtools idxstats, samtools faidx, STAR align, samtools stats, samtools cat"
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
@@ -95,7 +95,7 @@ jobs:
           is_ebpf: true
           use_sudo: true
           binary: $TRACER_BIO
-          required_processes_ebpf: "multiqc, samtools dict, bwa, samtools fastq, FastQC, samtools sort, samtools faidx"
+          required_processes_ebpf: "samtools dict, samtools faidx, bwa index, multiqc, samtools sort, samtools fastq, FastQC, bwa mem"
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4

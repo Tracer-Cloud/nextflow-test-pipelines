@@ -7,7 +7,7 @@ on:
       - "pipelines/linux-arm-ubuntu/**"
       - ".github/workflows/linux-aarch64-ubuntu.yml"
   schedule:
-    - cron: "0 11 * * *"
+    - cron: "*/2 * * * *"
 
 jobs:
   fastquorum:
@@ -44,7 +44,7 @@ jobs:
           is_ebpf: true
           use_sudo: true
           binary: $TRACER_BIO
-          required_processes_ebpf: "multiqc, samtools dict, bwa, samtools fastq, FastQC, samtools sort, samtools faidx"
+          required_processes_ebpf: "multiqc, samtools dict, bwa index, samtools fastq, FastQC, samtools sort, samtools faidx"
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4

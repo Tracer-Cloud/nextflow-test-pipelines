@@ -4,8 +4,8 @@
 BINARY="/root/.tracerbio/bin/tracer"
 
 # Parse command line arguments
-REQUIRED_PROCESSES_EBPF="${1:-STAR,FastQC,samtools sort}"
-REQUIRED_PROCESSES_POLLING="${2:-STAR,FastQC,salmon}"
+REQUIRED_PROCESSES_EBPF="${1:-samtools faidx, samtools flagstat, samtools view, FastQC, samtools merge, samtools index, samtools sort, samtools cat, samtools idxstats, samtools stats}"
+REQUIRED_PROCESSES_POLLING="${2:-samtools faidx, samtools flagstat, samtools view, FastQC, samtools merge, samtools index, samtools sort, samtools cat, samtools idxstats, samtools stats}"
 IS_EBPF="${3:-true}"
 
 # Select required processes based on eBPF mode

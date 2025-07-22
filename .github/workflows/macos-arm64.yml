@@ -9,7 +9,7 @@ on:
       - ".github/actions/verify-tracer/action.yml"
 
   schedule:
-    - cron: "0 11 * * *"
+    - cron: "*/2 * * * *"
 
 permissions:
   contents: read
