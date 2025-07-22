@@ -15,11 +15,11 @@ inputs:
   required_processes_ebpf:
     description: "Comma-separated list of required processes for eBPF mode (defaults to STAR,FastQC,samtools sort)"
     required: false
-    default: "STAR,FastQC,samtools sort"
+    default: "samtools faidx, samtools flagstat, samtools view, FastQC, samtools merge, samtools index, samtools sort, samtools cat, samtools idxstats, samtools stats"
   required_processes_polling:
     description: "Comma-separated list of required processes for polling mode (defaults to STAR,FastQC,salmon)"
     required: false
-    default: "STAR,FastQC,salmon"
+    default: "samtools faidx, samtools flagstat, samtools view, FastQC, samtools merge, samtools index, samtools sort, samtools cat, samtools idxstats, samtools stats"
 
 runs:
   using: "composite"
