@@ -1,10 +1,10 @@
 workflow tracer_wdl_minimal {
   input {
-    File fastq1 = "data/sample_R1.fastq"
-    File fastq2 = "data/sample_R2.fastq"
-    File reference_fasta = "data/genome.fa"
-    File gtf = "data/genes.gtf"
-    File test_bam = "data/test.bam"
+    File fastq1
+    File fastq2
+    File reference_fasta
+    File gtf
+    File test_bam
   }
 
   call FastQC {
@@ -68,17 +68,17 @@ task FastQC {
   }
   command <<<'
     set -e
-    echo "[FastQC] Input file: ${fastq}"
-    if file "${fastq}" | grep -q gzip; then
+    echo "[FastQC] Input file: ~{fastq}"
+    if file "~{fastq}" | grep -q gzip; then
       echo "[FastQC] File is gzipped. Showing first 8 lines (decompressed):"
-      gunzip -c "${fastq}" | head -8
+      gunzip -c "~{fastq}" | head -8
     else
       echo "[FastQC] File is plain text. Showing first 8 lines:"
-      head -8 "${fastq}"
+      head -8 "~{fastq}"
     fi
     # Run FastQC
-    fastqc "${fastq}" > stdout.txt 2> stderr.txt
-  '''
+    fastqc "~{fastq}" > stdout.txt 2> stderr.txt
+  >>>
   output {
     File stdout = "stdout.txt"
     File stderr = "stderr.txt"
@@ -99,7 +99,7 @@ task STARAlign {
   command <<<'
     STAR --genomeDir ~{star_index_dir} --readFilesIn ~{fastq1} ~{fastq2} --runThreadN 1 --outSAMtype BAM Unsorted --outFileNamePrefix star_
     mv star_Aligned.out.bam aligned.bam
-  '''
+  >>>
   output {
     File bam = "aligned.bam"
   }
@@ -114,11 +114,11 @@ task SamtoolsIndex {
   input {
     File bam
   }
-  command <<<
-    samtools index ${bam}
+  command <<<'
+    samtools index ~{bam}
   >>>
   output {
-    File bai = "${bam}.bai"
+    File bai = "~{bam}.bai"
   }
   runtime {
     docker: "quay.io/biocontainers/samtools:1.20--h50ea8bc_0"
@@ -131,8 +131,8 @@ task SamtoolsStats {
   input {
     File bam
   }
-  command <<<
-    samtools stats ${bam} > stats.txt
+  command <<<'
+    samtools stats ~{bam} > stats.txt
   >>>
   output {
     File stats_txt = "stats.txt"
@@ -148,8 +148,8 @@ task SamtoolsIdxstats {
   input {
     File bam
   }
-  command <<<
-    samtools idxstats ${bam} > idxstats.txt
+  command <<<'
+    samtools idxstats ~{bam} > idxstats.txt
   >>>
   output {
     File idxstats_txt = "idxstats.txt"
@@ -165,11 +165,11 @@ task SamtoolsFaidx {
   input {
     File reference_fasta
   }
-  command <<<
-    samtools faidx ${reference_fasta}
+  command <<<'
+    samtools faidx ~{reference_fasta}
   >>>
   output {
-    File fai = "${reference_fasta}.fai"
+    File fai = "~{reference_fasta}.fai"
   }
   runtime {
     docker: "quay.io/biocontainers/samtools:1.20--h50ea8bc_0"
@@ -182,8 +182,8 @@ task SamtoolsCat {
   input {
     File bam
   }
-  command <<<
-    samtools cat ${bam} > cat.bam
+  command <<<'
+    samtools cat ~{bam} > cat.bam
   >>>
   output {
     File cat_bam = "cat.bam"
@@ -200,8 +200,8 @@ task SamtoolsMerge {
     File bam1
     File bam2
   }
-  command <<<
-    samtools merge merged.bam ${bam1} ${bam2}
+  command <<<'
+    samtools merge merged.bam ~{bam1} ~{bam2}
   >>>
   output {
     File merged_bam = "merged.bam"
