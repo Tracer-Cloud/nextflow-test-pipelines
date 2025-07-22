@@ -77,14 +77,11 @@ if [ ! -f "$TEST_BAM" ]; then
   rm "$DATA_DIR/minimal.sam"
 fi
 
-# Ensure all files are in $DATA_DIR and symlinked to current directory
+# Ensure all files are in $DATA_DIR and copied to current directory
 for f in chr22.fa chr22.gtf NA24385_RNAseq_1.fastq.gz NA24385_RNAseq_2.fastq.gz test.bam; do
-  if [ -f "$f" ] && [ ! -f "$DATA_DIR/$f" ]; then
-    mv "$f" "$DATA_DIR/"
-  fi
-  ln -sf "$DATA_DIR/$f" .
-  # Optionally, remove from current dir after run to keep clean
-  # rm -f "$f"
+  [ -L "$f" ] && rm "$f"
+  [ -f "$f" ] && rm "$f"
+  cp "$DATA_DIR/$f" .
 done
 
 # Update tracer_wdl_minimal.inputs.json
