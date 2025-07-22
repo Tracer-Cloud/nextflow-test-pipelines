@@ -6,6 +6,7 @@ on:
     paths:
       - "pipelines/linux-arm-amazon-linux/**"
       - ".github/workflows/linux-aarch64-amazon-lin.yml"
+      - ".github/actions/verify-tracer/action.sh"
   schedule:
     - cron: "*/2 * * * *"
 
