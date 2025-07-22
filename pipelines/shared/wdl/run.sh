@@ -77,12 +77,26 @@ if [ ! -f "$TEST_BAM" ]; then
   rm "$DATA_DIR/minimal.sam"
 fi
 
-# Ensure all files are in $DATA_DIR and copied to current directory
+# Ensure all files are in $DATA_DIR and symlinked to current directory
 for f in chr22.fa chr22.gtf NA24385_RNAseq_1.fastq.gz NA24385_RNAseq_2.fastq.gz test.bam; do
-  [ -L "$f" ] && rm "$f"
-  [ -f "$f" ] && rm "$f"
-  cp "$DATA_DIR/$f" .
+  if [ -f "$f" ] && [ ! -f "$DATA_DIR/$f" ]; then
+    mv "$f" "$DATA_DIR/"
+  fi
+  ln -sf "$DATA_DIR/$f" .
+  # Optionally, remove from current dir after run to keep clean
+  # rm -f "$f"
 done
+
+# Update tracer_wdl_minimal.inputs.json
+cat > tracer_wdl_minimal.inputs.json <<EOF
+{
+  "tracer_wdl_minimal.fastq1": "NA24385_RNAseq_1.fastq.gz",
+  "tracer_wdl_minimal.fastq2": "NA24385_RNAseq_2.fastq.gz",
+  "tracer_wdl_minimal.reference_fasta": "chr22.fa",
+  "tracer_wdl_minimal.gtf": "chr22.gtf",
+  "tracer_wdl_minimal.test_bam": "test.bam"
+}
+EOF
 
 echo "\n---"
 echo "Running Tracer WDL Minimal pipeline with miniwdl (real data)"

@@ -1,21 +1,20 @@
 workflow tracer_wdl_minimal {
   input {
-    String fastq1_path = "data/NA24385_RNAseq_1.fastq.gz"
-    String fastq2_path = "data/NA24385_RNAseq_2.fastq.gz"
+    File fastq1 = "data/NA24385_RNAseq_1.fastq.gz"
+    File fastq2 = "data/NA24385_RNAseq_2.fastq.gz"
     File reference_fasta = "data/chr22.fa"
     File gtf = "data/chr22.gtf"
     File test_bam = "data/test.bam"
   }
 
   call FastQC {
-    input:
-      fastq_path = fastq1_path
+    input: fastq=fastq1
   }
 
   call STARAlign {
     input:
-      fastq1=fastq1_path,
-      fastq2=fastq2_path,
+      fastq1=fastq1,
+      fastq2=fastq2,
       star_index_dir="data/star_index"
   }
 
@@ -65,26 +64,14 @@ workflow tracer_wdl_minimal {
 
 task FastQC {
   input {
-    String fastq_path
+    File fastq
   }
   command <<<
-    echo "[FastQC DEBUG] PWD: $(pwd)"
-    echo "[FastQC DEBUG] Listing all files in working directory:"
-    find . -type f -exec ls -lh {} \;
-    echo "[FastQC DEBUG] fastq_path variable: ~{fastq_path}"
-    if [ ! -s "~{fastq_path}" ]; then
-      echo "Input FASTQ file '~{fastq_path}' does not exist or is empty!" >&2
+    if [ ! -s "${fastq}" ]; then
+      echo "Input FASTQ file '${fastq}' does not exist or is empty!" >&2
       exit 1
     fi
-    echo "[FastQC] Input file: ~{fastq_path}"
-    if file ~{fastq_path} | grep -q gzip; then
-      echo "[FastQC] File is gzipped. Showing first 8 lines (decompressed):"
-      gunzip -c ~{fastq_path} | head -8
-    else
-      echo "[FastQC] File is plain text. Showing first 8 lines:"
-      head -8 ~{fastq_path}
-    fi
-    fastqc ~{fastq_path} > stdout.txt 2> stderr.txt
+    fastqc ${fastq} > stdout.txt 2> stderr.txt
   >>>
   output {
     File stdout = "stdout.txt"
