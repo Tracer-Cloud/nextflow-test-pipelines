@@ -16,7 +16,6 @@ jobs:
     name: Fastquorum macOS Intel
     runs-on: macos-13
     env:
-      TRACER_BIO: /Users/runner/.tracerbio/bin/tracer
       NXF_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -30,7 +29,7 @@ jobs:
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init \
+          sudo tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
@@ -48,7 +47,7 @@ jobs:
         with:
           is_ebpf: false
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
           # TODO: Add fgbio, multiqc to the list of processes
           required_processes_polling: "fgbio FastqToBam, fgbio FilterConsensusReads, fgbio CallDuplexConsensusReads, samtools dict, samtools sort, bwa, fgbio CollectDuplexSeqMetrics, FastQC, fgbio GroupReadsByUmi, fgbio ZipperBams"
 

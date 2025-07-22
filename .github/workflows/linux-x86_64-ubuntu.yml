@@ -15,7 +15,6 @@ jobs:
     name: Tracer WDL Minimal
     runs-on: ubuntu-latest
     env:
-      TRACER_BIO: /root/.tracerbio/bin/tracer
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
@@ -25,7 +24,7 @@ jobs:
           source ~/.bashrc
       - name: Run a pipeline with tracer
         run: |
-          sudo $TRACER_BIO init \
+          sudo tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
@@ -42,7 +41,7 @@ jobs:
         with:
           is_ebpf: true
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
           required_processes_ebpf: "samtools index, FastQC, samtools merge, samtools view, samtools idxstats, samtools faidx, STAR, samtools stats, samtools cat"
 
       - name: Upload pipeline results
@@ -59,7 +58,6 @@ jobs:
     name: Fastquorum Linux x86_64 Ubuntu
     runs-on: ubuntu-latest
     env:
-      TRACER_BIO: /root/.tracerbio/bin/tracer
       NXF_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -71,7 +69,7 @@ jobs:
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init \
+          sudo tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
@@ -88,7 +86,7 @@ jobs:
         with:
           is_ebpf: true
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
           required_processes_ebpf: "multiqc, samtools dict, bwa index, samtools fastq, FastQC, samtools sort, samtools faidx"
 
       - name: Upload pipeline results
@@ -104,8 +102,6 @@ jobs:
   linux-x86-pixi:
     name: Pixi Pipeline
     runs-on: ubuntu-latest
-    env:
-      TRACER_BIO: /root/.tracerbio/bin/tracer
     steps:
       - uses: actions/checkout@v4
 
@@ -116,7 +112,7 @@ jobs:
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init \
+          sudo tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
@@ -132,7 +128,7 @@ jobs:
         with:
           is_ebpf: true
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
           required_processes_ebpf: "STAR,FastQC,samtools sort"
           required_processes_polling: "STAR,FastQC,salmon"
 
@@ -149,8 +145,6 @@ jobs:
   linux-x86-conda:
     name: Conda Pipeline
     runs-on: ubuntu-latest
-    env:
-      TRACER_BIO: /root/.tracerbio/bin/tracer
     steps:
       - uses: actions/checkout@v4
       - name: Install tracer
@@ -160,7 +154,7 @@ jobs:
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init \
+          sudo tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
@@ -177,7 +171,7 @@ jobs:
         with:
           is_ebpf: true
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
           required_processes_ebpf: "STAR,FastQC,samtools sort"
           required_processes_polling: "STAR,FastQC,salmon"
 
