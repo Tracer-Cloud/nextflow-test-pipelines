@@ -35,7 +35,7 @@ fi
 # Faster GTF download for chr22 only
 GTF="$DATA_DIR/chr22.gtf"
 if [ ! -f "$GTF" ]; then
-  echo "Downloading GRCh38 chr22 GTF annotation (faster)..."
+  echo "Downloading GRCh38 chr22 GTF annotation"
   GTF_GZ="$DATA_DIR/chr.gtf.gz"
   curl -L --retry 3 --retry-delay 5 \
     "https://ftp.ensembl.org/pub/release-110/gtf/homo_sapiens/Homo_sapiens.GRCh38.110.chr.gtf.gz" \
