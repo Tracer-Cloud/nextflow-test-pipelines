@@ -16,17 +16,16 @@ jobs:
     name: Tracer WDL Minimal
     runs-on: ubuntu-latest
     env:
-      TRACER_BIO: /root/.tracerbio/bin/tracer
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - name: Install tracer
         run: |
-          curl -sSL https://install.tracer.cloud/ | sudo bash
-          echo "/root/.tracerbio/bin" | sudo tee -a $GITHUB_PATH
+          curl -sSL https://install.tracer.cloud/ | sh 
+          source ~/.bashrc
       - name: Run a pipeline with tracer
         run: |
-          sudo $TRACER_BIO init \
+          sudo tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
@@ -43,7 +42,7 @@ jobs:
         with:
           is_ebpf: true
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
           required_processes_ebpf: "samtools index, FastQC, samtools merge, samtools view, samtools idxstats, samtools faidx, STAR align, samtools stats, samtools cat"
 
       - name: Upload pipeline results
@@ -60,7 +59,6 @@ jobs:
     name: Fastquorum Pipeline
     runs-on: ubuntu-latest
     env:
-      TRACER_BIO: /root/.tracerbio/bin/tracer
       NXF_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -69,11 +67,12 @@ jobs:
       - name: Install tracer
         continue-on-error: true
         run: |
-          curl -sSL https://install.tracer.cloud | sh && source ~/.bashrc
+          curl -sSL https://install.tracer.cloud | sh 
+          source ~/.bashrc
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init \
+          sudo tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
@@ -94,7 +93,7 @@ jobs:
         with:
           is_ebpf: true
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
           required_processes_ebpf: "samtools dict, samtools faidx, bwa index, multiqc, samtools sort, samtools fastq, FastQC, bwa mem"
 
       - name: Upload pipeline results
@@ -110,18 +109,17 @@ jobs:
   codespaces-pixi-test:
     name: Pixi Pipeline Test
     runs-on: ubuntu-latest
-    env:
-      TRACER_BIO: /root/.tracerbio/bin/tracer
     steps:
       - uses: actions/checkout@v4
       - name: Install tracer
         continue-on-error: true
         run: |
-          curl -sSL https://install.tracer.cloud | CLI_BRANCH="update_fgbio_rules" sh && source ~/.bashrc
+          curl -sSL https://install.tracer.cloud | sh 
+          source ~/.bashrc
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init \
+          sudo tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
@@ -142,7 +140,7 @@ jobs:
         with:
           is_ebpf: true
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
           required_processes_ebpf: "FastQC,samtools sort"
 
       - name: Upload pixi pipeline results
@@ -158,18 +156,17 @@ jobs:
   codespaces-conda-test:
     name: Conda Pipeline Test
     runs-on: ubuntu-latest
-    env:
-      TRACER_BIO: /root/.tracerbio/bin/tracer
     steps:
       - uses: actions/checkout@v4
       - name: Install tracer
         continue-on-error: true
         run: |
-          curl -sSL https://install.tracer.cloud | CLI_BRANCH="update_fgbio_rules" sh && source ~/.bashrc
+          curl -sSL https://install.tracer.cloud | sh 
+          source ~/.bashrc
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init \
+          sudo tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
@@ -190,8 +187,8 @@ jobs:
         with:
           is_ebpf: true
           use_sudo: true
-          binary: $TRACER_BIO
-          required_processes_ebpf: "samtools merge, STAR, samtools sort, samtools flagstat, FastQC, samtools cat, samtools index, samtools idxstats, samtools faidx, samtools view, samtools stats"
+          binary: tracer
+          required_processes_ebpf: "samtools merge, STAR align, samtools sort, samtools flagstat, FastQC, samtools cat, samtools index, samtools idxstats, samtools faidx, samtools view, samtools stats"
 
       - name: Upload conda pipeline results
         uses: actions/upload-artifact@v4

@@ -20,7 +20,6 @@ jobs:
     name: Fastquorum macOS arm64
     runs-on: macos-14
     env:
-      TRACER_BIO: /Users/runner/.tracerbio/bin/tracer
       NXF_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -29,11 +28,12 @@ jobs:
       - name: Install tracer
         continue-on-error: true
         run: |
-          curl -sSL https://install.tracer.cloud | sudo bash
+          curl -sSL https://install.tracer.cloud | sh 
+          source ~/.zshrc
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init \
+          sudo tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
@@ -51,7 +51,7 @@ jobs:
         with:
           is_ebpf: false
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
           required_processes_polling: "fgbio FastqToBam, fgbio FilterConsensusReads, fgbio CallDuplexConsensusReads, samtools dict, samtools sort, bwa, fgbio CollectDuplexSeqMetrics, FastQC, fgbio GroupReadsByUmi, fgbio ZipperBams"
 
       - name: Upload pipeline results

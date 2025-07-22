@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Inline version of verify-tracer action for just amazon linux
-BINARY="/root/.tracerbio/bin/tracer"
+BINARY="tracer"
 
 # Parse command line arguments
 REQUIRED_PROCESSES_EBPF="${1:-samtools faidx, samtools flagstat, samtools view, FastQC, samtools merge, samtools index, samtools sort, samtools cat, samtools idxstats, samtools stats}"

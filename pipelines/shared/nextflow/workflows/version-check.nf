@@ -37,7 +37,7 @@ process star_version {
     script:
     """
     echo "STAR version:"
-    STAR --version || echo "STAR not available"
+    STAR align --runMode alignReads --version || echo "STAR not available"
     """
 }
 

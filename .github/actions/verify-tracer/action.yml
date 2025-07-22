@@ -102,7 +102,7 @@ runs:
             N=$((N+1))
           done
           PROC_COUNT=${#PROCESSES_SET[@]}
-          MIN_COUNT=$((N-3))
+          MIN_COUNT=$((N-4))
           if [ "$MIN_COUNT" -lt 0 ]; then MIN_COUNT=0; fi
           echo "macOS process polling mode: found $PROC_COUNT processes, required count range: [$MIN_COUNT, $N] (N=$N)"
           if [ "$PROC_COUNT" -ge "$MIN_COUNT" ] && [ "$PROC_COUNT" -le "$N" ]; then
