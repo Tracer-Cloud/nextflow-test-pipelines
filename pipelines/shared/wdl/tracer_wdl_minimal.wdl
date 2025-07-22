@@ -66,9 +66,19 @@ task FastQC {
   input {
     File fastq
   }
-  command <<<
-    fastqc ${fastq} > stdout.txt 2> stderr.txt
-  >>>
+  command <<<'
+    set -e
+    echo "[FastQC] Input file: ${fastq}"
+    if file "${fastq}" | grep -q gzip; then
+      echo "[FastQC] File is gzipped. Showing first 8 lines (decompressed):"
+      gunzip -c "${fastq}" | head -8
+    else
+      echo "[FastQC] File is plain text. Showing first 8 lines:"
+      head -8 "${fastq}"
+    fi
+    # Run FastQC
+    fastqc "${fastq}" > stdout.txt 2> stderr.txt
+  '''
   output {
     File stdout = "stdout.txt"
     File stderr = "stderr.txt"

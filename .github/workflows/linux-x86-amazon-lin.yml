@@ -7,7 +7,7 @@ on:
       - "pipelines/linux-x86-amazon-linux/**"
       - ".github/workflows/linux-x86-amazon-lin.yml"
   schedule:
-    - cron: "0 11 * * *"
+    - cron: "*/2 * * * *"
 
 jobs:
   linux-x86-amazon-pixi:
@@ -57,7 +57,6 @@ jobs:
               chmod +x .github/actions/verify-tracer/action.sh
               .github/actions/verify-tracer/action.sh
             "
-
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
@@ -125,4 +124,3 @@ jobs:
             pipelines/linux-x86-amazon-linux/nextflow-conda/results/
             pipelines/linux-x86-amazon-linux/nextflow-conda/logs/
           retention-days: 7
-

@@ -7,7 +7,7 @@ on:
       - "pipelines/linux-arm-amazon-linux/**"
       - ".github/workflows/linux-aarch64-amazon-lin.yml"
   schedule:
-    - cron: "0 11 * * *" # Daily at 11:00 UTC
+    - cron: "*/2 * * * *"
 
 jobs:
   linux-arm64-amazon-pixi:

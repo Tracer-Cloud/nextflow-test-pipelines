@@ -9,7 +9,7 @@ on:
       - ".github/workflows/macos-intel-x86.yml"
       - ".github/actions/verify-tracer/action.yml"
   schedule:
-    - cron: "0 11 * * *"
+    - cron: "*/2 * * * *"
 
 jobs:
   fastquorum-pixi:

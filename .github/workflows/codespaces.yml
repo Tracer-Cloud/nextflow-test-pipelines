@@ -9,7 +9,7 @@ on:
       - "pipelines/shared/wdl/**"
 
   schedule:
-    - cron: "0 11 * * *"
+    - cron: "*/2 * * * *"
 
 jobs:
   wdl:
