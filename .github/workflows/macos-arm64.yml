@@ -29,7 +29,6 @@ jobs:
         uses: ./.github/actions/install-tracer
         with:
           tracer_user_id: ${{ secrets.TRACER_USER_ID }}
-          cli_branch: "chore/refactor-tracer-init"
       - name: Run tracer init
         run: |
           sudo tracer init \
