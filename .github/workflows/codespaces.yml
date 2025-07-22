@@ -22,8 +22,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install tracer
         run: |
-          curl -sSL https://install.tracer.cloud/ | sudo bash
-          echo "/root/.tracerbio/bin" | sudo tee -a $GITHUB_PATH
+          curl -sSL https://install.tracer.cloud/ | sh 
+          source ~/.bashrc
       - name: Run a pipeline with tracer
         run: |
           sudo $TRACER_BIO init \
@@ -69,7 +69,8 @@ jobs:
       - name: Install tracer
         continue-on-error: true
         run: |
-          curl -sSL https://install.tracer.cloud | sh && source ~/.bashrc
+          curl -sSL https://install.tracer.cloud | sh 
+          source ~/.bashrc
 
       - name: Run tracer init
         run: |
@@ -117,7 +118,8 @@ jobs:
       - name: Install tracer
         continue-on-error: true
         run: |
-          curl -sSL https://install.tracer.cloud | CLI_BRANCH="update_fgbio_rules" sh && source ~/.bashrc
+          curl -sSL https://install.tracer.cloud | sh 
+          source ~/.bashrc
 
       - name: Run tracer init
         run: |
@@ -165,7 +167,8 @@ jobs:
       - name: Install tracer
         continue-on-error: true
         run: |
-          curl -sSL https://install.tracer.cloud | CLI_BRANCH="update_fgbio_rules" sh && source ~/.bashrc
+          curl -sSL https://install.tracer.cloud | sh 
+          source ~/.bashrc
 
       - name: Run tracer init
         run: |

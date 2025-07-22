@@ -29,7 +29,8 @@ jobs:
       - name: Install tracer
         continue-on-error: true
         run: |
-          curl -sSL https://install.tracer.cloud | sudo bash
+          curl -sSL https://install.tracer.cloud | sh 
+          source ~/.zshrc
 
       - name: Run tracer init
         run: |

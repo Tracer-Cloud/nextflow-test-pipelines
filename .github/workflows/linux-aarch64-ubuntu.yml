@@ -22,7 +22,8 @@ jobs:
 
       - name: Install tracer
         run: |
-          curl -sSL https://install.tracer.cloud/ | sudo bash
+          curl -sSL https://install.tracer.cloud/ | sh 
+          source ~/.bashrc
 
       - name: Run tracer init
         run: |
@@ -66,7 +67,8 @@ jobs:
 
       - name: Install tracer
         run: |
-          curl -sSL https://install.tracer.cloud | sudo bash
+          curl -sSL https://install.tracer.cloud | sh 
+          source ~/.bashrc
 
       - name: Run tracer init
         run: |
@@ -108,7 +110,8 @@ jobs:
 
       - name: Install tracer
         run: |
-          curl -sSL https://install.tracer.cloud | sudo bash
+          curl -sSL https://install.tracer.cloud | sh 
+          source ~/.bashrc
 
       - name: Run tracer init
         run: |

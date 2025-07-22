@@ -41,6 +41,7 @@ jobs:
 
               # Install tracer
               curl -sSL https://install.tracer.cloud | sh
+              source ~/.bashrc
               # Run tracer init
               sudo \$TRACER_BIO init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
 
