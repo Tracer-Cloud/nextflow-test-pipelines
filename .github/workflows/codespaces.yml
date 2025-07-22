@@ -44,7 +44,7 @@ jobs:
           is_ebpf: true
           use_sudo: true
           binary: $TRACER_BIO
-          required_processes_ebpf: "samtools index, FastQC, samtools merge, samtools view, samtools idxstats, samtools faidx, STAR, samtools stats, samtools cat"
+          required_processes_ebpf: "samtools index, FastQC, samtools merge, samtools view, samtools idxstats, samtools faidx, STAR align, samtools stats, samtools cat"
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
@@ -191,7 +191,7 @@ jobs:
           is_ebpf: true
           use_sudo: true
           binary: $TRACER_BIO
-          required_processes_ebpf: "samtools merge, STAR, samtools sort, samtools flagstat, FastQC, samtools cat, samtools index, samtools idxstats, samtools faidx, samtools view, samtools stats"
+          required_processes_ebpf: "samtools merge, STAR align, samtools sort, samtools flagstat, FastQC, samtools cat, samtools index, samtools idxstats, samtools faidx, samtools view, samtools stats"
 
       - name: Upload conda pipeline results
         uses: actions/upload-artifact@v4
