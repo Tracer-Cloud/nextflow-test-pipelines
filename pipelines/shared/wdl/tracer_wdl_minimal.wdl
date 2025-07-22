@@ -96,10 +96,10 @@ task STARAlign {
     File fastq2
     String star_index_dir
   }
-  command <<<
-    STAR --genomeDir ${star_index_dir} --readFilesIn ${fastq1} ${fastq2} --runThreadN 1 --outSAMtype BAM Unsorted --outFileNamePrefix star_
+  command <<<'
+    STAR --genomeDir ~{star_index_dir} --readFilesIn ~{fastq1} ~{fastq2} --runThreadN 1 --outSAMtype BAM Unsorted --outFileNamePrefix star_
     mv star_Aligned.out.bam aligned.bam
-  >>>
+  '''
   output {
     File bam = "aligned.bam"
   }
