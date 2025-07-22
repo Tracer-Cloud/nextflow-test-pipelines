@@ -84,17 +84,6 @@ for f in chr22.fa chr22.gtf NA24385_RNAseq_1.fastq.gz NA24385_RNAseq_2.fastq.gz 
   cp "$DATA_DIR/$f" .
 done
 
-# Update tracer_wdl_minimal.inputs.json
-cat > tracer_wdl_minimal.inputs.json <<EOF
-{
-  "tracer_wdl_minimal.fastq1": "NA24385_RNAseq_1.fastq.gz",
-  "tracer_wdl_minimal.fastq2": "NA24385_RNAseq_2.fastq.gz",
-  "tracer_wdl_minimal.reference_fasta": "chr22.fa",
-  "tracer_wdl_minimal.gtf": "chr22.gtf",
-  "tracer_wdl_minimal.test_bam": "test.bam"
-}
-EOF
-
 echo "\n---"
 echo "Running Tracer WDL Minimal pipeline with miniwdl (real data)"
 echo "  - FASTQ1: $FASTQ1"
