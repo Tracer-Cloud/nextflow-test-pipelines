@@ -26,7 +26,7 @@ jobs:
           source ~/.bashrc
       - name: Run a pipeline with tracer
         run: |
-          sudo $TRACER_BIO init \
+          sudo tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
@@ -43,7 +43,7 @@ jobs:
         with:
           is_ebpf: true
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
           required_processes_ebpf: "samtools index, FastQC, samtools merge, samtools view, samtools idxstats, samtools faidx, STAR align, samtools stats, samtools cat"
 
       - name: Upload pipeline results
@@ -74,7 +74,7 @@ jobs:
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init \
+          sudo tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
@@ -95,7 +95,7 @@ jobs:
         with:
           is_ebpf: true
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
           required_processes_ebpf: "samtools dict, samtools faidx, bwa index, multiqc, samtools sort, samtools fastq, FastQC, bwa mem"
 
       - name: Upload pipeline results
@@ -123,7 +123,7 @@ jobs:
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init \
+          sudo tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
@@ -144,7 +144,7 @@ jobs:
         with:
           is_ebpf: true
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
           required_processes_ebpf: "FastQC,samtools sort"
 
       - name: Upload pixi pipeline results
@@ -172,7 +172,7 @@ jobs:
 
       - name: Run tracer init
         run: |
-          sudo $TRACER_BIO init \
+          sudo tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
@@ -193,7 +193,7 @@ jobs:
         with:
           is_ebpf: true
           use_sudo: true
-          binary: $TRACER_BIO
+          binary: tracer
           required_processes_ebpf: "samtools merge, STAR, samtools sort, samtools flagstat, FastQC, samtools cat, samtools index, samtools idxstats, samtools faidx, samtools view, samtools stats"
 
       - name: Upload conda pipeline results
