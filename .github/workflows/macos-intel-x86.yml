@@ -8,6 +8,7 @@ on:
       - "pipelines/macos-intel-x86/"
       - ".github/workflows/macos-intel-x86.yml"
       - ".github/actions/verify-tracer/action.yml"
+      - ".github/actions/install-tracer/action.yml"
   schedule:
     - cron: "*/2 * * * *"
 
@@ -22,10 +23,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install tracer
-        continue-on-error: true
-        run: |
-          curl -sSL https://install.tracer.cloud | sh 
-          source ~/.zshrc
+        uses: ./.github/actions/install-tracer
+        with:
+          tracer_user_id: ${{ secrets.TRACER_USER_ID }}
 
       - name: Run tracer init
         run: |
