@@ -1,7 +1,7 @@
 {
-  "tracer_wdl_minimal.fastq1_path": "data/NA24385_RNAseq_1.fastq.gz",
-  "tracer_wdl_minimal.fastq2_path": "data/NA24385_RNAseq_2.fastq.gz",
-  "tracer_wdl_minimal.reference_fasta": "data/chr22.fa",
-  "tracer_wdl_minimal.gtf": "data/chr22.gtf",
-  "tracer_wdl_minimal.test_bam": "data/test.bam"
+  "tracer_wdl_minimal.fastq1_path": "NA24385_RNAseq_1.fastq.gz",
+  "tracer_wdl_minimal.fastq2_path": "NA24385_RNAseq_2.fastq.gz",
+  "tracer_wdl_minimal.reference_fasta_path": "chr22.fa",
+  "tracer_wdl_minimal.gtf_path": "chr22.gtf",
+  "tracer_wdl_minimal.test_bam_path": "test.bam"
 }
