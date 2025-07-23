@@ -19,3 +19,4 @@ importlib_metadata = "<5"
 
 script = "bash run.sh"
 pipeline = "miniwdl run tracer_wdl_minimal.wdl -i tracer_wdl_minimal.inputs.json"
+check = "STAR index --version && samtools view --version"

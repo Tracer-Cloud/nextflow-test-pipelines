@@ -51,6 +51,8 @@ if [ ! -d "$STAR_INDEX_DIR" ]; then
   pixi run STAR --runMode genomeGenerate --genomeDir "$STAR_INDEX_DIR" --genomeFastaFiles "$REF_FASTA" --sjdbGTFfile "$GTF" --runThreadN 2
 fi
 
+pixi run check
+
 # Generate a test BAM file (for samtools tasks)
 TEST_BAM="$DATA_DIR/test.bam"
 if [ ! -f "$TEST_BAM" ]; then
