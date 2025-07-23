@@ -1,6 +1,6 @@
 name: "Install Tracer Client"
 author: "Vaibhav Upreti"
-description: "Installs Tracer Client"
+description: "GitHub Action to install the Tracer CLI client for your workflows."
 
 branding:
   color: "blue"
@@ -8,8 +8,16 @@ branding:
 
 inputs:
   tracer_user_id:
-    description: "Tracer User ID"
+    description: "Tracer User ID (optional, for personalized setup)"
     required: false
+  cli_branch:
+    description: "Install Tracer from a custom CLI branch (must be a PR branch)"
+    required: false
+    default: "main"
+  installer_branch:
+    description: "Use installer from a custom branch (must be a PR branch)"
+    required: false
+    default: "main"
 
 runs:
   using: "composite"
@@ -17,26 +25,26 @@ runs:
     - name: "Install Tracer Client"
       shell: bash
       run: |
-        set -e
+        set -euo pipefail
+
         if [ -n "${{ inputs.tracer_user_id }}" ]; then
           export TRACER_USER_ID="${{ inputs.tracer_user_id }}"
+          echo "Using TRACER_USER_ID: $TRACER_USER_ID"
         fi
 
-        # Install Tracer
-        curl -sSL https://install.tracer.cloud | sh
+        CLI_BRANCH_ARG="CLI_BRANCH=\"${{ inputs.cli_branch }}\""
+        INS_BRANCH_ARG="INS_BRANCH=\"${{ inputs.installer_branch }}\""
+        echo "Using CLI branch: ${{ inputs.cli_branch }}"
+        echo "Using installer branch: ${{ inputs.installer_branch }}"
 
-        # Source all relevant shell profiles
-        [ -f ~/.bashrc ] && source ~/.bashrc
-        [ -f ~/.zshrc ] && source ~/.zshrc
-        [ -f ~/.profile ] && source ~/.profile
-        [ -f ~/.bash_profile ] && source ~/.bash_profile
+        eval "curl -sSL https://install.tracer.cloud | $CLI_BRANCH_ARG $INS_BRANCH_ARG sh"
 
-        # Add likely install locations to PATH
         export PATH="$HOME/.tracer/bin:$HOME/.local/bin:$PATH"
 
-        # Check installation
+        # Verify installation
         if command -v tracer >/dev/null 2>&1; then
-          echo "Tracer installed successfully: $(tracer --version)"
+          VERSION=$(tracer --version)
+          echo "Tracer installed successfully: $VERSION"
         else
           echo "Tracer installation failed or not in PATH"
           exit 1
