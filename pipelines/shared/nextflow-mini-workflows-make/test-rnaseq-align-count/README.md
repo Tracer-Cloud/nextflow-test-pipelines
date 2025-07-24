@@ -50,7 +50,7 @@ cd test-rnaseq-align-count
 nextflow run main.nf
 
 # Step 3: Run Tracer 
-tracer init --pipeline-name nf-mini-align-count --environment demo --pipeline-type rnaseq-align-coount --user-operator vincent --is-dev false
+tracer init --pipeline-name nf-mini-align-count --environment demo --pipeline-type rnaseq-align-coount --user-operator vincent
 ```
 
 

@@ -31,12 +31,12 @@ jobs:
           tracer_user_id: ${{ secrets.TRACER_USER_ID }}
       - name: Run tracer init
         run: |
-          sudo tracer init \
+          tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
             --pipeline-type fastquorum \
-            --is-dev true
+            --dev
 
       - name: Run pipeline with Pixi
         working-directory: pipelines/macos-arm64/fastquorum

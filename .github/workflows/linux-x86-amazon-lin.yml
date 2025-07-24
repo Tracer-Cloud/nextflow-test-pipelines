@@ -43,7 +43,7 @@ jobs:
               source ~/.bashrc
 
               # Run tracer init
-              sudo tracer init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+              sudo tracer init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --dev
 
               # Run pipeline with Pixi
               cd pipelines/linux-x86-amazon-linux/nextflow-pixi/
@@ -99,7 +99,7 @@ jobs:
               echo '/root/.tracerbio/bin' | sudo tee -a \$GITHUB_PATH
 
               # Run tracer init
-              sudo tracer init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --is-dev true
+              sudo tracer init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --dev
 
               # Run pipeline with Conda
               cd pipelines/linux-x86-amazon-linux/nextflow-conda
