@@ -31,7 +31,7 @@ jobs:
           tracer_user_id: ${{ secrets.TRACER_USER_ID }}
       - name: Run tracer init
         run: |
-          tracer init \
+          sudo tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
             --user-operator github-actions \
