@@ -32,7 +32,7 @@ echo "AWS environment variables exported."
 
 2. Install Tracer 
 ```bash
-curl -sSL https://install.tracer.cloud | sh && source ~/.bashrc && source ~/.zshrc
+curl -sSL https://install.tracer.cloud | sh
 ```
 
 3. Run the tracer initialization command:

@@ -56,7 +56,7 @@ Install Tracer on your system (one-time setup):
 > **Note:** Root privileges required
 
 ```bash
-curl -sSL https://install.tracer.cloud | sh && source ~/.bashrc && source ~/.zshrc
+curl -sSL https://install.tracer.cloud | sh
 ```
 
 ### 2. Initialize the Tracer Client
