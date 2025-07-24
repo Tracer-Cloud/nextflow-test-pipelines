@@ -32,6 +32,7 @@ jobs:
       - name: Run tracer init
         run: |
           ls -ld /tmp/tracer
+          
           tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
