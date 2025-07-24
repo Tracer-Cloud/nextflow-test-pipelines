@@ -18,5 +18,5 @@ importlib_metadata = "<5"
 [tasks]
 
 script = "bash run.sh"
-pipeline = "miniwdl run tracer_wdl_minimal.wdl -i tracer_wdl_minimal.inputs.json"
+pipeline = "miniwdl run tracer_wdl_minimal.wdl -i tracer_wdl_minimal.inputs.json > /dev/null"
 check = "STAR --runMode genomeGenerate --version && printf '@HD\tVN:1.0\n@SQ\tSN:chr1\tLN:1000\nr1\t0\tchr1\t1\t255\t1M\t*\t0\t0\tA\t*\n' | samtools view -S -"

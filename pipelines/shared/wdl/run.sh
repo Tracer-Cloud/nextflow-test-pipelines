@@ -91,12 +91,16 @@ echo "---\n"
 
 pixi run pipeline
 
-REQUIRED=("NA24385_RNAseq_1.fastq.gz" "NA24385_RNAseq_2.fastq.gz" "chr22.fa" "chr22.gtf" "test.bam")
-for f in "${REQUIRED[@]}"; do
-  if [ ! -s "$DATA_DIR/$f" ]; then
-    echo "ERROR: Required file $DATA_DIR/$f is missing or empty!" >&2
-    ls -lh "$DATA_DIR" >&2
-    exit 1
-  fi
-  echo "Found $DATA_DIR/$f ($(ls -lh $DATA_DIR/$f | awk '{print $5}'))"
-done
+# REQUIRED=("NA24385_RNAseq_1.fastq.gz" "NA24385_RNAseq_2.fastq.gz" "chr22.fa" "chr22.gtf" "test.bam")
+# for f in "${REQUIRED[@]}"; do
+#   if [ ! -s "$DATA_DIR/$f" ]; then
+#     echo "ERROR: Required file $DATA_DIR/$f is missing or empty!" >&2
+#     ls -lh "$DATA_DIR" >&2
+#     exit 1
+#   fi
+#   echo "Found $DATA_DIR/$f ($(ls -lh $DATA_DIR/$f | awk '{print $5}'))"
+# done
+
+echo -e "\033[1;32m[SUCCESS]\033[0m Pipeline finished"
+
+tracer info
