@@ -50,7 +50,7 @@ jobs:
           is_ebpf: false
           use_sudo: true
           binary: tracer
-          required_processes_polling: "FastQC, samtools faidx, fgbio ZipperBams, bwa mem, bwa index, fgbio FastqToBam, samtools sort, fgbio CollectDuplexSeqMetrics, samtools dict, fgbio CallDuplexConsensusReads, fgbio GroupReadsByUmi"
+          required_processes_polling: "FastQC, fgbio FilterConsensusReads, samtools faidx, samtools dict, fgbio ZipperBams, samtools sort, bwa mem, bwa index, fgbio CallDuplexConsensusReads, fgbio GroupReadsByUmi, fgbio FastqToBam, fgbio CollectDuplexSeqMetrics"
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4

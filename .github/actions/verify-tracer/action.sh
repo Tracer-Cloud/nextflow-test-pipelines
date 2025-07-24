@@ -64,25 +64,6 @@ IFS=',' read -ra REQUIRED_ARRAY <<< "$REQUIRED_PROCESSES"
 # Check each required process (exact match, order-independent)
 MISSING_PROCESSES=()
 
-IS_MACOS=false
-if [ "$(uname)" = "Darwin" ]; then
-  IS_MACOS=true
-fi
-
-if [ "$IS_EBPF" = "false" ] && [ "$IS_MACOS" = "true" ]; then
-  PROC_COUNT=${#PROCESSES_SET[@]}
-  echo "macOS process polling mode: found $PROC_COUNT processes"
-  if [ "$PROC_COUNT" -ge 3 ] && [ "$PROC_COUNT" -le 4 ]; then
-    echo "\n SUCCESS: Found $PROC_COUNT processes (in allowed range 3-4)"
-    echo "Found: $PROCESSES"
-    exit 0
-  else
-    echo "\n FAILURE: Found $PROC_COUNT processes (not in allowed range 3-4)"
-    echo "Found: $PROCESSES"
-    exit 1
-  fi
-fi
-
 for required_process in "${REQUIRED_ARRAY[@]}"; do
   # Trim whitespace
   required_process=$(echo "$required_process" | xargs)

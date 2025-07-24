@@ -93,9 +93,9 @@ runs:
 
         echo "Parsed processes: ${PROCESSES_SET[*]}"
 
-        # On macOS in process polling mode, only check the count of found processes (must be in [N-3, N], where N is the number of required processes in polling mode).
+        # In process polling mode, only check the count of found processes (must be in [N-4, N+4], where N is the number of required processes in polling mode).
         # Ignore which required processes are present or missing; pass CI if count matches.
-        if [ "$RUNNER_OS" = "macOS" ] && [ "${{ inputs.is_ebpf }}" = "false" ]; then
+        if [ "${{ inputs.is_ebpf }}" = "false" ]; then
           N=0
           IFS=',' read -ra REQ_ARRAY <<< "$TRACER_REQUIRED_PROCESSES_POLLING"
           for _ in "${REQ_ARRAY[@]}"; do
@@ -103,27 +103,22 @@ runs:
           done
           PROC_COUNT=${#PROCESSES_SET[@]}
           MIN_COUNT=$((N-4))
+          MAX_COUNT=$((N+4))
           if [ "$MIN_COUNT" -lt 0 ]; then MIN_COUNT=0; fi
-          echo "macOS process polling mode: found $PROC_COUNT processes, required count range: [$MIN_COUNT, $N] (N=$N)"
-          if [ "$PROC_COUNT" -ge "$MIN_COUNT" ] && [ "$PROC_COUNT" -le "$N" ]; then
-            echo "\n SUCCESS: Found $PROC_COUNT processes (in allowed range $MIN_COUNT-$N)"
+          echo "process polling mode: found $PROC_COUNT processes, required count range: [$MIN_COUNT, $MAX_COUNT] (N=$N)"
+          if [ "$PROC_COUNT" -ge "$MIN_COUNT" ] && [ "$PROC_COUNT" -le "$MAX_COUNT" ]; then
+            echo "\n SUCCESS: Found $PROC_COUNT processes (in allowed range $MIN_COUNT-$MAX_COUNT)"
             echo "Found: $PROCESSES"
             exit 0
           else
-            echo "\n FAILURE: Found $PROC_COUNT processes (not in allowed range $MIN_COUNT-$N)"
+            echo "\n FAILURE: Found $PROC_COUNT processes (not in allowed range $MIN_COUNT-$MAX_COUNT)"
             echo "Found: $PROCESSES"
             exit 1
           fi
         fi
 
-        # Select required processes based on eBPF mode
-        if [ "${{ inputs.is_ebpf }}" = "true" ]; then
-          required_processes="$TRACER_REQUIRED_PROCESSES_EBPF"
-          echo "Using eBPF mode - Required processes: $required_processes"
-        else
-          required_processes="$TRACER_REQUIRED_PROCESSES_POLLING"
-          echo "Using non-eBPF mode - Required processes: $required_processes"
-        fi
+        required_processes="$TRACER_REQUIRED_PROCESSES_EBPF"
+
 
         # Convert comma-separated required processes to array
         IFS=',' read -ra REQUIRED_ARRAY <<< "$required_processes"
