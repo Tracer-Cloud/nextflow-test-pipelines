@@ -5,29 +5,38 @@ set -e
 DATA_DIR="data"
 mkdir -p "$DATA_DIR"
 
+# Ensure wget is installed
+if ! command -v wget &> /dev/null; then
+  echo "wget not found, installing..."
+  if command -v apt-get &> /dev/null; then
+    sudo apt-get update && sudo apt-get install -y wget
+  elif command -v yum &> /dev/null; then
+    sudo yum install -y wget
+  elif command -v brew &> /dev/null; then
+    brew install wget
+  else
+    echo "No supported package manager found. Please install wget manually."
+    exit 1
+  fi
+fi
+
 # RNA-seq data
 FASTQ1="$DATA_DIR/NA24385_RNAseq_1.fastq.gz"
 FASTQ2="$DATA_DIR/NA24385_RNAseq_2.fastq.gz"
 if [ ! -f "$FASTQ1" ]; then
   echo "Downloading NA24385_RNAseq_1.fastq.gz (subset)..."
-  curl -L --retry 3 --retry-delay 5 \
-    "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data_RNAseq/AshkenazimTrio/HG002_NA24385_son/NA24385_RNAseq_1.fastq.gz" \
-    -o "$FASTQ1"
+  wget -O "$FASTQ1" "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data_RNAseq/AshkenazimTrio/HG002_NA24385_son/NA24385_RNAseq_1.fastq.gz"
 fi
 if [ ! -f "$FASTQ2" ]; then
   echo "Downloading NA24385_RNAseq_2.fastq.gz (subset)..."
-  curl -L --retry 3 --retry-delay 5 \
-    "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data_RNAseq/AshkenazimTrio/HG002_NA24385_son/NA24385_RNAseq_2.fastq.gz" \
-    -o "$FASTQ2"
+  wget -O "$FASTQ2" "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data_RNAseq/AshkenazimTrio/HG002_NA24385_son/NA24385_RNAseq_2.fastq.gz"
 fi
 
 # GRCh38 chr22 reference genome (Ensembl)
 REF_FASTA="$DATA_DIR/chr22.fa"
 if [ ! -f "$REF_FASTA" ]; then
   echo "Downloading GRCh38 chr22 reference..."
-  curl -L --retry 3 --retry-delay 5 \
-    "https://ftp.ensembl.org/pub/release-110/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.22.fa.gz" \
-    -o "$REF_FASTA.gz"
+  wget -O "$REF_FASTA.gz" "https://ftp.ensembl.org/pub/release-110/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.22.fa.gz"
   gunzip -c "$REF_FASTA.gz" > "$REF_FASTA"
   rm "$REF_FASTA.gz"
 fi
@@ -37,9 +46,7 @@ GTF="$DATA_DIR/chr22.gtf"
 if [ ! -f "$GTF" ]; then
   echo "Downloading GRCh38 chr22 GTF annotation"
   GTF_GZ="$DATA_DIR/chr.gtf.gz"
-  curl -L --retry 3 --retry-delay 5 \
-    "https://ftp.ensembl.org/pub/release-110/gtf/homo_sapiens/Homo_sapiens.GRCh38.110.chr.gtf.gz" \
-    -o "$GTF_GZ"
+  wget -O "$GTF_GZ" "https://ftp.ensembl.org/pub/release-110/gtf/homo_sapiens/Homo_sapiens.GRCh38.110.chr.gtf.gz"
   zgrep -P '^22\s' "$GTF_GZ" > "$GTF"
   rm "$GTF_GZ"
 fi
@@ -56,12 +63,8 @@ pixi run check
 # Generate a test BAM file (for samtools tasks)
 TEST_BAM="$DATA_DIR/test.bam"
 if [ ! -f "$TEST_BAM" ]; then
-  echo "Generating test BAM file..."
-  pixi run samtools faidx "$REF_FASTA"
-  REFNAME=$(head -1 "$REF_FASTA" | sed 's/>//')
-  echo -e "@HD\tVN:1.0\tSO:unsorted\n@SQ\tSN:${REFNAME}\tLN:51304566\nread1\t0\t${REFNAME}\t1\t255\t10M\t*\t0\t0\tACGTACGTAC\t*" > "$DATA_DIR/minimal.sam"
-  pixi run samtools view -bS "$DATA_DIR/minimal.sam" > "$TEST_BAM"
-  rm "$DATA_DIR/minimal.sam"
+  echo "Downloading large GIAB PacBio BAM file with wget (supports resume)..."
+  wget -O "$TEST_BAM" "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data_RNAseq/AshkenazimTrio/HG002_NA24385_son/PacBio_Pacbio-MASseq/GM26105/3-ClusterMap/giab_na26105.hifi_reads.lima.0--0.lima.IsoSeqX_bc04_5p--IsoSeqX_3p.clustered.bam"
 fi
 
 for f in chr22.fa chr22.gtf NA24385_RNAseq_1.fastq.gz NA24385_RNAseq_2.fastq.gz test.bam; do
