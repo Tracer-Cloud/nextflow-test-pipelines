@@ -24,18 +24,18 @@ fi
 FASTQ1="$DATA_DIR/NA24385_RNAseq_1.fastq.gz"
 FASTQ2="$DATA_DIR/NA24385_RNAseq_2.fastq.gz"
 if [ ! -f "$FASTQ1" ]; then
-  echo "Downloading NA24385_RNAseq_1.fastq.gz (small ENA test data)..."
+  echo "Downloading NA24385_RNAseq_1.fastq.gz  ENA test data)..."
   wget -O "$FASTQ1" "https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR258/003/SRR2584863/SRR2584863_1.fastq.gz"
 fi
 if [ ! -f "$FASTQ2" ]; then
-  echo "Downloading NA24385_RNAseq_2.fastq.gz (small ENA test data)..."
+  echo "Downloading NA24385_RNAseq_2.fastq.gz ( ENA test data)..."
   wget -O "$FASTQ2" "https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR258/003/SRR2584863/SRR2584863_2.fastq.gz"
 fi
 
 # Reference genome (small yeast chromosome I)
 REF_FASTA="$DATA_DIR/chr22.fa"
 if [ ! -f "$REF_FASTA" ]; then
-  echo "Downloading small yeast chromosome I FASTA for testing..."
+  echo "Downloading small chromosome I FASTA"
   wget -O "$DATA_DIR/yeast_chrI.fa.gz" "https://ftp.ensembl.org/pub/release-110/fasta/saccharomyces_cerevisiae/dna/Saccharomyces_cerevisiae.R64-1-1.dna.chromosome.I.fa.gz"
   gunzip -c "$DATA_DIR/yeast_chrI.fa.gz" > "$REF_FASTA"
   rm "$DATA_DIR/yeast_chrI.fa.gz"
@@ -44,7 +44,7 @@ fi
 # Faster GTF download for chr22 only
 GTF="$DATA_DIR/chr22.gtf"
 if [ ! -f "$GTF" ]; then
-  echo "Downloading small yeast GTF annotation for testing..."
+  echo "Downloading yeast GTF annotation"
   wget -O "$DATA_DIR/yeast.gtf.gz" "https://ftp.ensembl.org/pub/release-110/gtf/saccharomyces_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.110.gtf.gz"
   gunzip -c "$DATA_DIR/yeast.gtf.gz" > "$GTF"
   rm "$DATA_DIR/yeast.gtf.gz"
@@ -61,7 +61,7 @@ fi
 # Generate a test BAM file (for samtools tasks)
 TEST_BAM="$DATA_DIR/test.bam"
 if [ ! -f "$TEST_BAM" ]; then
-  echo "Downloading large GIAB PacBio BAM file with wget (supports resume)..."
+  echo "Downloading GIAB PacBio BAM file"
   wget -O "$TEST_BAM" "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data_RNAseq/AshkenazimTrio/HG002_NA24385_son/PacBio_Pacbio-MASseq/GM26105/3-ClusterMap/giab_na26105.hifi_reads.lima.0--0.lima.IsoSeqX_bc04_5p--IsoSeqX_3p.clustered.bam"
 fi
 
