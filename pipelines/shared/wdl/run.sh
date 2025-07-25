@@ -24,31 +24,30 @@ fi
 FASTQ1="$DATA_DIR/NA24385_RNAseq_1.fastq.gz"
 FASTQ2="$DATA_DIR/NA24385_RNAseq_2.fastq.gz"
 if [ ! -f "$FASTQ1" ]; then
-  echo "Downloading NA24385_RNAseq_1.fastq.gz (subset)..."
-  wget -O "$FASTQ1" "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data_RNAseq/AshkenazimTrio/HG002_NA24385_son/NA24385_RNAseq_1.fastq.gz"
+  echo "Downloading NA24385_RNAseq_1.fastq.gz (small ENA test data)..."
+  wget -O "$FASTQ1" "https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR258/003/SRR2584863/SRR2584863_1.fastq.gz"
 fi
 if [ ! -f "$FASTQ2" ]; then
-  echo "Downloading NA24385_RNAseq_2.fastq.gz (subset)..."
-  wget -O "$FASTQ2" "https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data_RNAseq/AshkenazimTrio/HG002_NA24385_son/NA24385_RNAseq_2.fastq.gz"
+  echo "Downloading NA24385_RNAseq_2.fastq.gz (small ENA test data)..."
+  wget -O "$FASTQ2" "https://ftp.sra.ebi.ac.uk/vol1/fastq/SRR258/003/SRR2584863/SRR2584863_2.fastq.gz"
 fi
 
-# GRCh38 chr22 reference genome (Ensembl)
+# Reference genome (small yeast chromosome I)
 REF_FASTA="$DATA_DIR/chr22.fa"
 if [ ! -f "$REF_FASTA" ]; then
-  echo "Downloading GRCh38 chr22 reference..."
-  wget -O "$REF_FASTA.gz" "https://ftp.ensembl.org/pub/release-110/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.chromosome.22.fa.gz"
-  gunzip -c "$REF_FASTA.gz" > "$REF_FASTA"
-  rm "$REF_FASTA.gz"
+  echo "Downloading small yeast chromosome I FASTA for testing..."
+  wget -O "$DATA_DIR/yeast_chrI.fa.gz" "https://ftp.ensembl.org/pub/release-110/fasta/saccharomyces_cerevisiae/dna/Saccharomyces_cerevisiae.R64-1-1.dna.chromosome.I.fa.gz"
+  gunzip -c "$DATA_DIR/yeast_chrI.fa.gz" > "$REF_FASTA"
+  rm "$DATA_DIR/yeast_chrI.fa.gz"
 fi
 
 # Faster GTF download for chr22 only
 GTF="$DATA_DIR/chr22.gtf"
 if [ ! -f "$GTF" ]; then
-  echo "Downloading GRCh38 chr22 GTF annotation"
-  GTF_GZ="$DATA_DIR/chr.gtf.gz"
-  wget -O "$GTF_GZ" "https://ftp.ensembl.org/pub/release-110/gtf/homo_sapiens/Homo_sapiens.GRCh38.110.chr.gtf.gz"
-  zgrep -P '^22\s' "$GTF_GZ" > "$GTF"
-  rm "$GTF_GZ"
+  echo "Downloading small yeast GTF annotation for testing..."
+  wget -O "$DATA_DIR/yeast.gtf.gz" "https://ftp.ensembl.org/pub/release-110/gtf/saccharomyces_cerevisiae/Saccharomyces_cerevisiae.R64-1-1.110.gtf.gz"
+  gunzip -c "$DATA_DIR/yeast.gtf.gz" > "$GTF"
+  rm "$DATA_DIR/yeast.gtf.gz"
 fi
 
 # Index the reference genome for STAR (if not already indexed)
