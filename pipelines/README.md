@@ -19,3 +19,4 @@ Choose your platform below to find validated examples with different package man
 Navigate to your platform's directory to find working examples with supported package managers. We provide a variety of examples for different compute environments, written in Bash, Python, Nextflow, WDL, and CWL.
 
 All workflows and pipelines can be found in the [shared folder](./shared/).
+
