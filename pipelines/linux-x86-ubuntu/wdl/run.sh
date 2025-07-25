@@ -11,15 +11,24 @@ if ! command -v docker &> /dev/null; then
     $SUDO apt-get update
     $SUDO apt-get install -y docker.io
     $SUDO systemctl enable --now docker
-    # Only try to add user to docker group if not already root
-    if [ "$(id -u)" -ne 0 ]; then
-        $SUDO usermod -aG docker $USER
-        echo "Docker installed. You may need to log out and log back in for group changes to take effect."
-    fi
 fi
 
-if ! docker info &> /dev/null; then
-    echo "Docker is not running or you do not have permission to access it."
+if ! getent group docker > /dev/null; then
+    sudo groupadd docker
+fi
+sudo usermod -aG docker $USER
+
+# If using snap, restart docker
+if snap list | grep -q docker; then
+    sudo snap restart docker
+fi
+
+newgrp docker <<EONG
+set -e
+
+# Test Docker access
+if ! docker ps > /dev/null 2>&1; then
+    echo 'Docker permission issue persists. Please log out and log back in, or restart your shell.'
     exit 1
 fi
 
@@ -49,3 +58,4 @@ fi
 
 echo "Running Tracer WDL Minimal pipeline with miniwdl"
 pixi run --manifest-path ../../shared/wdl/pixi.toml script
+EONG
