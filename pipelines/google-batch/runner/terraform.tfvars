@@ -1,0 +1,5 @@
+project_id = "testing-tracer"
+region     = "us-central1"
+# custom_image_name       = "tracer-base-image"
+scheduler_cron_schedule = "*/10 * * * *"
+time_zone               = "UTC"

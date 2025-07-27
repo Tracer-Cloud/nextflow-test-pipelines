@@ -72,3 +72,13 @@ trace.txt
 
 # Pixi lock files should be committed for reproducibility
 !pixi.lock
+
+
+
+# Terraform state files
+terraform.tfstate
+terraform.tfstate.backup
+*.tfstate*
+.terraform/
+.terraform.lock.hcl
+.terraform/*
