@@ -3,65 +3,50 @@ provider "google" {
   region  = var.region
 }
 
-resource "google_service_account" "tracer_batch_sa" {
-  account_id   = "tracer-batch-sa"
-  display_name = "Service Account for GCP Batch jobs"
-  project      = var.project_id
+resource "google_service_account" "batch_sa" {
+  account_id   = "batch-sa"
+  display_name = "Batch Job Service Account"
 }
 
-resource "google_service_account" "tracer_scheduler_sa" {
-  account_id   = "tracer-scheduler-sa"
-  display_name = "Service Account for Cloud Scheduler"
-  project      = var.project_id
+resource "google_service_account" "scheduler_sa" {
+  account_id   = "scheduler-sa"
+  display_name = "Scheduler Trigger Service Account"
 }
 
+# === IAM Bindings for batch-sa ===
 resource "google_project_iam_member" "batch_sa_logging" {
-  project = var.project_id
   role    = "roles/logging.logWriter"
-  member  = "serviceAccount:${google_service_account.tracer_batch_sa.email}"
+  member  = "serviceAccount:${google_service_account.batch_sa.email}"
+  project = var.project_id
 }
 
-resource "google_project_iam_member" "batch_sa_agent" {
-  project = var.project_id
+resource "google_project_iam_member" "batch_sa_reporter" {
   role    = "roles/batch.agentReporter"
-  member  = "serviceAccount:${google_service_account.tracer_batch_sa.email}"
+  member  = "serviceAccount:${google_service_account.batch_sa.email}"
+  project = var.project_id
 }
 
-resource "google_project_iam_member" "scheduler_sa_batch" {
-  project = var.project_id
+# === IAM Bindings for scheduler-sa ===
+resource "google_project_iam_member" "scheduler_sa_editor" {
   role    = "roles/batch.jobsEditor"
-  member  = "serviceAccount:${google_service_account.tracer_scheduler_sa.email}"
+  member  = "serviceAccount:${google_service_account.scheduler_sa.email}"
+  project = var.project_id
 }
 
 resource "google_project_iam_member" "scheduler_sa_user" {
-  project = var.project_id
   role    = "roles/iam.serviceAccountUser"
-  member  = "serviceAccount:${google_service_account.tracer_scheduler_sa.email}"
+  member  = "serviceAccount:${google_service_account.scheduler_sa.email}"
+  project = var.project_id
 }
 
-resource "google_storage_bucket" "nxf_work" {
-  name                        = "tracer-nxf-work"
-  location                    = var.region
-  uniform_bucket_level_access = true
-  project                     = var.project_id
-
-  lifecycle_rule {
-    action {
-      type = "Delete"
-    }
-    condition {
-      age = 30
-    }
-  }
+# 🔐 Let scheduler-sa impersonate batch-sa directly (correct form)
+resource "google_service_account_iam_member" "scheduler_impersonates_batch" {
+  service_account_id = google_service_account.batch_sa.name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = "serviceAccount:${google_service_account.scheduler_sa.email}"
 }
 
-resource "google_storage_bucket" "nxf_outputs" {
-  name                        = "tracer-nxf-outputs"
-  location                    = var.region
-  uniform_bucket_level_access = true
-  project                     = var.project_id
-}
-
+# === Cloud Scheduler Job that triggers Batch ===
 resource "google_cloud_scheduler_job" "trigger_batch" {
   name             = "batch-job-invoker"
   project          = var.project_id
@@ -70,62 +55,66 @@ resource "google_cloud_scheduler_job" "trigger_batch" {
   time_zone        = var.time_zone
   attempt_deadline = "180s"
 
-  retry_config {
-    max_doublings        = 5
-    max_retry_duration   = "0s"
-    max_backoff_duration = "3600s"
-    min_backoff_duration = "5s"
-  }
-
   http_target {
     http_method = "POST"
     uri         = "https://batch.googleapis.com/v1/projects/${var.project_id}/locations/${var.region}/jobs"
     headers = {
       "Content-Type" = "application/json"
-      "User-Agent"   = "Google-Cloud-Scheduler"
     }
+
     body = base64encode(jsonencode({
       taskGroups = [{
         taskSpec = {
           runnables = [{
-            container = {
-              imageUri   = var.container_image_uri
-              entrypoint = "bash"
-              commands   = ["-c", var.command]
+            script = {
+              path = "/usr/local/bin/tracer-bootstrap.sh"
             }
           }],
           environment = {
             variables = var.tracer_env_vars
           }
-        }
+        },
         taskCount = 1
       }],
       allocationPolicy = {
+        instances = [{
+          policy = {
+            provisioningModel = "STANDARD",
+            machineType       = "e2-standard-2",
+            bootDisk = {
+              image = "projects/${var.project_id}/global/images/${var.custom_image_name}"
+              # Optionally set disk size if needed
+              # boot_disk_size_gb = 60
+            }
+          }
+        }],
         serviceAccount = {
-          email = google_service_account.tracer_batch_sa.email
+          email = google_service_account.batch_sa.email
         }
       },
       logsPolicy = {
         destination = "CLOUD_LOGGING"
       },
       labels = {
-        source = "terraform_cloud_scheduler"
+        source = "custom_image_test"
       }
     }))
 
     oauth_token {
-      service_account_email = google_service_account.tracer_scheduler_sa.email
+      service_account_email = google_service_account.scheduler_sa.email
       scope                 = "https://www.googleapis.com/auth/cloud-platform"
     }
   }
 }
 
+# === Variables ===
 variable "project_id" {}
 variable "region" { default = "us-central1" }
 variable "container_image_uri" { default = "ubuntu" }
 variable "command" { default = "echo Hello from GCP Batch" }
-variable "scheduler_cron_schedule" { default = "*/5 * * * *" }
 variable "time_zone" { default = "UTC" }
+variable "scheduler_cron_schedule" { default = "*/3 * * * *" }
+
 variable "tracer_env_vars" {
   type = map(string)
   default = {
@@ -135,4 +124,8 @@ variable "tracer_env_vars" {
     TRACER_OUTPUT_BUCKET = "tracer-nxf-outputs"
     TRACER_WORK_BUCKET   = "tracer-nxf-work"
   }
+}
+
+variable "custom_image_name" {
+  default = "tracer-base-image"
 }
