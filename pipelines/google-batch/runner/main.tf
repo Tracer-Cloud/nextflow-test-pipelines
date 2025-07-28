@@ -46,6 +46,7 @@ resource "google_cloud_scheduler_job" "trigger_batch" {
     google_project_iam_member.sa_serviceaccountuser,
     google_project_iam_member.sa_batcheditor
   ]
+  paused = false
 
   http_target {
     http_method = "POST"
@@ -59,7 +60,7 @@ resource "google_cloud_scheduler_job" "trigger_batch" {
     body = base64encode(jsonencode({
       taskGroups = [{
         taskSpec = {
-          runnables = [{ script = { text = "echo Hello from Terraform Scheduler" } }]
+          runnables = [{ script = { text = "echo Differential Custom Image Terraform Scheduler" } }]
         }
         taskCount = 1
       }],
@@ -69,8 +70,10 @@ resource "google_cloud_scheduler_job" "trigger_batch" {
             provisioningModel = "STANDARD"
             bootDisk = {
               type   = "pd-balanced"
-              sizeGb = 100
+              sizeGb = 50
+              image  = "projects/${var.project_id}/global/images/tracer-base-image-building"
             }
+
           }
         }],
         serviceAccount = {

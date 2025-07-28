@@ -208,4 +208,7 @@ sudo systemctl daemon-reexec
 sudo systemctl daemon-reload
 sudo systemctl enable tracer.service
 sudo systemctl start tracer.service
+sudo systemctl status tracer.service
+sudo systemctl stop tracer.service
+
 ```
