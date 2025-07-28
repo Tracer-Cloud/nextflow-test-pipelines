@@ -49,7 +49,7 @@ resource "google_cloud_scheduler_job" "trigger_batch" {
 
   http_target {
     http_method = "POST"
-    uri         = "https://batch.googleapis.com/v1/projects/${var.project_id}/locations/${var.region}/jobs?job_id=testing-invoke-batch-job"
+    uri         = "https://batch.googleapis.com/v1/projects/${var.project_id}/locations/${var.region}/jobs?job_id=testing-invoke-batch-job-new-v4"
 
     headers = {
       "Content-Type" = "application/json"
@@ -63,7 +63,20 @@ resource "google_cloud_scheduler_job" "trigger_batch" {
         }
         taskCount = 1
       }],
-      allocationPolicy = { serviceAccount = { email = google_service_account.batch.email } },
+      allocationPolicy = {
+        instances = [{
+          policy = {
+            provisioningModel = "STANDARD"
+            bootDisk = {
+              type   = "pd-balanced"
+              sizeGb = 100
+            }
+          }
+        }],
+        serviceAccount = {
+          email = google_service_account.batch.email
+        }
+      },
       logsPolicy = {
         destination = "CLOUD_LOGGING"
       },
