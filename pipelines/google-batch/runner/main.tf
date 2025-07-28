@@ -46,7 +46,7 @@ resource "google_cloud_scheduler_job" "trigger_batch" {
     google_project_iam_member.sa_serviceaccountuser,
     google_project_iam_member.sa_batcheditor
   ]
-  paused = false
+  paused = true
 
   http_target {
     http_method = "POST"
@@ -60,7 +60,13 @@ resource "google_cloud_scheduler_job" "trigger_batch" {
     body = base64encode(jsonencode({
       taskGroups = [{
         taskSpec = {
-          runnables = [{ script = { text = "echo Differential Custom Image Terraform Scheduler" } }]
+          runnables = [{
+            container = {
+              imageUri   = "ubuntu"
+              entrypoint = "bash"
+              commands   = ["-c", "echo Hello from container fallback"]
+            }
+          }]
         }
         taskCount = 1
       }],
