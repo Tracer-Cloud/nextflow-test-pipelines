@@ -69,7 +69,7 @@ resource "google_cloud_scheduler_job" "trigger_batch" {
         taskSpec = {
           runnables = [{
             script = {
-              text = "echo Starting Tracer && /usr/local/bin/tracer start --non-interactive"
+              text = "bash -c 'echo Custom image is working correctly on GCP Batch!'"
             }
           }]
         }
