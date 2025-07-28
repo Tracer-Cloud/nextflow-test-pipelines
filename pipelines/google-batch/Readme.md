@@ -96,3 +96,30 @@ gcloud batch jobs list \
 - The `--sort-by ~createTime` flag shows the most recent jobs first.
 
 Visit [https://console.cloud.google.com/batch](https://console.cloud.google.com/batch) to inspect job logs, outputs, and runtime diagnostics.
+
+
+
+## 🛠️ Manual Fix (If Scheduler Gets 403 or 401 Errors)
+
+Due to IAM propagation delays or inconsistencies in Terraform, Cloud Scheduler may throw `403 PERMISSION_DENIED` or `401 UNAUTHENTICATED` errors. To resolve this manually:
+
+### Run These Commands After `terraform apply`:
+
+```bash
+# Grant Scheduler SA permission to submit Batch jobs
+gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
+  --member="serviceAccount:scheduler-sa@YOUR_PROJECT_ID.iam.gserviceaccount.com" \
+  --role="roles/batch.jobsEditor"
+
+# Allow it to impersonate Batch SA when submitting jobs
+gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
+  --member="serviceAccount:scheduler-sa@YOUR_PROJECT_ID.iam.gserviceaccount.com" \
+  --role="roles/iam.serviceAccountUser"
+```
+
+> Replace `YOUR_PROJECT_ID` with your actual project ID.
+
+⚠️ You **do not need** to add impersonation for `roles/iam.serviceAccountTokenCreator` if using `oauth_token` in `http_target`.
+
+---
+
