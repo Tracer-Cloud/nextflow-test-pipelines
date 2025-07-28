@@ -99,11 +99,17 @@ Visit [https://console.cloud.google.com/batch](https://console.cloud.google.com/
 
 
 
-## 🛠️ Manual Fix (If Scheduler Gets 403 or 401 Errors)
+## 🛠️ Manual Fix (If Scheduler or Batch Agent Fails Due to Permissions)
 
-Due to IAM propagation delays or inconsistencies in Terraform, Cloud Scheduler may throw `403 PERMISSION_DENIED` or `401 UNAUTHENTICATED` errors. To resolve this manually:
+Cloud Scheduler or Batch jobs may fail with:
 
-### Run These Commands After `terraform apply`:
+* `403 PERMISSION_DENIED`
+* `401 UNAUTHENTICATED`
+* `no VM has agent reporting correctly within the time window`
+
+This usually indicates IAM propagation delays or missing roles.
+
+### ✅ After `terraform apply`, Run:
 
 ```bash
 # Grant Scheduler SA permission to submit Batch jobs
@@ -111,15 +117,22 @@ gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
   --member="serviceAccount:scheduler-sa@YOUR_PROJECT_ID.iam.gserviceaccount.com" \
   --role="roles/batch.jobsEditor"
 
-# Allow it to impersonate Batch SA when submitting jobs
+# Allow Scheduler SA to impersonate Batch SA
 gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
   --member="serviceAccount:scheduler-sa@YOUR_PROJECT_ID.iam.gserviceaccount.com" \
   --role="roles/iam.serviceAccountUser"
+
+# Grant Batch SA permission to report job states
+gcloud projects add-iam-policy-binding YOUR_PROJECT_ID \
+  --member="serviceAccount:batch-sa@YOUR_PROJECT_ID.iam.gserviceaccount.com" \
+  --role="roles/batch.agentReporter"
 ```
 
 > Replace `YOUR_PROJECT_ID` with your actual project ID.
 
-⚠️ You **do not need** to add impersonation for `roles/iam.serviceAccountTokenCreator` if using `oauth_token` in `http_target`.
+✅ **Note:** You **do not need** to grant `roles/iam.serviceAccountTokenCreator` if you’re using `oauth_token` in your `http_target`.
 
----
 
+## REF:
+
+- https://cloud.google.com/batch/docs/troubleshooting#no_agent_reporting

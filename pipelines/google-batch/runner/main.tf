@@ -35,6 +35,13 @@ resource "google_service_account_iam_member" "cloudscheduler_impersonate" {
   member             = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-cloudscheduler.iam.gserviceaccount.com"
 }
 
+resource "google_project_iam_member" "batch_sa_agent_reporter" {
+  role    = "roles/batch.agentReporter"
+  member  = "serviceAccount:${google_service_account.batch.email}"
+  project = var.project_id
+}
+
+
 resource "google_cloud_scheduler_job" "trigger_batch" {
   name      = "invoke-gcp-batch"
   project   = var.project_id
@@ -61,10 +68,8 @@ resource "google_cloud_scheduler_job" "trigger_batch" {
       taskGroups = [{
         taskSpec = {
           runnables = [{
-            container = {
-              imageUri   = "ubuntu"
-              entrypoint = "bash"
-              commands   = ["-c", "echo Hello from container fallback"]
+            script = {
+              text = "echo Starting Tracer && /usr/local/bin/tracer start --non-interactive"
             }
           }]
         }
