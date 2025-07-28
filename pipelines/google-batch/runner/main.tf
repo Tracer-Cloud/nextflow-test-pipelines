@@ -49,7 +49,7 @@ resource "google_cloud_scheduler_job" "trigger_batch" {
 
   http_target {
     http_method = "POST"
-    uri         = "https://batch.googleapis.com/v1/projects/${var.project_id}/locations/${var.region}/jobs?job_id=testing-invoke-batch-job-new-v4"
+    uri         = "https://batch.googleapis.com/v1/projects/${var.project_id}/locations/${var.region}/jobs"
 
     headers = {
       "Content-Type" = "application/json"
