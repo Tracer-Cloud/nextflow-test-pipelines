@@ -69,7 +69,7 @@ resource "google_cloud_scheduler_job" "trigger_batch" {
         taskSpec = {
           runnables = [{
             script = {
-              text = "bash -c 'echo Custom image is working correctly on GCP Batch!'"
+              text = "bash -c 'set -ex; echo Restarting Tracer; sudo systemctl restart tracer.service; sleep 300; sudo systemctl stop tracer.service'"
             }
           }]
         }
