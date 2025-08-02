@@ -45,19 +45,6 @@ fi
 
 echo "Found processes: $PROCESSES"
 
-# Convert processes to array (split by comma and trim whitespace)
-IFS=',' read -ra PROCESSES_ARRAY <<< "$PROCESSES"
-PROCESSES_SET=()
-for proc in "${PROCESSES_ARRAY[@]}"; do
-  # Trim whitespace and add to set
-  trimmed=$(echo "$proc" | xargs)
-  if [ -n "$trimmed" ]; then
-    PROCESSES_SET+=("$trimmed")
-  fi
-done
-
-echo "Parsed processes: ${PROCESSES_SET[*]}"
-
 # Convert comma-separated required processes to array
 IFS=',' read -ra REQUIRED_ARRAY <<< "$REQUIRED_PROCESSES"
 
@@ -68,16 +55,8 @@ for required_process in "${REQUIRED_ARRAY[@]}"; do
   # Trim whitespace
   required_process=$(echo "$required_process" | xargs)
   
-  # Check if this required process exists in the set
-  found=false
-  for process in "${PROCESSES_SET[@]}"; do
-    if [ "$required_process" = "$process" ]; then
-      found=true
-      break
-    fi
-  done
-  
-  if [ "$found" = true ]; then
+  # Check if this required process exists in the processes string
+  if echo "$PROCESSES" | grep -q "$required_process"; then
     echo "✅ Found required process: $required_process"
   else
     echo "❌ Missing required process: $required_process"
