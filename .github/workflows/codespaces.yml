@@ -85,10 +85,6 @@ jobs:
         run: |
           ./run.sh
 
-      - name: Grep fgbio
-        run: |
-          grep -i "fgbio" /tmp/tracer/matches.txt
-
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer
         with:
@@ -130,11 +126,6 @@ jobs:
         working-directory: pipelines/codespaces/nextflow-pixi
         run: |
           ./run.sh
-
-      - name: Grep fgbio
-        run: |
-          grep -i "STAR" /tmp/tracer/matches.txt
-
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer
         with:
@@ -176,10 +167,6 @@ jobs:
         working-directory: pipelines/codespaces/nextflow-conda
         run: |
           ./run.sh
-
-      - name: Grep fgbio
-        run: |
-          grep -i "STAR" /tmp/tracer/matches.txt
 
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer
