@@ -33,7 +33,6 @@ jobs:
             --environment github-actions \
             --user-id github-actions \
             --pipeline-type nextflow \
-            --dev
 
       - name: Run pipeline with Pixi
         working-directory: pipelines/linux-arm-ubuntu/fastquorum
@@ -78,7 +77,6 @@ jobs:
             --environment github-actions \
             --user-id github-actions \
             --pipeline-type nextflow \
-            --dev
 
       - name: Run pipeline with Pixi
         working-directory: pipelines/linux-arm-ubuntu/nextflow-pixi
@@ -121,7 +119,6 @@ jobs:
             --environment github-actions \
             --user-id github-actions \
             --pipeline-type nextflow \
-            --dev
 
       - name: Run pipeline with Conda
         working-directory: pipelines/linux-arm-ubuntu/nextflow-conda

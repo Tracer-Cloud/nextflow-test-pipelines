@@ -30,7 +30,6 @@ jobs:
             --environment github-actions \
             --user-id github-actions \
             --pipeline-type wdl \
-            --dev
 
       - name: Run pipeline
         working-directory: pipelines/linux-x86-ubuntu/wdl
@@ -75,7 +74,6 @@ jobs:
             --environment github-actions \
             --user-id github-actions \
             --pipeline-type fastquorum \
-            --dev
 
       - name: Run pipeline with Pixi
         working-directory: pipelines/linux-x86-ubuntu/fastquorum
@@ -118,7 +116,6 @@ jobs:
             --environment github-actions \
             --user-id github-actions \
             --pipeline-type nextflow \
-            --dev
 
       - name: Run pipeline with Pixi
         working-directory: pipelines/linux-x86-ubuntu/nextflow-pixi
@@ -160,7 +157,6 @@ jobs:
             --environment github-actions \
             --user-id github-actions \
             --pipeline-type nextflow \
-            --dev
 
       - name: Run pipeline with Conda
         working-directory: pipelines/linux-x86-ubuntu/nextflow-conda

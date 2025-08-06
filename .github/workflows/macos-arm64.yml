@@ -36,7 +36,6 @@ jobs:
             --environment github-actions \
             --user-id github-actions \
             --pipeline-type fastquorum \
-            --dev
 
       - name: Run pipeline with Pixi
         working-directory: pipelines/macos-arm64/fastquorum
