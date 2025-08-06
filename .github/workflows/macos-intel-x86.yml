@@ -32,7 +32,7 @@ jobs:
           tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
-            --user-operator github-actions \
+            --user-id github-actions \
             --pipeline-type fastquorum \
             --dev
 

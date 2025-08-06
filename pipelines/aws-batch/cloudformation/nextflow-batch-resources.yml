@@ -321,7 +321,7 @@ Resources:
             - echo "Installing tracer"
             - curl -sSL https://88872bab.tracer-client.pages.dev/installation-script-development.sh | bash -s -- TestBatchAWSEnvironmentNew
             # Pass environment variables directly to the tracer command
-            - TRACER_DATABASE_HOST=tracer-cluster-v2.cluster-cdgizpzxtdp6.us-east-1.rds.amazonaws.com TRACER_DATABASE_NAME=tracer_db TRACER_DATABASE_SECRETS_ARN=arn:aws:secretsmanager:us-east-1:395261708130:secret:rds!cluster-cd690a09-953c-42e9-9d9f-1ed0b434d226-M0wZYA /.tracerbio/bin/tracer init --pipeline-name TestBatchAWSEnvironmentNew --environment aws_batch --pipeline-type rnaseq --user-operator aws_batch
+            - TRACER_DATABASE_HOST=tracer-cluster-v2.cluster-cdgizpzxtdp6.us-east-1.rds.amazonaws.com TRACER_DATABASE_NAME=tracer_db TRACER_DATABASE_SECRETS_ARN=arn:aws:secretsmanager:us-east-1:395261708130:secret:rds!cluster-cd690a09-953c-42e9-9d9f-1ed0b434d226-M0wZYA /.tracerbio/bin/tracer init --pipeline-name TestBatchAWSEnvironmentNew --environment aws_batch --pipeline-type rnaseq --user-id aws_batch
           write_files:
             - path: /etc/vector/vector.yaml
               content: |

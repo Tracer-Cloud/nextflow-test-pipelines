@@ -41,7 +41,7 @@ jobs:
               # Install tracer
               curl -sSL https://install.tracer.cloud | sh
               # Run tracer init
-              sudo tracer init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --dev
+              sudo tracer init --pipeline-name github-actions --environment github-actions --user-id github-actions --pipeline-type nextflow --dev
 
               # Run pipeline with Pixi
               cd pipelines/linux-arm-amazon-linux/nextflow-pixi/
@@ -95,7 +95,7 @@ jobs:
               source ~/.bashrc
 
               # Run tracer init
-              sudo tracer init --pipeline-name github-actions --environment github-actions --user-operator github-actions --pipeline-type nextflow --dev
+              sudo tracer init --pipeline-name github-actions --environment github-actions --user-id github-actions --pipeline-type nextflow --dev
 
               # Run pipeline with Conda
               cd pipelines/linux-arm-amazon-linux/nextflow-conda

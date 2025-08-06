@@ -31,7 +31,7 @@ jobs:
           sudo tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
-            --user-operator github-actions \
+            --user-id github-actions \
             --pipeline-type nextflow \
             --dev
 
@@ -76,7 +76,7 @@ jobs:
           sudo tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
-            --user-operator github-actions \
+            --user-id github-actions \
             --pipeline-type nextflow \
             --dev
 
@@ -119,7 +119,7 @@ jobs:
           sudo tracer init \
             --pipeline-name github-actions \
             --environment github-actions \
-            --user-operator github-actions \
+            --user-id github-actions \
             --pipeline-type nextflow \
             --dev
 
