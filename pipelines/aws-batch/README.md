@@ -69,7 +69,7 @@ cd nextflow-test-pipelines
 ```bash
 tracer init --pipeline-name aws_batch_test \
   --environment sandbox \
-  --user-operator vincent \
+  --user-id vincent \
   --pipeline-type aws_batch_rnaseq
 ```
 

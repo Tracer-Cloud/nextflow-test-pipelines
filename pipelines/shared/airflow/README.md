@@ -37,7 +37,7 @@ curl -sSL https://install.tracer.cloud | sh
 
 3. Run the tracer initialization command:
 ```bash
-   tracer init --pipeline-name airflow_vin --environment sandbox_test --user-operator vincent --pipeline-type rnaseq
+   tracer init --pipeline-name airflow_vin --environment sandbox_test --user-id vincent --pipeline-type rnaseq
 ```
 
 ## Run Sysdig as backup to see if events are tracked 
