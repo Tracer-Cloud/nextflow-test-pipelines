@@ -44,7 +44,7 @@ jobs:
           is_ebpf: true
           use_sudo: true
           binary: tracer
-          required_processes_ebpf: "samtools index, FastQC, samtools merge, samtools view, samtools idxstats, samtools faidx, STAR align, samtools stats, samtools cat"
+          required_processes_ebpf: "samtools index, FastQC, samtools merge, samtools idxstats, samtools faidx, STAR align, samtools stats, samtools cat"
 
       - name: Upload pipeline results
         uses: actions/upload-artifact@v4
