@@ -9,7 +9,7 @@ on:
       - ".github/workflows/linux-x86_64-ubuntu.yml"
       - ".github/actions/install-tracer/action.yml"
   schedule:
-    - cron: "0 11 * * *"
+    - cron: "*/2 * * * *"
 
 jobs:
   wdl:
