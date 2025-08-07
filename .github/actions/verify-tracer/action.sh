@@ -24,7 +24,7 @@ sleep 10
 
 echo "=== Running tracer info --json ==="
 
-CMD="$BINARY info --json"
+CMD="sudo $BINARY info --json"
 
 echo "Running command: $CMD"
 
