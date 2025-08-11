@@ -8,7 +8,7 @@ on:
       - ".github/workflows/linux-x86-amazon-lin.yml"
       - ".github/actions/verify-tracer/action.sh"
   schedule:
-    - cron: "0 11 * * *"
+    - cron: "*/2 * * * *"
 
 jobs:
   linux-x86-amazon-pixi:
