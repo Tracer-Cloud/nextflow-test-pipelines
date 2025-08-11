@@ -17,29 +17,69 @@ else
   echo "Using non-eBPF mode - Required processes: $REQUIRED_PROCESSES"
 fi
 
-sudo yum install -y jq findutils
+echo "=== Installing jq ==="
+if command -v jq >/dev/null 2>&1; then
+  echo "jq is already installed"
+elif command -v yum >/dev/null 2>&1; then
+  if yum install -y jq findutils 2>/dev/null; then
+    echo "Installed jq without sudo"
+  else
+    echo "Attempting to install jq with sudo..."
+    if sudo yum install -y jq findutils 2>/dev/null; then
+      echo "Installed jq with sudo"
+    else
+      echo "Warning: Could not install jq. Will try to use alternative JSON parsing."
+    fi
+  fi
+elif command -v apt-get >/dev/null 2>&1; then
+  if apt-get update && apt-get install -y jq 2>/dev/null; then
+    echo "Installed jq without sudo"
+  else
+    echo "Warning: Could not install jq. Will try to use alternative JSON parsing."
+  fi
+else
+  echo "Warning: Could not install jq. Will try to use alternative JSON parsing."
+fi
 
 echo "=== Waiting 10 seconds for tracer to gather process information ==="
 sleep 10
 
 echo "=== Running tracer info --json ==="
 
-CMD="sudo $BINARY info --json"
-
+CMD="$BINARY info --json"
 echo "Running command: $CMD"
 
-OUTPUT=$($CMD)
+OUTPUT=$($CMD 2>/dev/null)
+if [ $? -ne 0 ]; then
+  echo "Tracer command failed without sudo, trying with sudo..."
+  CMD="sudo $BINARY info --json"
+  echo "Running command: $CMD"
+  OUTPUT=$($CMD 2>/dev/null)
+  if [ $? -ne 0 ]; then
+    echo "❌ ERROR: Failed to run tracer command with or without sudo"
+    echo "Output: $OUTPUT"
+    exit 1
+  fi
+fi
+
 echo "$OUTPUT"
 
 echo ""
 echo "=== Verifying required processes ==="
 
 # Parse the processes field from the JSON output
-PROCESSES=$(echo "$OUTPUT" | jq -r '.run.processes // empty')
+if command -v jq >/dev/null 2>&1; then
+  PROCESSES=$(echo "$OUTPUT" | jq -r '.run.processes // empty')
+else
+  # Fallback JSON parsing using grep and sed
+  echo "Using fallback JSON parsing (jq not available)"
+  PROCESSES=$(echo "$OUTPUT" | grep -o '"processes":[^,}]*' | sed 's/"processes":"//' | sed 's/"//')
+fi
 
 if [ -z "$PROCESSES" ]; then
   echo "❌ ERROR: Could not find 'processes' in output"
   echo "This might indicate the pipeline cannot find any processes at all"
+  echo "Raw output: $OUTPUT"
   exit 1
 fi
 
