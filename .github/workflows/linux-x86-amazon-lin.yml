@@ -54,7 +54,7 @@ jobs:
               echo '=== Verifying tracer packages ==='
               cd ../../../
               chmod +x .github/actions/verify-tracer/action.sh
-              .github/actions/verify-tracer/action.sh
+              sudo .github/actions/verify-tracer/action.sh
             "
 
       - name: Upload pipeline results
