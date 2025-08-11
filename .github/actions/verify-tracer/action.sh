@@ -50,19 +50,12 @@ CMD="$BINARY info --json"
 echo "Running command: $CMD"
 
 OUTPUT=$($CMD 2>/dev/null)
-if [ $? -ne 0 ]; then
-  echo "Tracer command failed without sudo, trying with sudo..."
-  CMD="sudo $BINARY info --json"
-  echo "Running command: $CMD"
-  OUTPUT=$($CMD 2>/dev/null)
-  if [ $? -ne 0 ]; then
-    echo "❌ ERROR: Failed to run tracer command with or without sudo"
-    echo "Output: $OUTPUT"
-    exit 1
-  fi
-fi
 
-echo "$OUTPUT"
+if [ $? -ne 0 ]; then
+  echo "❌ ERROR: Failed to run tracer command"
+  echo "Output: $OUTPUT"
+  exit 1
+fi
 
 echo ""
 echo "=== Verifying required processes ==="
