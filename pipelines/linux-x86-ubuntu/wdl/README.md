@@ -6,6 +6,10 @@
 - At least 2GB RAM and 1 vCPU
 - [Pixi](https://pixi.sh/) (will be installed automatically if missing)
 
+On AWS, we recommend:
+- **Instance Type**: `c7a.4xlarge`
+- **Disk Space**: 200GB (to be sure)
+
 ## Setup & Quick Start
 
 1. **Run the pipeline:**
