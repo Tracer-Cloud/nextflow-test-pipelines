@@ -20,9 +20,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install tracer
-        uses: ./.github/actions/install-tracer
-        with:
-          tracer_user_id: ${{ secrets.TRACER_USER_ID }}
+        run: |
+          curl -sSL https://install.tracer.cloud | CLI_BRANCH="fix/disable-world-writable-check" sh
+
+      - name: Run tracer init
+        run: |
+          sudo tracer init \
+            --pipeline-name github-actions \
+            --environment github-actions \
+            --user-id github-actions \
+            --pipeline-type wdl \
+
       - name: Run a pipeline with tracer
         run: |
           sudo tracer init \
