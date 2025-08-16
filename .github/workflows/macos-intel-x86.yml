@@ -10,7 +10,7 @@ on:
       - ".github/actions/verify-tracer/action.yml"
       - ".github/actions/install-tracer/action.yml"
   schedule:
-    - cron: "*/2 * * * *"
+    - cron: "0 11 * * *"
 
 jobs:
   fastquorum-pixi:
