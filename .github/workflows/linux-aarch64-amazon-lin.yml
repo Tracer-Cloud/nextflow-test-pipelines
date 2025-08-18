@@ -36,12 +36,12 @@ jobs:
             bash -c "
               # Install system dependencies
               yum update -y
-              yum install -y wget git bash which sudo tar gzip curl --allowerasing
+              yum install -y wget git bash which tar gzip curl --allowerasing
 
               # Install tracer
               curl -sSL https://install.tracer.cloud | sh
               # Run tracer init
-              sudo tracer init --pipeline-name github-actions \
+              tracer init --pipeline-name github-actions \
               --environment github-actions \
               --user-id github-actions \
               --pipeline-type nextflow \
@@ -92,14 +92,14 @@ jobs:
             bash -c "
               # Install system dependencies
               yum update -y
-              yum install -y wget git bash which sudo bzip2 tar gzip curl --allowerasing
+              yum install -y wget git bash which bzip2 tar gzip curl --allowerasing
 
               # Install tracer
               curl -sSL https://install.tracer.cloud | sh
               source ~/.bashrc
 
               # Run tracer init
-              sudo tracer init --pipeline-name github-actions --environment github-actions --user-id github-actions --pipeline-type nextflow
+              tracer init --pipeline-name github-actions --environment github-actions --user-id github-actions --pipeline-type nextflow
 
               # Run pipeline with Conda
               cd pipelines/linux-arm-amazon-linux/nextflow-conda
