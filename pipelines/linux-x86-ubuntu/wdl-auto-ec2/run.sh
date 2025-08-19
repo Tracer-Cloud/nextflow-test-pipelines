@@ -24,11 +24,19 @@ if [[ ! "$confirm_user_id" =~ ^[Yy]$ ]]; then
 fi
 
 echo ""
+
 echo "EC2 Key Name: rapid-ec2-v1"
 read -p "Is this the correct EC2 key name in your account? (y/N): " confirm_key_name
 if [[ ! "$confirm_key_name" =~ ^[Yy]$ ]]; then
-    echo "Please update the KEY_NAME in this script and run again."
-    exit 1
+    read -p "Please enter your EC2 key name: " user_key_name
+    if [[ -z "$user_key_name" ]]; then
+        echo "No key name provided. Exiting."
+        exit 1
+    fi
+    KEY_NAME="$user_key_name"
+    echo "Using key name: $KEY_NAME"
+else
+    KEY_NAME=rapid-ec2-v1
 fi
 
 echo ""
@@ -36,7 +44,8 @@ echo "Proceeding with instance launch..."
 echo ""
 
 # --- Configurable variables ---
-KEY_NAME=rapid-ec2-v1           # must exist in your account/region
+# KEY_NAME is now set based on user input
+
 AMI_ID=$(aws ec2 describe-images \
   --owners 099720109477 \
   --filters 'Name=name,Values=ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*' \
