@@ -61,7 +61,7 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - s3:putObject
+                  - s3:PutObject
                 Resource: !Sub ${NextflowWorkBucket.Arn}/*
               - Effect: Allow
                 Action:
@@ -69,10 +69,10 @@ Resources:
                 Resource: !Sub ${NextflowOutputsBucket.Arn}/metrics/*
               - Effect: Allow
                 Action:
-                  - s3:getObject
-                  - s3:getObjectVersions
-                  - s3:headObject
-                  - s3:listBucket
+                  - s3:GetObject
+                  - s3:GetObjectVersions
+                  - s3:HeadObject
+                  - s3:ListBucket
                   - s3:PutObject
                 Resource: arn:aws:s3:::*
               - Effect: Allow
