@@ -67,7 +67,7 @@ if [[ "$SG_ID" == "None" ]]; then
     --group-id $SG_ID \
     --protocol tcp \
     --port 22 \
-    --source-group $SG_ID \
+    --cidr 18.206.107.24/29 \
     --region $REGION > /dev/null 2>&1
 
   # Add rule for regular SSH (optional - remove if you only want Instance Connect)
