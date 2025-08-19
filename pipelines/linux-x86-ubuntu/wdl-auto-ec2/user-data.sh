@@ -14,4 +14,4 @@ curl -sSL https://install.tracer.cloud | sh -s user_2y5dYWwh7RlZWKDOPl7E0LeQGh1
 sudo tracer init
 
 # Demo tracer WDL
-sudo tracer demo wdl 
+sudo tracer demo wdl && shutdown -h +20 "Auto-shutdown after 20 minutes as configured"
