@@ -18,4 +18,5 @@ importlib_metadata = "<5"
 [tasks]
 
 script = "bash run.sh"
-pipeline = "MINIWDL__DOCKER__RUN_OPTIONS='--privileged' miniwdl run tracer_wdl_minimal.wdl -i tracer_wdl_minimal.inputs.json > /dev/null"
+pipeline = "bash run.sh"
+pipeline_wdl = "MINIWDL__DOCKER__RUN_OPTIONS='--privileged' miniwdl run tracer_wdl_minimal.wdl -i tracer_wdl_minimal.inputs.json > /dev/null"
