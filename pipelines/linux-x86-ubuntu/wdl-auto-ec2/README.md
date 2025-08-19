@@ -12,7 +12,7 @@ IAM permissions: ec2:RunInstances, ec2:TerminateInstances, ec2:Describe*, ec2:Cr
 
 Deliverable
 
-A single bash script (launch-wdl.sh) that:
+A single bash script (run.sh) that:
 
 Finds latest Ubuntu 22.04 AMI in the target region.
 
