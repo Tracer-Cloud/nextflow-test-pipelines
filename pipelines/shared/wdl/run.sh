@@ -90,8 +90,8 @@ echo "  - GTF: $GTF"
 echo "  - Test BAM: $TEST_BAM"
 echo "---\n"
 
+pixi run setup
 pixi run pipeline_wdl
-
 # REQUIRED=("NA24385_RNAseq_1.fastq.gz" "NA24385_RNAseq_2.fastq.gz" "chr22.fa" "chr22.gtf" "test.bam")
 # for f in "${REQUIRED[@]}"; do
 #   if [ ! -s "$DATA_DIR/$f" ]; then
