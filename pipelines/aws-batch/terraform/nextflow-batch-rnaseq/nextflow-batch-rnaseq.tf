@@ -150,7 +150,7 @@ resource "aws_s3_bucket_public_access_block" "outputs" {
 # IAM for Batch instances
 # =======================
 resource "aws_iam_role" "batch_instance_role" {
-  name = "NextflowBatchRnaseqInstanceIAMRole"
+  name = "NextflowRnaseqInstanceIAMRole"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
@@ -207,7 +207,7 @@ resource "aws_iam_role_policy" "s3_access" {
 }
 
 resource "aws_iam_role_policy" "aws_batch_policy" {
-  name = "AWSBatchRnaseqPolicy"
+  name = "AWSBatchNextflowRnaseqPolicy"
   role = aws_iam_role.batch_instance_role.id
   policy = jsonencode({
     Version = "2012-10-17",
@@ -317,7 +317,7 @@ resource "aws_iam_role_policy" "additional_permissions" {
 }
 
 resource "aws_iam_instance_profile" "batch_instance_profile" {
-  name = "NextflowBatchRnaseqInstanceProfile"
+  name = "NextflowRnaseqInstanceProfile"
   role = aws_iam_role.batch_instance_role.name
 }
 
@@ -346,7 +346,7 @@ resource "aws_security_group" "eice_sg" {
 }
 
 resource "aws_security_group" "batch_sg" {
-  name        = "NextflowBatchRnaseqSecurityGroup"
+  name        = "NextflowRnaseqSecurityGroup"
   description = "Nextflow Batch EC2 Security Group"
   vpc_id      = aws_vpc.main.id
 
@@ -427,8 +427,8 @@ locals {
       - systemctl daemon-reload
       - systemctl start vector
       - echo "Installing tracer"
-      - curl -sSL https://88872bab.tracer-client.pages.dev/installation-script-development.sh | bash -s -- TestBatchAWSEnvironmentNew
-      - TRACER_DATABASE_HOST=tracer-cluster-v2.cluster-cdgizpzxtdp6.us-east-1.rds.amazonaws.com TRACER_DATABASE_NAME=tracer_db TRACER_DATABASE_SECRETS_ARN=arn:aws:secretsmanager:us-east-1:395261708130:secret:rds!cluster-cd690a09-953c-42e9-9d9f-1ed0b434d226-M0wZYA /.tracerbio/bin/tracer init --pipeline-name TestBatchAWSEnvironmentNew --environment aws_batch --pipeline-type rnaseq --user-id aws_batch
+      - curl -sSL https://88872bab.tracer-client.pages.dev/installation-script-development.sh | bash -s -- NextflowRnaseqTest
+      - TRACER_DATABASE_HOST=tracer-cluster-v2.cluster-cdgizpzxtdp6.us-east-1.rds.amazonaws.com TRACER_DATABASE_NAME=tracer_db TRACER_DATABASE_SECRETS_ARN=arn:aws:secretsmanager:us-east-1:395261708130:secret:rds!cluster-cd690a09-953c-42e9-9d9f-1ed0b434d226-M0wZYA /.tracerbio/bin/tracer init --pipeline-name NextflowRnaseqTest --environment aws_batch --pipeline-type rnaseq --user-id user_319lEu0yJcTWaTWl1X6TzC6NyG6
     write_files:
       - path: /etc/vector/vector.yaml
         content: |
@@ -473,7 +473,7 @@ locals {
 }
 
 resource "aws_launch_template" "nextflow" {
-  name = "NextflowBatchRnaseqLaunchTemplate"
+  name = "NextflowRnaseqLaunchTemplate"
 
   block_device_mappings {
     device_name = "/dev/xvda"
@@ -505,7 +505,7 @@ resource "aws_launch_template" "nextflow" {
 # =======================
 resource "aws_batch_compute_environment" "gpu" {
   # If your provider errors on this line, remove it or upgrade the AWS provider.
-  name = "NextflowBatchRnaseqGPUComputeEnvironment"
+  name = "NextflowRnaseqGPUComputeEnvironment"
 
   type  = "MANAGED"
   state = "ENABLED"
