@@ -1,5 +1,8 @@
 # Automatically Provision EC2 + Run WDL Pipeline
-- Shuts down in 20 min 
+- Shuts down in 20 min
+
+Run command: 
+- bash pipelines/linux-x86-ubuntu/wdl-auto-ec2/run.sh
 
 
 Requirements
