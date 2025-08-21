@@ -401,7 +401,7 @@ locals {
         baseurl: https://yum.vector.dev/stable/vector-0/$basearch/
         enabled: true
         gpgcheck: true
-        gpgkey: https://keys.datadoghq.com/DATADOG_RPM_KEY_CURRENT.public
+        gpgkey: https://packages.timber.io/vector/gpg.key
         priority: 1
     packages:
       - ec2-instance-connect

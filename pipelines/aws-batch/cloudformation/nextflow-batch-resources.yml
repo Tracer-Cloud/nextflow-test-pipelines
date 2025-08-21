@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Description: Creates an AWS Batch environment for Nextflow pipelines, including
   IAM resources, S3, and Batch. Updated description
 Parameters:
@@ -43,7 +43,7 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
           - Effect: Allow
             Principal:
@@ -57,7 +57,7 @@ Resources:
       Policies:
         - PolicyName: S3Access
           PolicyDocument:
-            Version: '2012-10-17'
+            Version: "2012-10-17"
             Statement:
               - Effect: Allow
                 Action:
@@ -78,14 +78,14 @@ Resources:
               - Effect: Allow
                 Action:
                   - pricing:GetProducts
-                Resource: '*'
+                Resource: "*"
               - Effect: Allow
                 Action:
                   - ec2:*
-                Resource: '*'
+                Resource: "*"
         - PolicyName: AWSBatchPolicy
           PolicyDocument:
-            Version: '2012-10-17'
+            Version: "2012-10-17"
             Statement:
               - Sid: AWSBatchPolicyStatement1
                 Effect: Allow
@@ -153,7 +153,7 @@ Resources:
                   - logs:DescribeLogGroups
                   - iam:GetInstanceProfile
                   - iam:GetRole
-                Resource: '*'
+                Resource: "*"
               - Sid: AWSBatchPolicyStatement2
                 Effect: Allow
                 Action: ecs:TagResource
@@ -162,7 +162,7 @@ Resources:
               - Sid: AWSBatchPolicyStatement3
                 Effect: Allow
                 Action: iam:PassRole
-                Resource: '*'
+                Resource: "*"
                 Condition:
                   StringEquals:
                     iam:PassedToService:
@@ -172,7 +172,7 @@ Resources:
               - Sid: AWSBatchPolicyStatement4
                 Effect: Allow
                 Action: iam:CreateServiceLinkedRole
-                Resource: '*'
+                Resource: "*"
                 Condition:
                   StringEquals:
                     iam:AWSServiceName:
@@ -184,19 +184,19 @@ Resources:
                 Effect: Allow
                 Action:
                   - ec2:CreateTags
-                Resource: '*'
+                Resource: "*"
                 Condition:
                   StringEquals:
                     ec2:CreateAction: RunInstances
         - PolicyName: AdditionalPermissions
           PolicyDocument:
-            Version: '2012-10-17'
+            Version: "2012-10-17"
             Statement:
               - Effect: Allow
                 Action:
                   - s3:*
                   - s3-object-lambda:*
-                Resource: '*'
+                Resource: "*"
               - Effect: Allow
                 Action:
                   - secretsmanager:GetSecretValue
@@ -208,14 +208,14 @@ Resources:
                   - ssm:GetParameter
                   - ssm:DescribeInstanceInformation
                   - ssm:StartSession
-                Resource: '*'
+                Resource: "*"
   InstanceConnectEndpointSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: EC2 Instance Connect Endpoint Security Group
       SecurityGroupIngress:
         - CidrIp: 0.0.0.0/0
-          IpProtocol: '-1'
+          IpProtocol: "-1"
       VpcId: !Ref VPC
   InstanceConnectEndpoint:
     Type: AWS::EC2::InstanceConnectEndpoint
@@ -234,7 +234,7 @@ Resources:
       GroupDescription: Nextflow Batch EC2 Security Group
       SecurityGroupEgress:
         - CidrIp: 0.0.0.0/0
-          IpProtocol: '-1'
+          IpProtocol: "-1"
       VpcId: !Ref VPC
   EICEToInstanceRule:
     Type: AWS::EC2::SecurityGroupEgress
@@ -287,7 +287,7 @@ Resources:
               baseurl: https://yum.vector.dev/stable/vector-0/$basearch/
               enabled: true
               gpgcheck: true
-              gpgkey: https://keys.datadoghq.com/DATADOG_RPM_KEY_CURRENT.public
+              gpgkey: https://packages.timber.io/vector/gpg.key
               priority: 1
           packages:
             - ec2-instance-connect
