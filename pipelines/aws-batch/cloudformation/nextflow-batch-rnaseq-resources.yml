@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Creates an AWS Batch environment for Nextflow pipelines, including
-  IAM resources, S3, and Batch. Updated description
+  IAM resources, S3, and Batch.
 Parameters:
   VPC:
     Type: AWS::EC2::VPC::Id
@@ -11,11 +11,19 @@ Parameters:
   InstanceConnectEndpointSubnet:
     Type: AWS::EC2::Subnet::Id
     Description: Subnet in which to place EC2 Instance Connect Endpoint
+  NextflowWorkBucketName:
+    Type: String
+    Description: Name of the Nextflow work bucket
+    Default: tracer-nxf-rnaseq-work
+  NextflowOutputsBucketName:
+    Type: String
+    Description: Name of the Nextflow outputs bucket
+    Default: tracer-nxf-rnaseq-outputs
 Resources:
   NextflowWorkBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: tracer-nxf-work
+      BucketName: !Ref NextflowWorkBucketName
       LifecycleConfiguration:
         Rules:
           - ExpirationInDays: 30
@@ -31,7 +39,7 @@ Resources:
   NextflowOutputsBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: tracer-nxf-outputs
+      BucketName: !Ref NextflowOutputsBucketName
       OwnershipControls:
         Rules:
           - ObjectOwnership: BucketOwnerEnforced
@@ -61,7 +69,7 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - s3:PutObject
+                  - s3:putObject
                 Resource: !Sub ${NextflowWorkBucket.Arn}/*
               - Effect: Allow
                 Action:
@@ -69,10 +77,10 @@ Resources:
                 Resource: !Sub ${NextflowOutputsBucket.Arn}/metrics/*
               - Effect: Allow
                 Action:
-                  - s3:GetObject
-                  - s3:GetObjectVersions
-                  - s3:HeadObject
-                  - s3:ListBucket
+                  - s3:getObject
+                  - s3:getObjectVersions
+                  - s3:headObject
+                  - s3:listBucket
                   - s3:PutObject
                 Resource: arn:aws:s3:::*
               - Effect: Allow
@@ -181,7 +189,7 @@ Resources:
                       - autoscaling.amazonaws.com
                       - ecs.amazonaws.com
               - Sid: AWSBatchPolicyStatement5
-                Effect: Allow
+                Effect: Allow c
                 Action:
                   - ec2:CreateTags
                 Resource: "*"
@@ -287,7 +295,7 @@ Resources:
               baseurl: https://yum.vector.dev/stable/vector-0/$basearch/
               enabled: true
               gpgcheck: true
-              gpgkey: https://packages.timber.io/vector/gpg.key
+              gpgkey: https://keys.datadoghq.com/DATADOG_RPM_KEY_CURRENT.public
               priority: 1
           packages:
             - ec2-instance-connect
@@ -319,9 +327,9 @@ Resources:
             - systemctl start vector
             # Install Tracer tool
             - echo "Installing tracer"
-            - curl -sSL https://88872bab.tracer-client.pages.dev/installation-script-development.sh | bash -s -- NfRnaseqTest
+            - curl -sSL https://install.tracer.cloud | bash
             # Pass environment variables directly to the tracer command
-            - TRACER_DATABASE_HOST=tracer-cluster-v2.cluster-cdgizpzxtdp6.us-east-1.rds.amazonaws.com TRACER_DATABASE_NAME=tracer_db TRACER_DATABASE_SECRETS_ARN=arn:aws:secretsmanager:us-east-1:395261708130:secret:rds!cluster-cd690a09-953c-42e9-9d9f-1ed0b434d226-M0wZYA /.tracerbio/bin/tracer init --pipeline-name NfRnaseqTest --environment aws_batch --pipeline-type rnaseq --user-id user_319lEu0yJcTWaTWl1X6TzC6NyG6
+            - tracer init --user-id user_319lEu0yJcTWaTWl1X6TzC6NyG6 --pipeline-name test_aws_batch --pipeline-type RNA-SEQ --environment aws-batch
           write_files:
             - path: /etc/vector/vector.yaml
               content: |
@@ -414,27 +422,6 @@ Resources:
                       - add_metrics_metadata
                     default_namespace: default
           --==BOUNDARY==--
-  NextflowCPUComputeEnvironment:
-    Type: AWS::Batch::ComputeEnvironment
-    Properties:
-      State: ENABLED
-      Type: MANAGED
-      ComputeResources:
-        AllocationStrategy: BEST_FIT_PROGRESSIVE
-        DesiredvCpus: 0
-        Ec2Configuration:
-          - ImageType: ECS_AL2023
-        InstanceRole: !Ref NextflowBatchInstanceProfile
-        InstanceTypes:
-          - optimal
-        LaunchTemplate:
-          LaunchTemplateId: !Ref NextflowLaunchTemplate
-          Version: !GetAtt NextflowLaunchTemplate.LatestVersionNumber
-        MinvCpus: 0
-        MaxvCpus: 1024
-        Subnets: !Ref Subnets
-        Type: EC2
-        UpdateToLatestImageVersion: true
   NextflowGPUComputeEnvironment:
     Type: AWS::Batch::ComputeEnvironment
     Properties:
@@ -456,15 +443,6 @@ Resources:
         Subnets: !Ref Subnets
         Type: EC2
         UpdateToLatestImageVersion: true
-  NextflowBatchCPUQueue:
-    Type: AWS::Batch::JobQueue
-    Properties:
-      ComputeEnvironmentOrder:
-        - ComputeEnvironment: !Ref NextflowCPUComputeEnvironment
-          Order: 1
-      JobQueueName: NextflowCPU
-      Priority: 1
-      State: ENABLED
   NextflowBatchGPUQueue:
     Type: AWS::Batch::JobQueue
     Properties:
@@ -472,5 +450,113 @@ Resources:
         - ComputeEnvironment: !Ref NextflowGPUComputeEnvironment
           Order: 1
       JobQueueName: NextflowGPU
+      Priority: 1
+      State: ENABLED
+
+  NextflowRnaseqMCPUComputeEnvironment:
+    Type: AWS::Batch::ComputeEnvironment
+    Properties:
+      State: ENABLED
+      Type: MANAGED
+      ComputeResources:
+        AllocationStrategy: BEST_FIT_PROGRESSIVE
+        DesiredvCpus: 0
+        Ec2Configuration:
+          - ImageType: ECS_AL2023
+        InstanceRole: !Ref NextflowBatchInstanceProfile
+        InstanceTypes:
+          - M7a
+          - M7i
+          - M6a
+          - M6i
+          - M5a
+          - M5
+        LaunchTemplate:
+          LaunchTemplateId: !Ref NextflowLaunchTemplate
+          Version: !GetAtt NextflowLaunchTemplate.LatestVersionNumber
+        MinvCpus: 0
+        MaxvCpus: 1024
+        Subnets: !Ref Subnets
+        Type: EC2
+        UpdateToLatestImageVersion: true
+  NextflowRnaseqMBatchCPUQueue:
+    Type: AWS::Batch::JobQueue
+    Properties:
+      ComputeEnvironmentOrder:
+        - ComputeEnvironment: !Ref NextflowRnaseqMCPUComputeEnvironment
+          Order: 1
+      JobQueueName: NextflowRnaseqMCPU
+      Priority: 1
+      State: ENABLED
+
+  NextflowRnaseqCCPUComputeEnvironment:
+    Type: AWS::Batch::ComputeEnvironment
+    Properties:
+      State: ENABLED
+      Type: MANAGED
+      ComputeResources:
+        AllocationStrategy: BEST_FIT_PROGRESSIVE
+        DesiredvCpus: 0
+        Ec2Configuration:
+          - ImageType: ECS_AL2023
+        InstanceRole: !Ref NextflowBatchInstanceProfile
+        InstanceTypes:
+          - C7a
+          - C7i
+          - C6a
+          - C6i
+          - C5a
+          - C5
+        LaunchTemplate:
+          LaunchTemplateId: !Ref NextflowLaunchTemplate
+          Version: !GetAtt NextflowLaunchTemplate.LatestVersionNumber
+        MinvCpus: 0
+        MaxvCpus: 1024
+        Subnets: !Ref Subnets
+        Type: EC2
+        UpdateToLatestImageVersion: true
+  NextflowRnaseqCBatchCPUQueue:
+    Type: AWS::Batch::JobQueue
+    Properties:
+      ComputeEnvironmentOrder:
+        - ComputeEnvironment: !Ref NextflowRnaseqCCPUComputeEnvironment
+          Order: 1
+      JobQueueName: NextflowRnaseqCCPU
+      Priority: 1
+      State: ENABLED
+
+  NextflowRnaseqRCPUComputeEnvironment:
+    Type: AWS::Batch::ComputeEnvironment
+    Properties:
+      State: ENABLED
+      Type: MANAGED
+      ComputeResources:
+        AllocationStrategy: BEST_FIT_PROGRESSIVE
+        DesiredvCpus: 0
+        Ec2Configuration:
+          - ImageType: ECS_AL2023
+        InstanceRole: !Ref NextflowBatchInstanceProfile
+        InstanceTypes:
+          - R7a
+          - R7i
+          - R6a
+          - R6i
+          - R5a
+          - R5
+        LaunchTemplate:
+          LaunchTemplateId: !Ref NextflowLaunchTemplate
+          Version: !GetAtt NextflowLaunchTemplate.LatestVersionNumber
+        MinvCpus: 0
+        MaxvCpus: 1024
+        Subnets: !Ref Subnets
+        Type: EC2
+        UpdateToLatestImageVersion: true
+  NextflowRnaseqRBatchCPUQueue:
+    Type: AWS::Batch::JobQueue
+    Properties:
+      ComputeEnvironmentOrder:
+        - ComputeEnvironment: !Ref NextflowRnaseqRCPUComputeEnvironment
+          Order: 1
+      JobQueueName: NextflowRnaseqRCPU
       Priority: 1
       State: ENABLED
