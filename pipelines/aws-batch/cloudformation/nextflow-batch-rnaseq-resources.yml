@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Creates an AWS Batch environment for Nextflow pipelines, including
-  IAM resources, S3, and Batch. Updated description
+  IAM resources, S3, and Batch.
 Parameters:
   VPC:
     Type: AWS::EC2::VPC::Id
@@ -189,7 +189,7 @@ Resources:
                       - autoscaling.amazonaws.com
                       - ecs.amazonaws.com
               - Sid: AWSBatchPolicyStatement5
-                Effect: Allow
+                Effect: Allow c
                 Action:
                   - ec2:CreateTags
                 Resource: "*"
@@ -327,9 +327,9 @@ Resources:
             - systemctl start vector
             # Install Tracer tool
             - echo "Installing tracer"
-            - curl -sSL https://88872bab.tracer-client.pages.dev/installation-script-development.sh | bash -s -- TestBatchAWSEnvironmentNew
+            - curl -sSL https://install.tracer.cloud | bash
             # Pass environment variables directly to the tracer command
-            - TRACER_DATABASE_HOST=tracer-cluster-v2.cluster-cdgizpzxtdp6.us-east-1.rds.amazonaws.com TRACER_DATABASE_NAME=tracer_db TRACER_DATABASE_SECRETS_ARN=arn:aws:secretsmanager:us-east-1:395261708130:secret:rds!cluster-cd690a09-953c-42e9-9d9f-1ed0b434d226-M0wZYA /.tracerbio/bin/tracer init --pipeline-name TestBatchAWSEnvironmentNew --environment aws_batch --pipeline-type rnaseq --user-id aws_batch
+            - tracer init --user-id user_319lEu0yJcTWaTWl1X6TzC6NyG6 --pipeline-name test_aws_batch --pipeline-type RNA-SEQ --environment aws-batch
           write_files:
             - path: /etc/vector/vector.yaml
               content: |

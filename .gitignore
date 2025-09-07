@@ -38,6 +38,15 @@ Temporary Items
 
 # End of https://www.toptal.com/developers/gitignore/api/macos
 
+*tfplan
+*tfstate
+*tfstate.backup
+*.tfvars
+*.tfstate.backup
+*.tfstate.backup.lock
+*.tfstate.backup.lock.info
+*.tfstate.backup.lock.info.backup
+
 /work/
 **output/
 **test_results/
