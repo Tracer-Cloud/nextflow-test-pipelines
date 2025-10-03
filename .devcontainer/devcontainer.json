@@ -20,5 +20,6 @@
     "cpus": 4,
     "memory": "8gb",
     "storage": "32gb"
-  }
+  },
+  "postCreateCommand": "pixi install --manifest-path /workspaces/nextflow-test-pipelines/pipelines/shared/fastquorum/pixi.toml || true"
 }
