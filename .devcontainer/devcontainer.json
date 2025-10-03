@@ -1,6 +1,6 @@
 {
   "name": "RNA-seq Analysis with eBPF",
-  "image": "tracercloud/tracer-codespaces-minimal:latest",
+  "image": "tracercloud/tracer:latest",
   "runArgs": [
     "--privileged",
     "--cap-add=ALL",
