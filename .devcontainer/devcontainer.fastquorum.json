@@ -1,0 +1,25 @@
+{
+  "name": "FastQuorum Analysis with eBPF",
+  "image": "tracercloud/tracer:latest",
+  "runArgs": [
+    "--privileged",
+    "--cap-add=ALL",
+    "--security-opt=seccomp=unconfined",
+    "--volume=/var/run/docker.sock:/var/run/docker.sock",
+    "--volume=/sys/kernel/debug:/sys/kernel/debug",
+    "--volume=/lib/modules:/lib/modules:ro",
+    "--volume=/sys/fs/bpf:/sys/fs/bpf"
+  ],
+  "mounts": ["source=${localWorkspaceFolder},target=/workspaces,type=bind"],
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "bash"
+  },
+  "extensions": ["ms-azuretools.vscode-docker"],
+  "remoteUser": "root",
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "8gb",
+    "storage": "32gb"
+  },
+  "postCreateCommand": "pixi install --manifest-path /opt/fastquorum/pixi.toml || true"
+}
