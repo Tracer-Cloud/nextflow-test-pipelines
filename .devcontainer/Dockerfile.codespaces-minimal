@@ -1,0 +1,44 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV LANG=en_US.UTF-8
+ENV TZ=Etc/UTC
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl wget git unzip openjdk-17-jdk \
+    graphviz locales ca-certificates tzdata gnupg lsb-release && \
+    ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
+    dpkg-reconfigure --frontend noninteractive tzdata && \
+    locale-gen en_US.UTF-8 && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Docker CLI (required for inner docker usage)
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends docker-ce-cli && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Nextflow
+RUN wget -q https://github.com/nextflow-io/nextflow/releases/download/v24.04.2/nextflow && \
+    chmod +x nextflow && mv nextflow /usr/local/bin/
+
+WORKDIR /root
+RUN git config --global --add safe.directory /root/nextflow-test-pipelines
+
+# Install Pixi globally for all users
+RUN curl -fsSL https://pixi.sh/install.sh | bash
+ENV PATH="/root/.pixi/bin:${PATH}"
+
+RUN echo '#!/bin/bash' > /usr/local/bin/entrypoint.sh && \
+    echo 'set -e' >> /usr/local/bin/entrypoint.sh && \
+    echo 'if [ ! -d /root/nextflow-test-pipelines ]; then git clone https://github.com/tracer-cloud/nextflow-test-pipelines.git /root/nextflow-test-pipelines; fi' >> /usr/local/bin/entrypoint.sh && \
+    echo 'cd /root/nextflow-test-pipelines && git pull || true' >> /usr/local/bin/entrypoint.sh && \
+    echo 'curl -fsSL https://install.tracer.cloud -o /tmp/install.sh' >> /usr/local/bin/entrypoint.sh && \
+    echo 'head -20 /tmp/install.sh' >> /usr/local/bin/entrypoint.sh && \
+    echo 'sh /tmp/install.sh' >> /usr/local/bin/entrypoint.sh && \
+    echo 'rm /tmp/install.sh' >> /usr/local/bin/entrypoint.sh && \
+    echo 'exec bash' >> /usr/local/bin/entrypoint.sh && \
+    chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

@@ -1,6 +1,6 @@
 {
   "name": "RNA-seq Analysis with eBPF",
-  "image": "tracercloud/tracer:latest",
+  "image": "tracercloud/tracer-codespaces-minimal:latest",
   "runArgs": [
     "--privileged",
     "--cap-add=ALL",
@@ -20,5 +20,6 @@
     "cpus": 4,
     "memory": "8gb",
     "storage": "32gb"
-  }
+  },
+  "postCreateCommand": "pixi install --manifest-path /workspaces/nextflow-test-pipelines/pipelines/shared/fastquorum/pixi.toml || true"
 }
