@@ -8,14 +8,16 @@ platforms = ["osx-arm64", "osx-64", "linux-64", "linux-aarch64"]
 
 [dependencies]
 nextflow = ">=24.10.0"
-conda = ">=24.0.0"
+# conda = ">=24.0.0"
+
 fastqc = ">=0.12.1"
-multiqc = ">=1.17"
 samtools = ">=1.22"
-bcftools = ">=1.22"
-gatk4 = ">=4.4.0.0"
-bwa = ">=0.7.17"
 fgbio = ">=2.0.0"
+bwa = ">=0.7.17"
+multiqc = ">=1.17"
+
+# bcftools = ">=1.22"
+# gatk4 = ">=4.4.0.0"
 
 [tasks]
 # pipeline = "nextflow run nf-core/fastquorum -c ../../shared/fastquorum/custom.config -profile test --input ../../shared/fastquorum/samplesheet.csv --outdir results"
