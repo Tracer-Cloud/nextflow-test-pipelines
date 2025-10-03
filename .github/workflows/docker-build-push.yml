@@ -115,7 +115,7 @@ jobs:
           context: .
           file: .devcontainer/Dockerfile.codespaces-minimal
           platforms: linux/amd64,linux/arm64
-          push: true # ${{ github.event_name != 'pull_request' }}
+          push: ${{ github.event_name != 'pull_request' }}
           tags: |
             ${{ env.REGISTRY }}/${{ env.MINIMAL_IMAGE_NAME }}:${{ github.sha }}
             ${{ env.REGISTRY }}/${{ env.MINIMAL_IMAGE_NAME }}:latest
