@@ -1,6 +1,6 @@
 {
   "name": "RNA-seq Analysis with eBPF",
-  "image": "mcr.microsoft.com/devcontainers/universal:2",
+  "image": "tracercloud/tracer-codespaces-minimal:latest",
   "runArgs": [
     "--privileged",
     "--cap-add=ALL",
