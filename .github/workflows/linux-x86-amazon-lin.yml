@@ -47,11 +47,7 @@ jobs:
               curl -sSL https://install.tracer.cloud | CLI_BRANCH=dev sh -s ${{ secrets.TRACER_USER_ID }}
 
               # Run tracer init
-              tracer init --token ${{ secrets.TRACER_TOKEN }} \
-              --pipeline-name github-actions \
-              --environment github-actions \
-              --user-id github-actions \
-              --pipeline-type nextflow
+              tracer init --token ${{ secrets.TRACER_TOKEN }}
 
               # Run pipeline with Pixi
               cd pipelines/linux-x86-amazon-linux/nextflow-pixi/
@@ -111,11 +107,7 @@ jobs:
               curl -sSL https://install.tracer.cloud | CLI_BRANCH=dev sh -s ${{ secrets.TRACER_USER_ID }}
 
               # Run tracer init
-              tracer init --token ${{ secrets.TRACER_TOKEN }} \
-              --pipeline-name github-actions \
-              --environment github-actions \
-              --user-id github-actions \
-              --pipeline-type nextflow
+              tracer init --token ${{ secrets.TRACER_TOKEN }}
 
               # Run pipeline with Conda
               cd pipelines/linux-x86-amazon-linux/nextflow-conda
