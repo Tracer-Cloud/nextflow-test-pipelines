@@ -14,6 +14,9 @@ jobs:
   linux-arm64-amazon-pixi:
     name: Pixi Pipeline
     runs-on: ubuntu-24.04-arm
+    env:
+      TRACER_USER_ID: ${{ secrets.TRACER_USER_ID }}
+      TRACER_TOKEN: ${{ secrets.TRACER_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -32,6 +35,8 @@ jobs:
             -e GITHUB_WORKSPACE=/workspace \
             -e GITHUB_SHA="${{ github.sha }}" \
             -e GITHUB_REF_NAME="${{ github.ref_name }}" \
+            -e TRACER_USER_ID="${{ secrets.TRACER_USER_ID }}" \
+            -e TRACER_TOKEN="${{ secrets.TRACER_TOKEN }}" \
             public.ecr.aws/amazonlinux/amazonlinux:2023 \
             bash -c "
               # Install system dependencies
@@ -69,6 +74,9 @@ jobs:
   linux-arm64-amazon-conda:
     name: Conda Pipeline
     runs-on: ubuntu-24.04-arm
+    env:
+      TRACER_USER_ID: ${{ secrets.TRACER_USER_ID }}
+      TRACER_TOKEN: ${{ secrets.TRACER_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
@@ -88,6 +96,8 @@ jobs:
             -e GITHUB_WORKSPACE=/workspace \
             -e GITHUB_SHA="${{ github.sha }}" \
             -e GITHUB_REF_NAME="${{ github.ref_name }}" \
+            -e TRACER_USER_ID="${{ secrets.TRACER_USER_ID }}" \
+            -e TRACER_TOKEN="${{ secrets.TRACER_TOKEN }}" \
             public.ecr.aws/amazonlinux/amazonlinux:2023 \
             bash -c "
               # Install system dependencies

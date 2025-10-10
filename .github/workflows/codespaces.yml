@@ -18,6 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TRACER_USER_ID: ${{ secrets.TRACER_USER_ID }}
+      TRACER_TOKEN: ${{ secrets.TRACER_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
@@ -63,6 +65,8 @@ jobs:
     env:
       NXF_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TRACER_USER_ID: ${{ secrets.TRACER_USER_ID }}
+      TRACER_TOKEN: ${{ secrets.TRACER_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -104,6 +108,9 @@ jobs:
   codespaces-pixi-test:
     name: Pixi Pipeline Test
     runs-on: ubuntu-latest
+    env:
+      TRACER_USER_ID: ${{ secrets.TRACER_USER_ID }}
+      TRACER_TOKEN: ${{ secrets.TRACER_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -144,6 +151,9 @@ jobs:
   codespaces-conda-test:
     name: Conda Pipeline Test
     runs-on: ubuntu-latest
+    env:
+      TRACER_USER_ID: ${{ secrets.TRACER_USER_ID }}
+      TRACER_TOKEN: ${{ secrets.TRACER_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 

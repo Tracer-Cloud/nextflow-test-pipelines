@@ -19,6 +19,8 @@ jobs:
     env:
       NXF_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TRACER_USER_ID: ${{ secrets.TRACER_USER_ID }}
+      TRACER_TOKEN: ${{ secrets.TRACER_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
