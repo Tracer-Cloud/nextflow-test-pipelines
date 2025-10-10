@@ -18,21 +18,18 @@ jobs:
     env:
       NXF_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TRACER_USER_ID: ${{ secrets.TRACER_USER_ID }}
+      TRACER_TOKEN: ${{ secrets.TRACER_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Install tracer
-        uses: ./.github/actions/install-tracer
-        with:
-          tracer_user_id: ${{ secrets.TRACER_USER_ID }}
+        run: |
+          curl -sSL https://install.tracer.cloud | CLI_BRANCH=dev sh -s ${{ secrets.TRACER_USER_ID }}
 
       - name: Run tracer init
         run: |
-          sudo tracer init \
-            --pipeline-name github-actions \
-            --environment github-actions \
-            --user-id github-actions \
-            --pipeline-type nextflow \
+          sudo tracer init --token ${{ secrets.TRACER_TOKEN }}
 
       - name: Run pipeline with Pixi
         working-directory: pipelines/linux-arm-ubuntu/fastquorum
@@ -62,21 +59,18 @@ jobs:
     runs-on: ubuntu-24.04-arm
     env:
       TRACER_BIO: /root/.tracerbio/bin/tracer
+      TRACER_USER_ID: ${{ secrets.TRACER_USER_ID }}
+      TRACER_TOKEN: ${{ secrets.TRACER_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Install tracer
-        uses: ./.github/actions/install-tracer
-        with:
-          tracer_user_id: ${{ secrets.TRACER_USER_ID }}
+        run: |
+          curl -sSL https://install.tracer.cloud | CLI_BRANCH=dev sh -s ${{ secrets.TRACER_USER_ID }}
 
       - name: Run tracer init
         run: |
-          sudo tracer init \
-            --pipeline-name github-actions \
-            --environment github-actions \
-            --user-id github-actions \
-            --pipeline-type nextflow \
+          sudo tracer init --token ${{ secrets.TRACER_TOKEN }}
 
       - name: Run pipeline with Pixi
         working-directory: pipelines/linux-arm-ubuntu/nextflow-pixi
@@ -104,22 +98,18 @@ jobs:
     runs-on: ubuntu-24.04-arm
     env:
       TRACER_BIO: /root/.tracerbio/bin/tracer
+      TRACER_USER_ID: ${{ secrets.TRACER_USER_ID }}
+      TRACER_TOKEN: ${{ secrets.TRACER_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Install tracer
-        uses: ./.github/actions/install-tracer
-        with:
-          tracer_user_id: ${{ secrets.TRACER_USER_ID }}
+        run: |
+          curl -sSL https://install.tracer.cloud | CLI_BRANCH=dev sh -s ${{ secrets.TRACER_USER_ID }}
 
       - name: Run tracer init
         run: |
-          sudo tracer init \
-            --pipeline-name github-actions \
-            --environment github-actions \
-            --user-id github-actions \
-            --pipeline-type nextflow \
-
+          sudo tracer init --token ${{ secrets.TRACER_TOKEN }}
       - name: Run pipeline with Conda
         working-directory: pipelines/linux-arm-ubuntu/nextflow-conda
         run: |

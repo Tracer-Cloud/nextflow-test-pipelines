@@ -18,20 +18,19 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TRACER_USER_ID: ${{ secrets.TRACER_USER_ID }}
+      TRACER_TOKEN: ${{ secrets.TRACER_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Install tracer
-        uses: ./.github/actions/install-tracer
-        with:
-          tracer_user_id: ${{ secrets.TRACER_USER_ID }}
+        run: |
+          curl -sSL https://install.tracer.cloud | CLI_BRANCH=dev sh -s ${{ secrets.TRACER_USER_ID }}
+
       - name: Run a pipeline with tracer
         run: |
-          sudo tracer init \
-            --pipeline-name github-actions \
-            --environment github-actions \
-            --user-id github-actions \
-            --pipeline-type wdl \
+          sudo tracer init --token ${{ secrets.TRACER_TOKEN }}
 
       - name: Run pipeline
         working-directory: pipelines/codespaces/wdl
@@ -62,21 +61,18 @@ jobs:
     env:
       NXF_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TRACER_USER_ID: ${{ secrets.TRACER_USER_ID }}
+      TRACER_TOKEN: ${{ secrets.TRACER_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Install tracer
-        uses: ./.github/actions/install-tracer
-        with:
-          tracer_user_id: ${{ secrets.TRACER_USER_ID }}
+        run: |
+          curl -sSL https://install.tracer.cloud | CLI_BRANCH=dev sh -s ${{ secrets.TRACER_USER_ID }}
 
       - name: Run tracer init
         run: |
-          sudo tracer init \
-            --pipeline-name github-actions \
-            --environment github-actions \
-            --user-id github-actions \
-            --pipeline-type fastquorums \
+          sudo tracer init --token ${{ secrets.TRACER_TOKEN }}
 
       - name: Run pipeline with Pixi
         working-directory: pipelines/codespaces/fastquorum
@@ -104,20 +100,19 @@ jobs:
   codespaces-pixi-test:
     name: Pixi Pipeline Test
     runs-on: ubuntu-latest
+    env:
+      TRACER_USER_ID: ${{ secrets.TRACER_USER_ID }}
+      TRACER_TOKEN: ${{ secrets.TRACER_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+
       - name: Install tracer
-        uses: ./.github/actions/install-tracer
-        with:
-          tracer_user_id: ${{ secrets.TRACER_USER_ID }}
+        run: |
+          curl -sSL https://install.tracer.cloud | CLI_BRANCH=dev sh -s ${{ secrets.TRACER_USER_ID }}
 
       - name: Run tracer init
         run: |
-          sudo tracer init \
-            --pipeline-name github-actions \
-            --environment github-actions \
-            --user-id github-actions \
-            --pipeline-type nextflow \
+          sudo tracer init --token ${{ secrets.TRACER_TOKEN }}
 
       - name: Run pipeline with Pixi
         working-directory: pipelines/codespaces/nextflow-pixi
@@ -144,20 +139,19 @@ jobs:
   codespaces-conda-test:
     name: Conda Pipeline Test
     runs-on: ubuntu-latest
+    env:
+      TRACER_USER_ID: ${{ secrets.TRACER_USER_ID }}
+      TRACER_TOKEN: ${{ secrets.TRACER_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+
       - name: Install tracer
-        uses: ./.github/actions/install-tracer
-        with:
-          tracer_user_id: ${{ secrets.TRACER_USER_ID }}
+        run: |
+          curl -sSL https://install.tracer.cloud | CLI_BRANCH=dev sh -s ${{ secrets.TRACER_USER_ID }}
 
       - name: Run tracer init
         run: |
-          sudo tracer init \
-            --pipeline-name github-actions \
-            --environment github-actions \
-            --user-id github-actions \
-            --pipeline-type nextflow \
+          sudo tracer init --token ${{ secrets.TRACER_TOKEN }}
 
       - name: Run pipeline with Conda
         working-directory: pipelines/codespaces/nextflow-conda
