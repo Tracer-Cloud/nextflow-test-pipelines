@@ -30,11 +30,7 @@ jobs:
 
       - name: Run a pipeline with tracer
         run: |
-          sudo tracer init --token ${{ secrets.TRACER_TOKEN }} \
-            --pipeline-name github-actions \
-            --environment github-actions \
-            --user-id github-actions \
-            --pipeline-type wdl \
+          tracer init --token ${{ secrets.TRACER_TOKEN }}
 
       - name: Run pipeline
         working-directory: pipelines/codespaces/wdl
@@ -76,11 +72,7 @@ jobs:
 
       - name: Run tracer init
         run: |
-          sudo tracer init --token ${{ secrets.TRACER_TOKEN }} \
-            --pipeline-name github-actions \
-            --environment github-actions \
-            --user-id github-actions \
-            --pipeline-type fastquorums \
+          tracer init --token ${{ secrets.TRACER_TOKEN }}
 
       - name: Run pipeline with Pixi
         working-directory: pipelines/codespaces/fastquorum
@@ -120,11 +112,7 @@ jobs:
 
       - name: Run tracer init
         run: |
-          sudo tracer init --token ${{ secrets.TRACER_TOKEN }} \
-            --pipeline-name github-actions \
-            --environment github-actions \
-            --user-id github-actions \
-            --pipeline-type nextflow \
+          tracer init --token ${{ secrets.TRACER_TOKEN }}
 
       - name: Run pipeline with Pixi
         working-directory: pipelines/codespaces/nextflow-pixi
@@ -163,11 +151,7 @@ jobs:
 
       - name: Run tracer init
         run: |
-          sudo tracer init --token ${{ secrets.TRACER_TOKEN }} \
-            --pipeline-name github-actions \
-            --environment github-actions \
-            --user-id github-actions \
-            --pipeline-type nextflow \
+          tracer init --token ${{ secrets.TRACER_TOKEN }}
 
       - name: Run pipeline with Conda
         working-directory: pipelines/codespaces/nextflow-conda
