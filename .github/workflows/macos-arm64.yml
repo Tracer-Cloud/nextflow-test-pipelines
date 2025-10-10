@@ -25,13 +25,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # - name: Install tracer
+      #   uses: ./.github/actions/install-tracer
+      #   with:
+      #     tracer_user_id: ${{ secrets.TRACER_USER_ID }}
       - name: Install tracer
-        uses: ./.github/actions/install-tracer
-        with:
-          tracer_user_id: ${{ secrets.TRACER_USER_ID }}
+        run: |
+          curl -sSL https://install.tracer.cloud | CLI_BRANCH=dev sh -s ${{ secrets.TRACER_USER_ID }}
       - name: Run tracer init
         run: |
-          tracer init \
+          tracer init --token ${{ secrets.TRACER_TOKEN }} \
             --pipeline-name github-actions \
             --environment github-actions \
             --user-id github-actions \

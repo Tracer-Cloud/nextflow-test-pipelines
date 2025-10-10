@@ -39,10 +39,14 @@ jobs:
               yum install -y wget git bash which tar gzip curl --allowerasing
 
               # Install tracer
-              curl -sSL https://install.tracer.cloud | sh
+              curl -sSL https://install.tracer.cloud | CLI_BRANCH=dev sh -s ${{ secrets.TRACER_USER_ID }}
 
               # Run tracer init
-              tracer init --pipeline-name github-actions --environment github-actions --user-id github-actions --pipeline-type nextflow
+              tracer init --token ${{ secrets.TRACER_TOKEN }} \
+              --pipeline-name github-actions \
+              --environment github-actions \
+              --user-id github-actions \
+              --pipeline-type nextflow
 
               # Run pipeline with Pixi
               cd pipelines/linux-x86-amazon-linux/nextflow-pixi/
@@ -94,10 +98,14 @@ jobs:
               yum install -y wget git bash which bzip2 tar gzip curl --allowerasing
 
               # Install tracer
-              curl -sSL https://install.tracer.cloud | sh
+              curl -sSL https://install.tracer.cloud | CLI_BRANCH=dev sh -s ${{ secrets.TRACER_USER_ID }}
 
               # Run tracer init
-              tracer init --pipeline-name github-actions --environment github-actions --user-id github-actions --pipeline-type nextflow
+              tracer init --token ${{ secrets.TRACER_TOKEN }} \
+              --pipeline-name github-actions \
+              --environment github-actions \
+              --user-id github-actions \
+              --pipeline-type nextflow
 
               # Run pipeline with Conda
               cd pipelines/linux-x86-amazon-linux/nextflow-conda
