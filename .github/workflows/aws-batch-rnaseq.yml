@@ -1,10 +1,6 @@
 name: AWS Batch RNA-Seq
 
 on:
-    push:
-        paths:
-            - "pipelines/aws-batch/rnaseq/**"
-            - ".github/workflows/aws-batch-rnaseq.yml"
     schedule:
         - cron: "0 11 * * *"
 
