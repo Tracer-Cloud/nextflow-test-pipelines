@@ -27,6 +27,8 @@ jobs:
                   role-session-name: aws-batch-rnaseq
                   aws-region: us-east-1
 
+            - name: Set up Nextflow
+              uses: nf-core/setup-nextflow@v1
             - name: Run pipeline
               run: |
                   cd pipelines/aws-batch/rnaseq
