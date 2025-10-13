@@ -41,9 +41,14 @@ RUN git clone https://github.com/tracer-cloud/nextflow-test-pipelines.git && \
 # Install Pixi globally for all users
 RUN curl -fsSL https://pixi.sh/install.sh | bash
 ENV PATH="/root/.pixi/bin:${PATH}"
+ENV PIXI_NO_SOLVER=1
 
-# Install dependencies using Pixi (equivalent of postCreateCommand)
-RUN pixi install --manifest-path /root/nextflow-test-pipelines/pipelines/shared/fastquorum/pixi.toml || true
+# Copy Pixi manifest separately for layer caching
+COPY pipelines/shared/fastquorum/pixi.toml /tmp/pixi.toml
+
+# Pre-build environment (so Codespaces never waits)
+RUN pixi install --manifest-path /tmp/pixi.toml && \
+    pixi run check-env || true
 
 # Auto-update on entry
 RUN echo '#!/bin/bash' > /usr/local/bin/entrypoint.sh && \
