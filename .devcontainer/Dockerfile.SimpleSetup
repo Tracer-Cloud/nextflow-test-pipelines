@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     locale-gen en_US.UTF-8 && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Docker CLI
+# Install Docker CLI
 RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list && \
     apt-get update && \
@@ -30,25 +30,25 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /
 RUN wget -q https://github.com/nextflow-io/nextflow/releases/download/v24.04.2/nextflow && \
     chmod +x nextflow && mv nextflow /usr/local/bin/
 
-# Pre-pull Nextflow pipeline 'fastquorum' to avoid fetching at runtime
-RUN nextflow pull fastquorum || true
+# Pre-pull nf-core/fastquorum pipeline (so it's cached for nextflow run fastquorum)
+RUN nextflow pull nf-core/fastquorum || true
 
 # Clone test pipelines
 WORKDIR /root
 RUN git clone https://github.com/tracer-cloud/nextflow-test-pipelines.git && \
     git config --global --add safe.directory /root/nextflow-test-pipelines
 
-# Install Pixi globally for all users
+# Install Pixi globally (noninteractive + cacheable)
 RUN curl -fsSL https://pixi.sh/install.sh | bash
 ENV PATH="/root/.pixi/bin:${PATH}"
 ENV PIXI_NO_SOLVER=1
 
-# Copy Pixi manifest separately for layer caching
+# Copy only Pixi manifest to leverage Docker layer caching
 COPY pipelines/shared/fastquorum/pixi.toml /tmp/pixi.toml
 
-# Pre-build environment (so Codespaces never waits)
-RUN pixi install --manifest-path /tmp/pixi.toml && \
-    pixi run check-env || true
+# Pre-create Pixi environment (so Codespaces doesn't solve/install each time)
+RUN pixi install --manifest-path /tmp/pixi.toml --yes && \
+    pixi run --manifest-path /tmp/pixi.toml --version || true
 
 # Auto-update on entry
 RUN echo '#!/bin/bash' > /usr/local/bin/entrypoint.sh && \
