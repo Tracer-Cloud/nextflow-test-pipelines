@@ -26,14 +26,6 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /
     apt-get install -y --no-install-recommends docker-ce-cli && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Miniconda (choose variant based on TARGETARCH)
-RUN ARCH=$(echo ${TARGETARCH} | sed 's/amd64/x86_64/;s/arm64/aarch64/') && \
-    wget -q https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-${ARCH}.sh -O /tmp/miniconda.sh && \
-    bash /tmp/miniconda.sh -b -p $CONDA_DIR && \
-    rm /tmp/miniconda.sh && \
-    conda config --set auto_update_conda false && \
-    conda clean -afy
-
 # Install Nextflow
 RUN wget -q https://github.com/nextflow-io/nextflow/releases/download/v24.04.2/nextflow && \
     chmod +x nextflow && mv nextflow /usr/local/bin/
@@ -43,17 +35,12 @@ WORKDIR /root
 RUN git clone https://github.com/tracer-cloud/nextflow-test-pipelines.git && \
     git config --global --add safe.directory /root/nextflow-test-pipelines
 
-# Initialize conda environment
-# RUN cd /root/nextflow-test-pipelines/pipelines/macos-arm64/nextflow-conda && \
-#     conda env create -f environment.yml && \
-#     conda clean -afy && \
-#     mkdir -p test_data results && \
-#     echo '>sequence1\nATCGATCGATCGATCG\n>sequence2\nGCTAGCTAGCTAGCTA\n>sequence3\nTTTTAAAACCCCGGGG' > test_data/sample1.fasta && \
-#     echo '>seq_A\nAAAAAAAAA\n>seq_B\nTTTTTTTTTT\n>seq_C\nCCCCCCCCCC\n>seq_D\nGGGGGGGGGG\n>seq_E\nATCGATCGAT' > test_data/sample2.fasta
-
 # Install Pixi globally for all users
 RUN curl -fsSL https://pixi.sh/install.sh | bash
 ENV PATH="/root/.pixi/bin:${PATH}"
+
+# Install dependencies using Pixi (equivalent of postCreateCommand)
+RUN pixi install --manifest-path /root/nextflow-test-pipelines/pipelines/shared/fastquorum/pixi.toml || true
 
 # Auto-update on entry
 RUN echo '#!/bin/bash' > /usr/local/bin/entrypoint.sh && \
