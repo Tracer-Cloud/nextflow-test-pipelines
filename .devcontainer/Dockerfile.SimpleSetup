@@ -30,6 +30,9 @@ RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /
 RUN wget -q https://github.com/nextflow-io/nextflow/releases/download/v24.04.2/nextflow && \
     chmod +x nextflow && mv nextflow /usr/local/bin/
 
+# Pre-pull Nextflow pipeline 'fastquorum' to avoid fetching at runtime
+RUN nextflow pull fastquorum || true
+
 # Clone test pipelines
 WORKDIR /root
 RUN git clone https://github.com/tracer-cloud/nextflow-test-pipelines.git && \
