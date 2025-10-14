@@ -1,6 +1,8 @@
 <h1 align="center" style="border-bottom: none">
     <a href="https://tracer.cloud" target="_blank"><img alt="Tracer" src="https://github.com/user-attachments/assets/5bbbdcee-11ca-4f09-b042-a5259309b7e4"></a><br>Reliable Nextflow Pipelines with Tracer Observability
-</h1><img width="603" height="348" alt="Tracer_HighLevelOverview" src="https://github.com/user-attachments/assets/1cd1f0ba-e646-4291-aa10-0a0235b804bb" />
+</h1>
+
+<img width="603" height="348" alt="Tracer_HighLevelOverview" src="https://github.com/user-attachments/assets/1cd1f0ba-e646-4291-aa10-0a0235b804bb" />
 
 
 <p align="center"><b>Try <a href="https://sandbox.tracer.cloud" target="_blank">tracer.cloud</a> instantly in the sandbox environment.</b></p>
