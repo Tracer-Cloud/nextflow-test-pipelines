@@ -3,6 +3,7 @@
 </h1>
 
 <br><br>
+
 <p align="center">
   <img 
     src="https://github.com/user-attachments/assets/1cd1f0ba-e646-4291-aa10-0a0235b804bb" 
@@ -70,14 +71,17 @@ Install Tracer on your system (one-time setup):
 curl -sSL https://install.tracer.cloud | sh
 ```
 
-### 2. Initialize the Tracer Client
+### 2. Initialize the Tracer Client (requires token)
 
-Start the Tracer client to initialize a pipeline and enable monitoring:
+Start the Tracer client to initialize a pipeline and enable monitoring. You must provide your Tracer token every time you initialize.
+
+- Get your token from the [Tracer Sandbox](https://sandbox.tracer.cloud/)
+- Then run:
 
 > **Note:** Root privileges required
 
 ```bash
-tracer init
+sudo tracer init --token <paste-your-token-here> --watch-dir "/tmp/tracer"
 ```
 
 ### 3. Run a Pipeline
