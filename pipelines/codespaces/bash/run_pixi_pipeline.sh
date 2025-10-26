@@ -138,7 +138,7 @@ EOF
 # Step 4: Create Linux-compatible pixi.toml
 print_status "Creating Linux-compatible pixi.toml..."
 cat > "$PIPELINE_DIR/pixi.toml" << 'EOF'
-[project]
+[workspace]
 name = "nextflow-minimal-pixi-linux"
 description = "Minimal Nextflow pipeline using Pixi for dependency management (Linux/Codespaces)"
 version = "1.0.0"

@@ -1,4 +1,4 @@
-[project]
+[workspace]
 name = "nextflow-minimal-pixi"
 description = "Minimal Nextflow pipeline using Pixi for dependency management"
 version = "1.0.0"

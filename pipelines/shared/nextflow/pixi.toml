@@ -1,4 +1,4 @@
-[project]
+[workspace]
 name = "nextflow-test-pipelines"
 description = "Bioinformatics pipelines with Nextflow, Tracer, and Pixi"
 version = "0.1.0"

@@ -1,4 +1,4 @@
-[project]
+[workspace]
 name = "nextflow-minimal-pixi-linux-arm-ubuntu"
 description = "Minimal Nextflow pipeline using Pixi for dependency management (Linux ARM Ubuntu)"
 version = "1.0.0"
