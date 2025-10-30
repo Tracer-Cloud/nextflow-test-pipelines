@@ -8,9 +8,13 @@
     "--volume=/var/run/docker.sock:/var/run/docker.sock",
     "--volume=/sys/kernel/debug:/sys/kernel/debug",
     "--volume=/lib/modules:/lib/modules:ro",
-    "--volume=/sys/fs/bpf:/sys/fs/bpf"
+    "--volume=/sys/fs/bpf:/sys/fs/bpf",
+    "--pid=host"  // share host PID namespace
   ],
-  "mounts": ["source=${localWorkspaceFolder},target=/workspaces,type=bind"],
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspaces,type=bind",
+    "source=/proc,target=/proc,type=bind"  // mount host /proc
+  ],
   "settings": {
     "terminal.integrated.defaultProfile.linux": "bash"
   },
