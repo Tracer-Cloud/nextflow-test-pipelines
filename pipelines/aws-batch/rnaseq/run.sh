@@ -390,6 +390,7 @@ show_help() {
     echo "  setup     - Setup AWS infrastructure (VPC, S3, Batch, etc.)"
     echo "  run       - Run the RNA-seq pipeline with local config"
     echo "  tracer run - Run the RNA-seq pipeline with shared batch config"
+    echo "  tracer run prod - Run the RNA-seq pipeline with production batch config"
     echo "  cleanup   - Destroy AWS infrastructure"
     echo "  status    - Show infrastructure status"
     echo "  config    - Show current configuration"
@@ -410,6 +411,7 @@ show_help() {
     echo "  $0 setup          # Setup infrastructure first"
     echo "  $0 run            # Run the pipeline with local config"
     echo "  $0 tracer run     # Run the pipeline with shared batch config"
+    echo "  $0 tracer run prod # Run the pipeline with production batch config"
     echo "  $0 debug          # Debug AWS Batch issues"
     echo "  $0 validate       # Validate infrastructure"
     echo "  $0 cleanup        # Clean up everything"
@@ -466,8 +468,24 @@ refresh_variables() {
 
 # Function to run pipeline in Tracer AWS account
 run_tracer_pipeline() {
-    print_status "Running RNA-seq pipeline with Tracer configuration"
-    SHARED_BATCH_CONFIG="$SCRIPT_DIR/../../shared/nextflow/config/batch.config"    
+    local environment="${1:-dev}"
+    
+    if [ "$environment" = "prod" ]; then
+        print_status "Running RNA-seq pipeline with Tracer production configuration"
+        SHARED_BATCH_CONFIG="$SCRIPT_DIR/../../nextflow/config/batch.prod.config"
+    else
+        print_status "Running RNA-seq pipeline with Tracer configuration"
+        SHARED_BATCH_CONFIG="$SCRIPT_DIR/../../shared/nextflow/config/batch.config"
+    fi
+    
+    # Validate config file exists
+    if [ ! -f "$SHARED_BATCH_CONFIG" ]; then
+        print_error "Config file not found: $SHARED_BATCH_CONFIG"
+        exit 1
+    fi
+    
+    print_status "Using config: $SHARED_BATCH_CONFIG"
+    
     # Run the pipeline with shared batch configuration
     if nextflow -c "$SHARED_BATCH_CONFIG" run https://github.com/nf-core/rnaseq \
         -r 3.20.0 \
@@ -502,9 +520,13 @@ case "${1:-help}" in
         ;;
     tracer)
         if [ "$2" = "run" ]; then
-            run_tracer_pipeline
+            if [ "$3" = "prod" ]; then
+                run_tracer_pipeline "prod"
+            else
+                run_tracer_pipeline "dev"
+            fi
         else
-            print_error "Usage: $0 tracer run"
+            print_error "Usage: $0 tracer run [prod]"
             exit 1
         fi
         ;;
