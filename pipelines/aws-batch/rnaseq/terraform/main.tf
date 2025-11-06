@@ -15,6 +15,10 @@ data "aws_ssm_parameter" "ecs_al2023_ami" {
   name = "/aws/service/ecs/optimized-ami/amazon-linux-2023/recommended/image_id"
 }
 
+# Get current AWS account ID and region for policy ARNs
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
+
 # VPC and Networking
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
@@ -124,6 +128,11 @@ resource "random_string" "bucket_suffix" {
   length  = 8
   special = false
   upper   = false
+}
+
+# Use unique suffix for IAM policy names to avoid conflicts
+locals {
+  policy_suffix = var.bucket_suffix != "" ? var.bucket_suffix : random_string.bucket_suffix.result
 }
 
 # S3 Buckets - Create with unique names using hash
@@ -273,9 +282,8 @@ resource "aws_iam_role_policy_attachment" "batch_instance_cloudwatch_agent" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
 
-
 resource "aws_iam_policy" "batch_s3_policy" {
-  name        = "tracer-batch-s3-policy"
+  name        = "tracer-batch-s3-policy-${local.policy_suffix}"
   description = "Full S3 access policy for batch instances"
 
   policy = jsonencode({
@@ -291,6 +299,10 @@ resource "aws_iam_policy" "batch_s3_policy" {
       }
     ]
   })
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "batch_instance_s3_policy" {
@@ -620,7 +632,7 @@ resource "aws_iam_service_linked_role" "batch" {
 
 # Additional IAM policy for batch instances (similar to CloudFormation)
 resource "aws_iam_policy" "batch_additional_permissions" {
-  name        = "tracer-batch-additional-permissions"
+  name        = "tracer-batch-additional-permissions-${local.policy_suffix}"
   description = "Additional permissions for batch instances"
 
   policy = jsonencode({
