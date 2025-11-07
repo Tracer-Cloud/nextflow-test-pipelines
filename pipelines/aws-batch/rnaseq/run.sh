@@ -265,6 +265,7 @@ run_pipeline() {
         -r 3.20.0 \
         -params-file "$CONFIG_DIR/rnaseq-params.json" \
         -profile "$PROFILE" \
+        -process.queue "$BATCH_QUEUE" \
         -work-dir "s3://$WORK_BUCKET/work/$WORK_DIR_TIMESTAMP" \
         -with-trace \
         -with-report \
@@ -290,6 +291,36 @@ run_pipeline() {
         
         exit 1
     fi
+}
+
+update_launch_template() {
+    print_status "Updating AWS Batch launch template user data..."
+
+    if [ ! -d "$TERRAFORM_DIR" ]; then
+        print_error "Terraform directory not found: $TERRAFORM_DIR"
+        exit 1
+    fi
+
+    cd "$TERRAFORM_DIR"
+
+    print_status "Initializing Terraform..."
+    terraform init -input=false
+
+    print_status "Applying targeted update to launch template..."
+    terraform apply \
+        -auto-approve \
+        -input=false \
+        -target=aws_launch_template.batch \
+        -var="work_bucket_name=$WORK_BUCKET_NAME" \
+        -var="outputs_bucket_name=$OUTPUTS_BUCKET_NAME" \
+        -var="environment_name=$ENVIRONMENT_NAME" \
+        -var="create_instance_connect_endpoint=$CREATE_INSTANCE_CONNECT_ENDPOINT" \
+        -var="bucket_suffix=$BUCKET_SUFFIX" \
+        -var="create_batch_service_linked_role=false"
+
+    cd "$SCRIPT_DIR"
+
+    print_success "Launch template user data updated"
 }
 
 # Function to cleanup infrastructure
@@ -392,6 +423,7 @@ show_help() {
     echo "  tracer run - Run the RNA-seq pipeline with shared batch config"
     echo "  tracer run prod - Run the RNA-seq pipeline with production batch config"
     echo "  cleanup   - Destroy AWS infrastructure"
+    echo "  update-launch-template - Refresh launch template user data only"
     echo "  status    - Show infrastructure status"
     echo "  config    - Show current configuration"
     echo "  refresh   - Refresh infrastructure variables from Terraform"
@@ -532,6 +564,9 @@ case "${1:-help}" in
         ;;
     cleanup)
         cleanup_infrastructure
+        ;;
+    update-launch-template)
+        update_launch_template
         ;;
     status)
         show_status

@@ -130,9 +130,10 @@ resource "random_string" "bucket_suffix" {
   upper   = false
 }
 
-# Use unique suffix for IAM policy names to avoid conflicts
+# Use unique suffixes to avoid naming conflicts across installations
 locals {
-  policy_suffix = var.bucket_suffix != "" ? var.bucket_suffix : random_string.bucket_suffix.result
+  resource_suffix = var.bucket_suffix != "" ? var.bucket_suffix : random_string.bucket_suffix.result
+  policy_suffix   = var.bucket_suffix != "" ? var.bucket_suffix : random_string.bucket_suffix.result
 }
 
 # S3 Buckets - Create with unique names using hash
@@ -222,7 +223,7 @@ resource "aws_s3_bucket_ownership_controls" "outputs" {
 }
 
 resource "aws_ecs_cluster" "batch" {
-  name = "tracer-batch-cluster"
+  name = "tracer-batch-cluster-${local.resource_suffix}"
 
   setting {
     name  = "containerInsights"
@@ -236,7 +237,7 @@ resource "aws_ecs_cluster" "batch" {
 
 # IAM Role for Batch Instances
 resource "aws_iam_role" "batch_instance_role" {
-  name = "tracer-batch-instance-role"
+  name = "tracer-batch-instance-role-${local.resource_suffix}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -253,7 +254,7 @@ resource "aws_iam_role" "batch_instance_role" {
 }
 
 resource "aws_iam_instance_profile" "batch_instance_profile" {
-  name = "tracer-batch-instance-profile"
+  name = "tracer-batch-instance-profile-${local.resource_suffix}"
   role = aws_iam_role.batch_instance_role.name
 }
 
@@ -312,7 +313,7 @@ resource "aws_iam_role_policy_attachment" "batch_instance_s3_policy" {
 
 # Security Groups
 resource "aws_security_group" "batch" {
-  name        = "tracer-batch-sg"
+  name        = "tracer-batch-sg-${local.resource_suffix}"
   description = "Security group for batch instances - completely open"
   vpc_id      = aws_vpc.main.id
 
@@ -341,7 +342,7 @@ resource "aws_security_group" "batch" {
 
 # EC2 Instance Connect Endpoint (optional - may fail due to quota limits)
 resource "aws_security_group" "eice" {
-  name        = "tracer-eice-sg"
+  name        = "tracer-eice-sg-${local.resource_suffix}"
   description = "Security group for EC2 Instance Connect Endpoint"
   vpc_id      = aws_vpc.main.id
 
@@ -456,7 +457,7 @@ resource "aws_vpc_endpoint" "logs" {
 
 # Security group for VPC endpoints
 resource "aws_security_group" "vpc_endpoints" {
-  name        = "tracer-vpc-endpoints-sg"
+  name        = "tracer-vpc-endpoints-sg-${local.resource_suffix}"
   description = "Security group for VPC endpoints"
   vpc_id      = aws_vpc.main.id
 
@@ -519,7 +520,7 @@ resource "aws_security_group_rule" "eice_allow_ssh_to_batch" {
 
 # Launch Template
 resource "aws_launch_template" "batch" {
-  name_prefix = "tracer-batch-lt"
+  name_prefix = "tracer-batch-lt-${local.resource_suffix}-"
   image_id    = data.aws_ssm_parameter.ecs_al2023_ami.value
 
   block_device_mappings {
@@ -561,7 +562,7 @@ resource "aws_launch_template" "batch" {
 
 # AWS Batch Job Role (for tasks running in containers)
 resource "aws_iam_role" "batch_job_role" {
-  name = "tracer-batch-job-role"
+  name = "tracer-batch-job-role-${local.resource_suffix}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -584,7 +585,7 @@ resource "aws_iam_role_policy_attachment" "batch_job_s3_policy" {
 
 # AWS Batch Service Role
 resource "aws_iam_role" "batch_service_role" {
-  name = "tracer-batch-service-role"
+  name = "tracer-batch-service-role-${local.resource_suffix}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -834,7 +835,7 @@ resource "aws_iam_role_policy_attachment" "batch_instance_additional_policy" {
 
 # CPU Compute Environment
 resource "aws_batch_compute_environment" "cpu" {
-  compute_environment_name = "tracer-rnaseq-cpu-compute-env"
+  compute_environment_name = "tracer-rnaseq-cpu-compute-env-${local.resource_suffix}"
   service_role            = aws_iam_role.batch_service_role.arn
   type                   = "MANAGED"
   state                  = "ENABLED"
@@ -893,7 +894,7 @@ resource "aws_batch_compute_environment" "cpu" {
 
 # GPU Compute Environment
 resource "aws_batch_compute_environment" "gpu" {
-  compute_environment_name = "tracer-rnaseq-gpu-compute-env"
+  compute_environment_name = "tracer-rnaseq-gpu-compute-env-${local.resource_suffix}"
   service_role            = aws_iam_role.batch_service_role.arn
   type                   = "MANAGED"
   state                  = "ENABLED"
@@ -950,7 +951,7 @@ resource "aws_batch_compute_environment" "gpu" {
 
 # CPU Job Queue
 resource "aws_batch_job_queue" "cpu" {
-  name     = "NextflowCPU"
+  name     = "NextflowCPU-${local.resource_suffix}"
   state    = "ENABLED"
   priority = 1
 
@@ -966,7 +967,7 @@ resource "aws_batch_job_queue" "cpu" {
 
 # GPU Job Queue
 resource "aws_batch_job_queue" "gpu" {
-  name     = "NextflowGPU"
+  name     = "NextflowGPU-${local.resource_suffix}"
   state    = "ENABLED"
   priority = 1
 
