@@ -29,8 +29,6 @@ fi
 
 # Initialize conda for current shell
 eval "$($CONDA_CMD shell.bash hook)"
-
-# Create logs directory if it doesn't exist
 mkdir -p logs
 
 # Check if environment exists, if not create it
