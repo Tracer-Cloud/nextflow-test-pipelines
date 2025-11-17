@@ -7,55 +7,24 @@ channels = ["conda-forge", "bioconda"]
 platforms = ["osx-64"]
 
 [dependencies]
-# Core bioinformatics tools
-fastqc = "0.12.*"
-star = "2.7.11b"
-
-# System utilities
-coreutils = "9.1.*"
-bc = "*"
-
-# Development and debugging tools (optional)
-tree = "*"
 nextflow = ">=25.4.4,<26"
+openjdk = "17.0.11.*"
+python = "3.12.*"
+grep = "*"
+tar = "*"
+coreutils = "*"
+findutils = "*"
+fastqc = "0.12.1.*"
+star = "*"
+samtools = "1.21.*"
+bwa = "*"
 
 [tasks]
-# Setup task - prepare environment and test data
-setup = "echo 'Environment ready! Use: pixi run pipeline'"
-
-# Development tasks
-pipeline = "nextflow -log logs/nextflow.log run main.nf"
-test = "nextflow -log logs/nextflow.log run main.nf --input test_data/*.fasta --outdir test_results"
-clean = """
-rm -rf results logs work test_results custom_results
-rm -f .nextflow* 2>/dev/null || true
-echo "✅ Cleaned up all results and logs"
-"""
-
-# Utility tasks
-check-env = """
-echo "=== Pixi Environment Check ==="
-echo "FastQC version:"
-fastqc --version
-echo "STAR version:"
-STAR --version 2>/dev/null || echo "STAR 2.7.11b (available)"
-echo "Nextflow version:"
-nextflow -v
-echo "=== Environment Ready ==="
-"""
-
-# Development workflow (runs tasks in sequence)
-dev = """
-echo "=== Development Workflow ==="
-pixi run clean
-pixi run setup
-pixi run check-env
-pixi run test
-echo "=== Development Workflow Complete ==="
-"""
+pipeline = "nextflow -log logs/nextflow.log run main.nf --outdir results"
+test = "nextflow -log logs/nextflow.log run main.nf --outdir test_results"
+clean = "rm -rf results logs work test_results custom_results .nextflow*"
 
 [feature.dev.dependencies]
-# Additional development dependencies
 nextflow = ">=24.10.0"
 
 [environments]

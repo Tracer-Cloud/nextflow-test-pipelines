@@ -37,7 +37,6 @@ else
     exit 1
 fi
 
-# Create test data if needed
 mkdir -p test_data logs results test_results
 if [ ! -f "test_data/sample1.fasta" ]; then
     echo -e "${BLUE}[INFO]${NC} Creating sample test data..."
@@ -49,11 +48,6 @@ GCTAGCTAGCTA
 EOF
 fi
 
-# Run environment check
-echo -e "${BLUE}[INFO]${NC} Running environment check..."
-pixi run check-env
-
-# Run pipeline
 echo -e "${BLUE}[INFO]${NC} Running Nextflow pipeline..."
 if pixi run test; then
     echo -e "${GREEN}[SUCCESS]${NC} Pipeline completed! Results in: test_results/"
