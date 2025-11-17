@@ -19,10 +19,10 @@ workflow tool_execution {
         .concat(star_index.out.output)
         .concat(star_align.out)
         .concat(samtools_run.out)
-        .collectFile(name: 'tool_outputs.txt', newLine: true)
+        .collectFile(name: 'collected_outputs.txt', newLine: true)
         .set { all_outputs }
 
-    save_results(all_outputs)
+    publish_results(all_outputs)
 }
 
 process prepare_bam {
@@ -116,7 +116,7 @@ process samtools_run {
     """
 }
 
-process save_results {
+process publish_results {
     publishDir params.outdir, mode: 'copy'
 
     input:
