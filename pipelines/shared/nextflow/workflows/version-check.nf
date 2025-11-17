@@ -16,10 +16,10 @@ workflow version_check {
     samtools_run(prepare_bam.out.bam, fasta_file)
     
     fastqc_run.out
-        .concat(star_index.out)
+        .concat(star_index.out.output)
         .concat(star_align.out)
         .concat(samtools_run.out)
-        .collect()
+        .collectFile(name: 'tool_outputs.txt', newLine: true)
         .set { all_outputs }
 
     save_results(all_outputs)
@@ -43,11 +43,11 @@ process fastqc_run {
     path fastq
 
     output:
-    stdout
+    path "fastqc_output.txt"
 
     script:
     """
-    fastqc -q -o . $fastq 2>&1 || echo "FastQC completed"
+    fastqc -q -o . $fastq > fastqc_output.txt 2>&1 || echo "FastQC completed" > fastqc_output.txt
     """
 }
 
@@ -58,12 +58,13 @@ process star_index {
 
     output:
     path "star_index", emit: index
-    stdout
+    path "star_index_output.txt", emit: output
 
     script:
     """
     mkdir -p star_index
-    STAR --runMode genomeGenerate --genomeDir star_index --genomeFastaFiles $fasta --sjdbGTFfile $gtf --genomeSAindexNbases 4 2>&1 | head -20 || echo "STAR index completed"
+    STAR --runMode genomeGenerate --genomeDir star_index --genomeFastaFiles $fasta --sjdbGTFfile $gtf --genomeSAindexNbases 4 > star_index_output.txt 2>&1 || echo "STAR index completed" > star_index_output.txt
+    head -20 star_index_output.txt > star_index_output.txt.tmp && mv star_index_output.txt.tmp star_index_output.txt || true
     """
 }
 
@@ -73,12 +74,13 @@ process star_align {
     path fastq
 
     output:
-    stdout
+    path "star_align_output.txt"
 
     script:
     """
     mkdir -p star_align_out
-    STAR --genomeDir $star_index_dir --readFilesIn $fastq --outFileNamePrefix star_align_out/ --outSAMtype BAM Unsorted --runThreadN 1 2>&1 | head -30 || echo "STAR align completed"
+    STAR --genomeDir $star_index_dir --readFilesIn $fastq --outFileNamePrefix star_align_out/ --outSAMtype BAM Unsorted --runThreadN 1 > star_align_output.txt 2>&1 || echo "STAR align completed" > star_align_output.txt
+    head -30 star_align_output.txt > star_align_output.txt.tmp && mv star_align_output.txt.tmp star_align_output.txt || true
     """
 }
 
@@ -88,27 +90,29 @@ process samtools_run {
     path fasta
 
     output:
-    stdout
+    path "samtools_output.txt"
 
     script:
     """
-    samtools sort $bam -o sorted.bam 2>&1 || true
-    samtools view sorted.bam 2>&1 | head -5 || true
-    samtools index sorted.bam 2>&1 || true
-    samtools mpileup -f $fasta sorted.bam 2>&1 | head -5 || true
-    samtools depth sorted.bam 2>&1 | head -5 || true
-    samtools flagstat sorted.bam 2>&1 || true
-    samtools stats sorted.bam 2>&1 | head -10 || true
-    samtools idxstats sorted.bam 2>&1 || true
-    samtools faidx $fasta 2>&1 || true
-    samtools calmd -b sorted.bam $fasta 2>&1 | head -5 || true
-    samtools merge merged.bam sorted.bam 2>&1 || true
-    samtools cat -o cat.bam sorted.bam 2>&1 || true
-    samtools reheader <(samtools view -H sorted.bam) sorted.bam > reheader.bam 2>&1 || true
-    samtools rmdup sorted.bam rmdup.bam 2>&1 || true
-    samtools markdup sorted.bam markdup.bam 2>&1 || true
-    samtools fixmate sorted.bam fixmate.bam 2>&1 || true
-    echo "Samtools commands completed"
+    {
+        samtools sort $bam -o sorted.bam 2>&1 || true
+        samtools view sorted.bam 2>&1 | head -5 || true
+        samtools index sorted.bam 2>&1 || true
+        samtools mpileup -f $fasta sorted.bam 2>&1 | head -5 || true
+        samtools depth sorted.bam 2>&1 | head -5 || true
+        samtools flagstat sorted.bam 2>&1 || true
+        samtools stats sorted.bam 2>&1 | head -10 || true
+        samtools idxstats sorted.bam 2>&1 || true
+        samtools faidx $fasta 2>&1 || true
+        samtools calmd -b sorted.bam $fasta 2>&1 | head -5 || true
+        samtools merge merged.bam sorted.bam 2>&1 || true
+        samtools cat -o cat.bam sorted.bam 2>&1 || true
+        samtools reheader <(samtools view -H sorted.bam) sorted.bam > reheader.bam 2>&1 || true
+        samtools rmdup sorted.bam rmdup.bam 2>&1 || true
+        samtools markdup sorted.bam markdup.bam 2>&1 || true
+        samtools fixmate sorted.bam fixmate.bam 2>&1 || true
+        echo "Samtools commands completed"
+    } > samtools_output.txt 2>&1
     """
 }
 
@@ -116,16 +120,13 @@ process save_results {
     publishDir params.outdir, mode: 'copy'
 
     input:
-    val outputs_list
+    path outputs_file
 
     output:
     path "tool_outputs.txt"
 
     script:
-    def content = outputs_list.join('\n')
     """
-    cat > tool_outputs.txt << 'ENDOFFILE'
-${content}
-ENDOFFILE
+    cp $outputs_file tool_outputs.txt
     """
 } 
