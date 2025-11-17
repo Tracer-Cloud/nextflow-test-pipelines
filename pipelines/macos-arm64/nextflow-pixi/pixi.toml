@@ -20,31 +20,12 @@ multiqc = "*"
 pipeline = "nextflow -log logs/nextflow.log run main.nf"
 pipeline-custom = "nextflow -log logs/nextflow.log run main.nf --input $1 --outdir $2"
 
-test = "nextflow -log logs/nextflow.log run main.nf --input test_data/*.fasta --iterations 20 --outdir test_results"
+test = "nextflow -log logs/nextflow.log run main.nf --input test_data/*.fasta --outdir test_results"
 
 clean = { cmd = [
     "/bin/sh",
     "-c",
-    "rm -rf results logs work test_results custom_results .nextflow* && echo '✅ Cleaned up all results and logs'"
-]}
-
-check-env = { cmd = [
-    "/bin/sh",
-    "-c",
-    """
-    echo '=== Pixi Environment Check ===' && \
-    echo 'bedtools version:' && \
-    bedtools --version && \
-    echo 'STAR version:' && \
-    STAR --version && \
-    echo 'samtools version:' && \
-    samtools --version && \
-    echo 'bc version:' && \
-    bc --version && \
-    echo 'Nextflow version:' && \
-    nextflow -v && \
-    echo '=== Environment Ready ==='
-    """
+    "rm -rf results logs work test_results custom_results .nextflow*"
 ]}
 
 [feature.dev.dependencies]

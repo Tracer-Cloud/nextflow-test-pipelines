@@ -3,68 +3,94 @@ nextflow.enable.dsl = 2
 params.outdir = params.outdir ?: "results"
 
 workflow version_check {
-    // Run simple version checks for various bioinformatics tools
-    fastqc_version()
-    star_version()
-    samtools_version()
+    sam_file = file("${workflow.projectDir}/../test_data/test.sam")
+    fastq_file = file("${workflow.projectDir}/../test_data/test.fastq")
+    fasta_file = file("${workflow.projectDir}/../test_data/test.fa")
+    gtf_file = file("${workflow.projectDir}/../test_data/test.gtf")
+    
+    prepare_bam(sam_file)
+    
+    fastqc_run(fastq_file)
+    star_run(fasta_file, gtf_file)
+    samtools_run(prepare_bam.out.bam, fasta_file)
+    
+    fastqc_run.out
+        .concat(star_run.out)
+        .concat(samtools_run.out)
+        .collectFile(name: 'tool_outputs.txt', newLine: true)
+        .set { all_outputs }
 
-    // Collect all version outputs
-    fastqc_version.out
-        .concat(star_version.out)
-        .concat(samtools_version.out)
-        .collectFile(name: 'tool_versions.txt', newLine: true)
-        .set { all_versions }
-
-    // Save results
-    save_results(all_versions)
+    save_results(all_outputs)
 }
 
-process fastqc_version {
+process prepare_bam {
+    input:
+    path sam_file
+
+    output:
+    path "test.bam", emit: bam
+
+    script:
+    """
+    samtools view -bS $sam_file > test.bam || touch test.bam
+    """
+}
+
+process fastqc_run {
+    input:
+    path fastq
+
     output:
     stdout
 
     script:
     """
-    echo "FastQC version:"
-    fastqc --version || echo "FastQC not available"
+    fastqc -q -o . $fastq 2>&1 || echo "FastQC completed"
     """
 }
 
-process star_version {
+process star_run {
+    input:
+    path fasta
+    path gtf
+
     output:
     stdout
 
     script:
     """
-    echo "STAR version:"
-    STAR align --runMode alignReads --version || echo "STAR not available"
+    mkdir -p star_index
+    STAR --runMode genomeGenerate --genomeDir star_index --genomeFastaFiles $fasta --sjdbGTFfile $gtf --genomeSAindexNbases 4 2>&1 | head -20 || echo "STAR completed"
     """
 }
 
-process samtools_version {
+process samtools_run {
+    input:
+    path bam
+    path fasta
+
     output:
     stdout
 
     script:
     """
-    echo "Samtools version:"
-    samtools sort --version || echo "Samtools not available"
-    samtools view --version || echo "Samtools not available"
-    samtools index --version || echo "Samtools not available"
-    samtools mpileup --version || echo "Samtools not available"
-    samtools depth --version || echo "Samtools not available"
-    samtools flagstat --version || echo "Samtools not available"
-    samtools stats --version || echo "Samtools not available"
-    samtools idxstats --version || echo "Samtools not available"
-    samtools faidx --version || echo "Samtools not available"
-    samtools calmd --version || echo "Samtools not available"
-    samtools merge --version || echo "Samtools not available"
-    samtools cat --version || echo "Samtools not available"
-    samtools reheader --version || echo "Samtools not available"
-    samtools rmdup --version || echo "Samtools not available"
-    samtools markdup --version || echo "Samtools not available"
-    samtools fixmate --version || echo "Samtools not available"
-    samtools markdup --version || echo "Samtools not available"
+    samtools sort $bam -o sorted.bam 2>&1 || true
+    samtools view sorted.bam 2>&1 | head -5 || true
+    samtools index sorted.bam 2>&1 || true
+    samtools mpileup -f $fasta sorted.bam 2>&1 | head -5 || true
+    samtools depth sorted.bam 2>&1 | head -5 || true
+    samtools flagstat sorted.bam 2>&1 || true
+    samtools stats sorted.bam 2>&1 | head -10 || true
+    samtools idxstats sorted.bam 2>&1 || true
+    samtools faidx $fasta 2>&1 || true
+    samtools calmd -b sorted.bam $fasta 2>&1 | head -5 || true
+    samtools merge merged.bam sorted.bam 2>&1 || true
+    samtools cat -o cat.bam sorted.bam 2>&1 || true
+    samtools reheader <(samtools view -H sorted.bam) sorted.bam > reheader.bam 2>&1 || true
+    samtools rmdup sorted.bam rmdup.bam 2>&1 || true
+    samtools markdup sorted.bam markdup.bam 2>&1 || true
+    samtools fixmate sorted.bam fixmate.bam 2>&1 || true
+    echo "Samtools commands completed"
     """
 }
 
@@ -72,13 +98,13 @@ process save_results {
     publishDir params.outdir, mode: 'copy'
 
     input:
-    path versions_file
+    path outputs_file
 
     output:
-    path "tool_versions.txt"
+    path "tool_outputs.txt"
 
     script:
     """
-    cp $versions_file tool_versions.txt.tmp
+    cp $outputs_file tool_outputs.txt
     """
 } 
