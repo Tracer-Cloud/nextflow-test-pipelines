@@ -105,6 +105,6 @@ process save_results {
 
     script:
     """
-    cp $outputs_file tool_outputs.txt
+    cat $outputs_file > tool_outputs.txt
     """
 } 
