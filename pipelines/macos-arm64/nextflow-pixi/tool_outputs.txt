@@ -1,0 +1,9 @@
+	STAR --runMode genomeGenerate --genomeDir star_index --genomeFastaFiles test.fa --sjdbGTFfile test.gtf --genomeSAindexNbases 4
+	STAR version: 2.7.11b   compiled:  :/opt/mambaforge/envs/bioconda/conda-bld/star_1745703334159/work/source
+Nov 17 00:12:43 ..... started STAR run
+Nov 17 00:12:43 ... starting to generate Genome files
+
+EXITING because of INPUT ERROR: could not open genomeFastaFile: test.fa
+
+Nov 17 00:12:43 ...... FATAL ERROR, exiting
+

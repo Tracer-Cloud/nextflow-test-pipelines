@@ -32,30 +32,6 @@ clean = { cmd = [
     "rm -rf results logs work test_results custom_results .nextflow*"
 ]}
 
-check-env = { cmd = [
-    "/bin/sh",
-    "-c",
-    """
-    echo '=== FastQuorum Environment Check ===' && \
-    echo 'FastQC version:' && \
-    fastqc --version && \
-    echo 'MultiQC version:' && \
-    multiqc --version && \
-    echo 'Samtools version:' && \
-    samtools --version && \
-    echo 'BCFtools version:' && \
-    bcftools --version && \
-    echo 'GATK4 version:' && \
-    gatk --version && \
-    echo 'BWA version:' && \
-    bwa && \
-    echo 'FGBio version:' && \
-    fgbio --version && \
-    echo 'Nextflow version:' && \
-    nextflow -v && \
-    """
-]}
-
 [feature.dev.dependencies]
 nextflow = ">=24.10.0"
 

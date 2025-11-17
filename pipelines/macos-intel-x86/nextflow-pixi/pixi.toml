@@ -7,15 +7,21 @@ channels = ["conda-forge", "bioconda"]
 platforms = ["osx-64"]
 
 [dependencies]
-fastqc = "0.12.*"
-star = "2.7.11b"
-coreutils = "9.1.*"
-bc = "*"
-tree = "*"
 nextflow = ">=25.4.4,<26"
+openjdk = "17.0.11.*"
+python = "3.12.*"
+grep = "*"
+tar = "*"
+coreutils = "*"
+findutils = "*"
+fastqc = "0.12.1.*"
+star = "*"
+samtools = "1.21.*"
+bwa = "*"
 
 [tasks]
-pipeline = "nextflow -log logs/nextflow.log run main.nf"
+pipeline = "nextflow -log logs/nextflow.log run main.nf --outdir results"
+test = "nextflow -log logs/nextflow.log run main.nf --outdir test_results"
 clean = "rm -rf results logs work test_results custom_results .nextflow*"
 
 [feature.dev.dependencies]

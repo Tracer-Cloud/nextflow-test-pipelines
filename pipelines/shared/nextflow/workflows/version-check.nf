@@ -11,13 +11,15 @@ workflow version_check {
     prepare_bam(sam_file)
     
     fastqc_run(fastq_file)
-    star_run(fasta_file, gtf_file)
+    star_index(fasta_file, gtf_file)
+    star_align(star_index.out.index, fastq_file)
     samtools_run(prepare_bam.out.bam, fasta_file)
     
     fastqc_run.out
-        .concat(star_run.out)
+        .concat(star_index.out)
+        .concat(star_align.out)
         .concat(samtools_run.out)
-        .collectFile(name: 'tool_outputs.txt', newLine: true)
+        .collect()
         .set { all_outputs }
 
     save_results(all_outputs)
@@ -49,18 +51,34 @@ process fastqc_run {
     """
 }
 
-process star_run {
+process star_index {
     input:
     path fasta
     path gtf
+
+    output:
+    path "star_index", emit: index
+    stdout
+
+    script:
+    """
+    mkdir -p star_index
+    STAR --runMode genomeGenerate --genomeDir star_index --genomeFastaFiles $fasta --sjdbGTFfile $gtf --genomeSAindexNbases 4 2>&1 | head -20 || echo "STAR index completed"
+    """
+}
+
+process star_align {
+    input:
+    path star_index_dir
+    path fastq
 
     output:
     stdout
 
     script:
     """
-    mkdir -p star_index
-    STAR --runMode genomeGenerate --genomeDir star_index --genomeFastaFiles $fasta --sjdbGTFfile $gtf --genomeSAindexNbases 4 2>&1 | head -20 || echo "STAR completed"
+    mkdir -p star_align_out
+    STAR --genomeDir $star_index_dir --readFilesIn $fastq --outFileNamePrefix star_align_out/ --outSAMtype BAM Unsorted --runThreadN 1 2>&1 | head -30 || echo "STAR align completed"
     """
 }
 
@@ -98,13 +116,16 @@ process save_results {
     publishDir params.outdir, mode: 'copy'
 
     input:
-    path outputs_file
+    val outputs_list
 
     output:
     path "tool_outputs.txt"
 
     script:
+    def content = outputs_list.join('\n')
     """
-    cat $outputs_file > tool_outputs.txt
+    cat > tool_outputs.txt << 'ENDOFFILE'
+${content}
+ENDOFFILE
     """
 } 

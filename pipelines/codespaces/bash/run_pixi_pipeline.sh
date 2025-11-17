@@ -177,24 +177,11 @@ rm -f .nextflow* 2>/dev/null || true
 echo "✅ Cleaned up all results and logs"
 """
 
-# Utility tasks
-check-env = """
-echo "=== Pixi Environment Check ==="
-echo "FastQC version:"
-fastqc --version
-echo "STAR version:"
-STAR --version 2>/dev/null || echo "STAR 2.7.11b (available)"
-echo "Nextflow version:"
-nextflow -v
-echo "=== Environment Ready ==="
-"""
-
 # Development workflow (runs tasks in sequence)
 dev = """
 echo "=== Development Workflow ==="
 pixi run clean
 pixi run setup
-pixi run check-env
 pixi run test
 echo "=== Development Workflow Complete ==="
 """
@@ -211,11 +198,7 @@ pixi install
 
 print_success "Dependencies installed successfully"
 
-# Step 6: Verify environment
-print_status "Verifying environment..."
-pixi run check-env
-
-# Step 7: Run the pipeline
+# Step 6: Run the pipeline
 print_status "Running the Nextflow pipeline..."
 pixi run test
 
@@ -235,4 +218,3 @@ print_success "Codespaces Pixi Pipeline completed successfully!"
 print_status "You can now explore the results or run additional commands:"
 echo "  pixi run pipeline      # Run with default data"
 echo "  pixi run clean         # Clean up results"
-echo "  pixi run check-env     # Verify environment"

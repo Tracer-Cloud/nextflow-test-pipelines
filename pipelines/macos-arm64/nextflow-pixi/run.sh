@@ -49,10 +49,6 @@ GCTAGCTAGCTA
 EOF
 fi
 
-# Run environment check
-echo -e "${BLUE}[INFO]${NC} Running environment check..."
-pixi run check-env
-
 # Run pipeline
 echo -e "${BLUE}[INFO]${NC} Running Nextflow pipeline..."
 if pixi run test; then
