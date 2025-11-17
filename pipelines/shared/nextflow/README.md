@@ -12,7 +12,7 @@ shared/nextflow/
 │   ├── conda.config        # Conda-specific configuration
 │   └── pixi.config         # Pixi-specific configuration
 ├── workflows/              # Shared workflow modules
-│   ├── version-check.nf    # Tool version checking workflow
+│   ├── tool-execution.nf   # Bioinformatics tool execution workflow
 │   └── fasta-analysis.nf   # FASTA file analysis workflow
 └── test_data/              # Test data files
 ```
@@ -39,10 +39,10 @@ nextflow run ../../shared/nextflow/main.nf -c ../../shared/nextflow/configs/pixi
 
 ## Workflows
 
-### Version Check Workflow
+### Tool Execution Workflow
 
-- Checks versions of common bioinformatics tools (FastQC, STAR, Samtools, BWA, GATK)
-- Outputs results to `results/tool_versions.txt`
+- Executes common bioinformatics tools (FastQC, STAR, Samtools) with real data
+- Outputs results to `results/tool_outputs.txt`
 
 ### FASTA Analysis Workflow
 

@@ -16,7 +16,6 @@ if ! command -v brew &> /dev/null; then
     eval "$(/usr/local/bin/brew shellenv)"
 fi
 
-# Install conda via Homebrew
 if ! command -v conda &> /dev/null; then
     echo -e "${BLUE}[INFO]${NC} Installing Miniforge via Homebrew..."
     brew install miniforge

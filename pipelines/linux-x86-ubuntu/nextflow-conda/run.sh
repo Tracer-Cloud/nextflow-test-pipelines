@@ -37,7 +37,6 @@ else
 fi
 
 conda activate "$ENV_NAME"
-
 mkdir -p logs results
 
 echo "[INFO] Running Nextflow pipeline..."
