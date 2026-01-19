@@ -1,5 +1,5 @@
 <h1 align="center" style="border-bottom: none">
-    <a href="https://tracer.cloud" target="_blank"><img alt="Tracer" src="https://github.com/user-attachments/assets/5bbbdcee-11ca-4f09-b042-a5259309b7e4"></a><br>Reliable Nextflow Pipelines with Tracer Observability
+    <a href="https://tracer.cloud" target="_blank"><img alt="Tracer" src="https://github.com/user-attachments/assets/5bbbdcee-11ca-4f09-b042-a5259309b7e4"></a><br>Nextflow Pipelines with Tracer Observability
 </h1>
 
 <br><br>
