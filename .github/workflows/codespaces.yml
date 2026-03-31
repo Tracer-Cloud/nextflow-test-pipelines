@@ -36,7 +36,7 @@ jobs:
       - name: Run pipeline
         working-directory: pipelines/codespaces/wdl
         run: |
-          ./run.sh
+          bash ./run.sh
 
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer
@@ -78,7 +78,7 @@ jobs:
       - name: Run pipeline with Pixi
         working-directory: pipelines/codespaces/fastquorum
         run: |
-          ./run.sh
+          bash ./run.sh
 
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer
@@ -118,7 +118,7 @@ jobs:
       - name: Run pipeline with Pixi
         working-directory: pipelines/codespaces/nextflow-pixi
         run: |
-          ./run.sh
+          bash ./run.sh
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer
         with:
@@ -157,7 +157,7 @@ jobs:
       - name: Run pipeline with Conda
         working-directory: pipelines/codespaces/nextflow-conda
         run: |
-          ./run.sh
+          bash ./run.sh
 
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer

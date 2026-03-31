@@ -40,7 +40,7 @@ jobs:
         working-directory: pipelines/macos-intel-x86/fastquorum
         run: |
           export NXF_GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
-          ./run.sh
+          bash ./run.sh
 
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer
