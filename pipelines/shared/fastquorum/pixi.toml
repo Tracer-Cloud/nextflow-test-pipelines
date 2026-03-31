@@ -23,12 +23,12 @@ multiqc = ">=1.17"
 FASTQUORUM_REVISION = "main"
 
 [tasks]
-# pipeline = "nextflow run nf-core/fastquorum -r ${FASTQUORUM_REVISION} -c ../../shared/fastquorum/custom.config -profile test --input ../../shared/fastquorum/samplesheet.csv --outdir results"
-pipeline= "nextflow run nf-core/fastquorum -r ${FASTQUORUM_REVISION} -c ../../shared/fastquorum/custom.config -profile test --input ../../shared/fastquorum/samplesheet.csv --outdir results --fasta ../../shared/fastquorum/references/chr17.fa"
-pipeline_full = "nextflow run nf-core/fastquorum -r ${FASTQUORUM_REVISION} -c ../../shared/fastquorum/custom.config -profile test_full --outdir results"
-pipeline-custom = "nextflow run nf-core/fastquorum -r ${FASTQUORUM_REVISION} -c ../../shared/fastquorum/custom.config -profile test --input $1 --outdir $2 --genome $3"
+# pipeline = "nextflow run nf-core/fastquorum -r $FASTQUORUM_REVISION -c ../../shared/fastquorum/custom.config -profile test --input ../../shared/fastquorum/samplesheet.csv --outdir results"
+pipeline= "nextflow run nf-core/fastquorum -r $FASTQUORUM_REVISION -c ../../shared/fastquorum/custom.config -profile test --input ../../shared/fastquorum/samplesheet.csv --outdir results --fasta ../../shared/fastquorum/references/chr17.fa"
+pipeline_full = "nextflow run nf-core/fastquorum -r $FASTQUORUM_REVISION -c ../../shared/fastquorum/custom.config -profile test_full --outdir results"
+pipeline-custom = "nextflow run nf-core/fastquorum -r $FASTQUORUM_REVISION -c ../../shared/fastquorum/custom.config -profile test --input $1 --outdir $2 --genome $3"
 
-test = "nextflow run nf-core/fastquorum -r ${FASTQUORUM_REVISION} -c ../../shared/fastquorum/custom.config -profile test --input samplesheet.csv --outdir test_results"
+test = "nextflow run nf-core/fastquorum -r $FASTQUORUM_REVISION -c ../../shared/fastquorum/custom.config -profile test --input samplesheet.csv --outdir test_results"
 
 clean = { cmd = [
     "/bin/sh",
