@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - "pipelines/macos-arm64/**"
+      - "pipelines/shared/fastquorum/**"
       - ".github/workflows/macos-arm64.yml"
       - ".github/actions/verify-tracer/action.yml"
       - ".github/actions/install-tracer/action.yml"
@@ -42,7 +43,7 @@ jobs:
         working-directory: pipelines/macos-arm64/fastquorum
         run: |
           export NXF_GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
-          ./run.sh
+          bash ./run.sh
 
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer

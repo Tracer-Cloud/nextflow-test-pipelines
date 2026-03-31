@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - "pipelines/linux-x86-amazon-linux/**"
+      - "pipelines/shared/nextflow/**"
       - ".github/workflows/linux-x86-amazon-lin.yml"
       - ".github/actions/verify-tracer/action.sh"
   schedule:

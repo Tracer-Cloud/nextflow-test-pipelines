@@ -46,12 +46,11 @@ bioconductor-biocgenerics = "*"
 bioconductor-genomeinfodb = "*"
 gridss = ">=2.11.1,<3"
 
-
 [tasks]
 setup = "echo 'Getting environment ready! Use: pixi run rnaseq'"
 setup-java = "export JAVA_OPTS='-Djdk.lang.Process.launchMechanism=posix_spawn' && export _JAVA_OPTIONS='-Djdk.lang.Process.launchMechanism=posix_spawn' && java -version"
-rnaseq = "export JAVA_OPTS='-Djdk.lang.Process.launchMechanism=posix_spawn' && export _JAVA_OPTIONS='-Djdk.lang.Process.launchMechanism=posix_spawn' && nextflow -c pipelines/nextflow/config/local.config run https://github.com/nf-core/rnaseq -params-file pipelines/nextflow/config/rnaseq-params.json --multiqc_config pipelines/nextflow/config/custom_multiqc_config.yml -profile test"
-rnaseq-full = "export JAVA_OPTS='-Djdk.lang.Process.launchMechanism=posix_spawn' && export _JAVA_OPTIONS='-Djdk.lang.Process.launchMechanism=posix_spawn' && nextflow -c pipelines/nextflow/config/local.config run https://github.com/nf-core/rnaseq -params-file pipelines/nextflow/config/rnaseq-params.json --multiqc_config pipelines/nextflow/config/custom_multiqc_config.yml -profile test_full"
+rnaseq = "export JAVA_OPTS='-Djdk.lang.Process.launchMechanism=posix_spawn' && export _JAVA_OPTIONS='-Djdk.lang.Process.launchMechanism=posix_spawn' && nextflow -c pipelines/nextflow/config/local.config run https://github.com/nf-core/rnaseq -r 3.20.0 -params-file pipelines/nextflow/config/rnaseq-params.json --multiqc_config pipelines/nextflow/config/custom_multiqc_config.yml -profile test"
+rnaseq-full = "export JAVA_OPTS='-Djdk.lang.Process.launchMechanism=posix_spawn' && export _JAVA_OPTIONS='-Djdk.lang.Process.launchMechanism=posix_spawn' && nextflow -c pipelines/nextflow/config/local.config run https://github.com/nf-core/rnaseq -r 3.20.0 -params-file pipelines/nextflow/config/rnaseq-params.json --multiqc_config pipelines/nextflow/config/custom_multiqc_config.yml -profile test_full"
 clean = "rm -rf .nextflow work results output"
 
 [feature.dev.dependencies]

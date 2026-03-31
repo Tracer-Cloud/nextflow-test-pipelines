@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - "pipelines/linux-arm-ubuntu/**"
+      - "pipelines/shared/fastquorum/**"
       - ".github/workflows/linux-aarch64-ubuntu.yml"
       - ".github/actions/verify-tracer/action.yml"
       - ".github/actions/install-tracer/action.yml"
@@ -34,7 +35,7 @@ jobs:
       - name: Run pipeline with Pixi
         working-directory: pipelines/linux-arm-ubuntu/fastquorum
         run: |
-          ./run.sh
+          bash ./run.sh
 
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer
@@ -75,7 +76,7 @@ jobs:
       - name: Run pipeline with Pixi
         working-directory: pipelines/linux-arm-ubuntu/nextflow-pixi
         run: |
-          ./run.sh
+          bash ./run.sh
 
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer
@@ -113,7 +114,7 @@ jobs:
       - name: Run pipeline with Conda
         working-directory: pipelines/linux-arm-ubuntu/nextflow-conda
         run: |
-          ./run.sh
+          bash ./run.sh
 
       - name: Verify tracer packages
         uses: ./.github/actions/verify-tracer
