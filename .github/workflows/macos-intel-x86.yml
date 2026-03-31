@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - "pipelines/macos-intel-x86/"
-      - "pipelines/macos-intel-x86/"
+      - "pipelines/macos-intel-x86/**"
+      - "pipelines/shared/fastquorum/**"
       - ".github/workflows/macos-intel-x86.yml"
       - ".github/actions/verify-tracer/action.yml"
       - ".github/actions/install-tracer/action.yml"
@@ -37,7 +37,7 @@ jobs:
           sudo tracer init --token ${{ secrets.TRACER_TOKEN }}
 
       - name: Run pipeline with Pixi
-        working-directory: pipelines/macos-arm64/fastquorum
+        working-directory: pipelines/macos-intel-x86/fastquorum
         run: |
           export NXF_GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
           ./run.sh
@@ -55,8 +55,8 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: fastquorum-arm64-pipeline-results
+          name: fastquorum-intel-x86-pipeline-results
           path: |
-            pipelines/macos-arm64/fastquorum/results/
-            pipelines/macos-arm64/fastquorum/logs/
+            pipelines/macos-intel-x86/fastquorum/results/
+            pipelines/macos-intel-x86/fastquorum/logs/
           retention-days: 7

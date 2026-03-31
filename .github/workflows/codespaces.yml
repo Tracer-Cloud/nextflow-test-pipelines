@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - "pipelines/codespaces/**"
+      - "pipelines/shared/fastquorum/**"
       - ".github/workflows/codespaces.yml"
       - "pipelines/shared/wdl/**"
       - ".github/actions/**"

@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - "pipelines/linux-x86-ubuntu/**"
+      - "pipelines/shared/fastquorum/**"
       - "pipelines/shared/wdl/**"
       - ".github/workflows/linux-x86_64-ubuntu.yml"
       - ".github/actions/install-tracer/action.yml"
