@@ -2,15 +2,6 @@ name: macOS intel pipelines
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - "pipelines/macos-intel-x86/**"
-      - "pipelines/shared/fastquorum/**"
-      - ".github/workflows/macos-intel-x86.yml"
-      - ".github/actions/verify-tracer/action.yml"
-      - ".github/actions/install-tracer/action.yml"
-  schedule:
-    - cron: "0 11 * * *"
 
 jobs:
   fastquorum-pixi:

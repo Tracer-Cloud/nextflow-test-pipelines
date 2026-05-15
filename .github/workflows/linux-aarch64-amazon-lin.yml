@@ -2,14 +2,6 @@ name: Nextflow Linux ARM64 Amazon Linux Pipelines
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - "pipelines/linux-arm-amazon-linux/**"
-      - "pipelines/shared/nextflow/**"
-      - ".github/workflows/linux-aarch64-amazon-lin.yml"
-      - ".github/actions/verify-tracer/action.sh"
-  schedule:
-    - cron: "0 11 * * *"
 
 jobs:
   linux-arm64-amazon-pixi:

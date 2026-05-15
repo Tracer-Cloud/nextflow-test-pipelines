@@ -2,16 +2,6 @@ name: Codespaces pipelines
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - "pipelines/codespaces/**"
-      - "pipelines/shared/fastquorum/**"
-      - ".github/workflows/codespaces.yml"
-      - "pipelines/shared/wdl/**"
-      - ".github/actions/**"
-
-  schedule:
-    - cron: "0 11 * * *"
 
 jobs:
   wdl:

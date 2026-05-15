@@ -2,15 +2,6 @@ name: macOS arm64 pipelines
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - "pipelines/macos-arm64/**"
-      - "pipelines/shared/fastquorum/**"
-      - ".github/workflows/macos-arm64.yml"
-      - ".github/actions/verify-tracer/action.yml"
-      - ".github/actions/install-tracer/action.yml"
-  schedule:
-    - cron: "0 11 * * *"
 
 permissions:
   contents: read
